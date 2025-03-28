@@ -94,7 +94,7 @@
             <img src="../img/sares.jpeg" alt="Logo 4">
         </div>
         <h1>¡SaresTL, Construyendo un acceso seguro!</h1>
-        <form action="../php/procesar.php" method="post">
+        <form id="LoginForm">
             <input type="text" name = "user" id="user" placeholder="Usuario" required>
             <input type="password" name = "password" id="password" placeholder="Contraseña" required>
             <!--Hidden-->
@@ -110,6 +110,39 @@
         <a href="../php/Modulo-OlvidarContrasena.php">¿Olvidó su contraseña?</a>
         <div class="footer">© Sares TL, 2024</div>
     </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault(); // Evita que la página se recargue
+
+            // Obtener los valores del formulario
+            const username = document.getElementById('user').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // Realizar la solicitud a la API
+                const response = await fetch('https://hugoc.pythonanywhere.com/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.status === 'success') {
+                    alert('Login exitoso'); // Mostrar mensaje
+                    window.location.href = 'Modulo-InicioSesion.html'; // Redirigir a otra página
+                } else {
+                    alert('Credenciales incorrectas: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+                alert('Hubo un error al conectar con el servidor');
+            }
+        });
+    </script>
 </body>
 
 </html>
