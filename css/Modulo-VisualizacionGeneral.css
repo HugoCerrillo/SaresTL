@@ -1,0 +1,352 @@
+.top {
+    top: 0;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .8);
+    display: grid;
+    place-items: center;
+    transition: .4s;
+}
+
+.close {
+    top: 10em;
+    left: 70%;
+}
+
+.translate {
+    transform: translateY(-200%);
+}
+
+.Guardar {
+    display: none;
+}
+
+.enviarFormulario {
+    display: none;
+}
+
+.eliminar {
+    display: none;
+}
+
+.modal {
+    display: none;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #5C92FF, #F4F4F4);
+    margin: 0;
+    padding: 0;
+}
+
+.menu1 {
+    background-color: white;
+    max-width: 100%;
+}
+
+.Image {
+    position: relative;
+    max-width: 12%;
+    margin-bottom: 13px;
+    margin-top: 10px;
+    margin-left: 15px;
+}
+
+.Image1 {
+    position: relative;
+    max-width: 6%;
+    margin-bottom: 13px;
+    margin-top: 10px;
+    margin-left: 7px;
+}
+
+.Avatar-Perfil {
+    position: relative;
+    margin-bottom: 17px;
+    margin-left: 33%;
+    max-width: 4%;
+}
+
+.Notificacion {
+    position: relative;
+    margin-left: 11%;
+    margin-bottom: 28px;
+    max-width: 2%;
+}
+
+.Menu-Icono {
+    position: relative;
+    margin-top: 10px;
+    margin-left: 6%;
+    margin-bottom: 22px;
+    max-width: 40px;
+    cursor: pointer;
+}
+
+.sideMenu {
+    position: fixed;
+    top: 0;
+    right: -250px;
+    width: 250px;
+    height: 100%;
+    background-color: rgb(146, 63, 223);
+    transition: all 0.3s ease;
+}
+
+.sideMenu.show {
+    right: 0;
+}
+
+.menu-general,
+.contenidoBusqueda,
+.autorImg {
+    transition: margin-right 0.3s ease;
+}
+
+.menu-show,
+.contenidoBusqueda-show {
+    margin-right: 250px;
+}
+
+.autorImg-show {
+    margin-right: 250px;
+}
+
+.sideLogotipo {
+    display: block;
+    margin: 20px auto;
+    margin-top: 52px;
+    max-width: 45%;
+}
+
+.item-links {
+    display: block;
+    padding: 10px;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.item-links:hover {
+    background-color: #b047f6;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #fff;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.contenidoBusqueda {
+    position: relative;
+    text-align: center;
+    align-items: center;
+    max-width: 100%;
+    padding: 10px;
+}
+
+.textoClave,
+.usuarioBuscador,
+.buscador {
+    display: inline-block;
+    margin: 0 10px;
+    margin-bottom: 15px;
+}
+
+.buscador {
+    max-width: 150px;
+    padding: 10px 20px;
+    background-color: #b047f6;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.buscador:hover {
+    background-color: #8c2dcb;
+}
+
+.tablaBusqueda {
+    width: 60%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background-color: rgba(0, 0, 0, 0.2);
+    margin-bottom: 15px;
+}
+
+.tablaBusqueda tr,
+.tablaBusqueda td {
+    border: 1px solid white;
+}
+
+.tablaBusqueda td {
+    padding: 10px;
+    color: white;
+}
+
+.actualizar {
+    max-width: 150px;
+    padding: 10px 20px;
+    background-color: #b047f6;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.actualizar:hover {
+    background-color: #8c2dcb;
+}
+
+.textoActualizar {
+    border: 3px solid #155fc7;
+    background-color: #8dadee;
+    width: 40%;
+    border-radius: 0.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 40px;
+}
+
+.textoAdministrador {
+    border: 3px solid #155fc7;
+    background-color: #8dadee;
+    width: 24%;
+    border-radius: 0.5rem;
+    margin-left: 25px;
+}
+
+.textoClave {
+    border: 3px solid #155fc7;
+    background-color: #8dadee;
+    width: auto;
+    border-radius: 0.5rem;
+}
+
+.autorImg {
+    overflow: hidden;
+    background-color: #5C92FF;
+    margin-top: 3%;
+    padding: 10px;
+    max-width: 100%;
+}
+
+.autor {
+    float: left;
+    margin: 0;
+    margin-top: 38px;
+}
+
+.Logotipo {
+    float: right;
+    max-width: 7%;
+}
+
+@media screen and (max-width: 760px) {
+    .Image {
+        display: none;
+    }
+
+    .Image1 {
+        max-width: 15%;
+        margin-left: 19px;
+    }
+
+    .contenidoBusqueda {
+        padding: 20px;
+    }
+
+    .textoActualizar,
+    .textoAdministrador,
+    .textoClave {
+        font-size: 1rem;
+        text-align: center;
+    }
+
+    .usuarioBuscador {
+        width: 80%;
+        margin-bottom: 10px;
+    }
+
+    .tablaBusqueda {
+        padding: 10px;
+        margin-left: -12px;
+        margin-right: auto;
+    }
+
+    .tablaBusqueda tr,
+    .tablaBusqueda td {
+        padding: 1px;
+        max-width: none;
+    }
+
+    .actualizar {
+        width: 100%;
+    }
+
+
+    .autorImg {
+        flex-direction: column;
+        padding: 10px 10px;
+    }
+
+    .autor {
+        margin: 0;
+        margin-bottom: 8px;
+        margin-top: 9%;
+    }
+
+    .Avatar-Perfil {
+        margin-left: 24%;
+        max-width: 12%;
+    }
+
+    .Notificacion {
+        display: none;
+    }
+
+    .Menu-Icono {
+        margin-left: 28%;
+        max-width: 10%;
+    }
+
+    .Logotipo {
+        max-width: 20%;
+        margin: 0 auto;
+    }
+
+    .sideMenu {
+        right: -180px;
+        width: 180px;
+        height: 100%;
+    }
+
+    .menu-show,
+    .autorImg-show {
+        max-width: 75%;
+        margin-right: 182px;
+        margin-block-start: auto;
+        margin-bottom: auto;
+    }
+
+    .contenidoBusqueda-show {
+        max-width: 60%;
+        margin-right: 182px;
+        margin-block-start: auto;
+        margin-bottom: auto;
+    }
+
+    .VisualizacionGeneral {
+        max-width: 50%;
+        background-color: black;
+        display: none;
+    }
+}
