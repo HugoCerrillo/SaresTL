@@ -100,7 +100,7 @@
                 const userName = data.nombreR; // Asegúrate de que tu API devuelva "nombre"
                 sessionStorage.setItem('userRole', userRole); // Guardar el rol en sessionStorage
                 sessionStorage.setItem('userName', userName); // Guardar el nombre en sessionStorage
-                contenedor.innerHTML = 'Bienvenido' + userName; // Mostrar el nombre del usuario en el contenedor
+                contenedor.innerHTML = `Bienvenido, ${userName}`; // Mostrar el nombre del usuario en el contenedor
                 //generarMenu(userRole); // Llamar a la función para generar el menú dinámico
             } else {
                 alert('No se pudo cargar el menú. Verifica tu conexión o credenciales.');
