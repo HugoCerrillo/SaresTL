@@ -1,0 +1,130 @@
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #6ba1ff, #b3d1ff);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+.form-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+}
+
+.form-container img {
+    max-width: 50px;
+    margin: 10px;
+}
+
+.form-container h1 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.form-container input[type="text"],
+.form-container input[type="password"],
+.form-container select,
+.form-container button {
+    width: calc(100% - 40px);
+    padding: 10px;
+    margin: 10px 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.form-container button {
+    background: #2c3e50;
+    color: white;
+    cursor: pointer;
+}
+
+.form-container button:hover {
+    background: #34495e;
+}
+
+.logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* Añadir flex-wrap para que los logos se acomoden mejor en pantallas pequeñas */
+}
+
+.logos img {
+    margin: 0 10px;
+}
+
+.logos img:last-child {
+    margin-left: 30px;
+}
+
+.footer {
+    margin-top: 20px;
+    font-size: 0.8em;
+    color: #777;
+}
+
+img {
+    width: 10%;
+    height: 10%;
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 768px) {
+    .form-container {
+        width: 90%; /* Ajustar el tamaño del contenedor en pantallas medianas */
+        padding: 15px;
+    }
+
+    .form-container h1 {
+        font-size: 1.2em; /* Reducir el tamaño de la fuente del título */
+    }
+
+    .form-container img {
+        max-width: 40px; /* Reducir tamaño de los logos */
+        margin: 5px; /* Reducir el espacio entre logos */
+    }
+
+    .form-container input[type="text"],
+    .form-container input[type="password"],
+    .form-container select,
+    .form-container button {
+        width: calc(100% - 30px); /* Asegurar que los inputs y botones se ajusten al contenedor */
+    }
+}
+
+@media (max-width: 480px) {
+    .form-container {
+        width: 90%;
+        padding: 10px;
+    }
+
+    .form-container h1 {
+        font-size: 1.1em; /* Ajustar aún más el tamaño del título */
+    }
+    .form-container img {
+        max-width: 35px; /* Ajustar el tamaño de los logos */
+    }
+    .form-container input[type="text"],
+    .form-container input[type="password"],
+    .form-container select,
+    .form-container button {
+        width: 100%; /* Asegurar que los elementos llenen el ancho de la pantalla */
+    }
+    .footer {
+        font-size: 12px; /* Reducir el tamaño del pie de página */
+    }
+}

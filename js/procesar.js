@@ -53,4 +53,4 @@ function generateSuccess(text, location) {
 }
 function generateError(text, location) {
     new GenerateError(text, location);
-}
+}   

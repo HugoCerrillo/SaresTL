@@ -1,0 +1,186 @@
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #6ba1ff, #b3d1ff);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    padding: 20px;
+    margin: 20px;
+    box-sizing: border-box;
+}
+
+.form-container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.logos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logos img {
+    max-width: 80px;
+    margin: 10px;
+}
+
+h1 {
+    font-size: 1.8em;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.icon {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+label {
+    text-align: left;
+    font-weight: bold;
+    margin: 0 5px;
+    color: #34495e;
+}
+
+input,
+select,
+button {
+    width: calc(100% - 10px);
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+input:focus,
+select:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+button {
+    background: #2c3e50;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background: #34495e;
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 1024px) {
+    .container {
+        padding: 15px;
+    }
+
+    .form-container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.6em;
+    }
+
+    .logos img {
+        max-width: 70px;
+    }
+
+    .icon {
+        width: 90px;
+        height: 90px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .form-container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    .logos img {
+        max-width: 60px;
+    }
+
+    .icon {
+        width: 80px;
+        height: 80px;
+    }
+
+    label {
+        font-size: 0.9em;
+    }
+
+    input,
+    select,
+    button {
+        font-size: 0.95em;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 5px;
+    }
+
+    .form-container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.3em;
+    }
+
+    .logos img {
+        max-width: 50px;
+    }
+
+    .icon {
+        width: 70px;
+        height: 70px;
+    }
+
+    input,
+    select,
+    button {
+        font-size: 0.9em;
+        padding: 8px;
+    }
+
+    label {
+        font-size: 0.85em;
+    }
+}

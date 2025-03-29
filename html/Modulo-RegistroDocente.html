@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../img/sares.jpeg" type="image/x-icon">
+    <link rel="stylesheet" href="../css/Modulo-Registros.css">
+    <title>Registro Docente</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="logos">
+                <img src="../img/sep.png" alt="SEP Logo">
+                <img src="../img/tecnm.jpg" alt="TECNM Logo">
+                <img src="../img/tec.png" alt="ITL Logo">
+                <img src="../img/sares.jpeg" alt="SARES Logo">
+            </div>
+            <h1>Registro de docentes</h1>
+            <img src="../img/person-circle.svg" class="icon" alt="User Icon">
+            <form action="../php/procesar.php" method="POST">
+                <div>
+                    <input type="hidden" id="formulario" name="formulario" value="teacherType">
+                </div>
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="correo">Correo Institucional:</label>
+                <input type="email" id="email" name="correo" required>
+
+                <label for="departamento">Departamento:</label>
+                <input type="text" id="department" name="department" required>
+
+                <label for="telefono">Teléfono:</label>
+                <input type="tel" id="phoneNumber" name="phoneNumber" required>
+
+                <label for="genero">Género:</label>
+                <select id="gender" name="gender" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="femenino">Femenino</option>
+                    <option value="otro">Otro</option>
+                </select>
+
+                <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
+                <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+
+                <label for="usuario">Usuario:</label>
+                <input type="text" id="user" name="user" required>
+
+                <label for="contrasena">Contraseña:</label>
+                <input type="password" id="password" name="password" required>
+
+                <button type="submit">Continuar</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
