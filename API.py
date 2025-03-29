@@ -149,44 +149,41 @@ def usertype():
     user = data.get("user")
 
     # Validar parámetro
-    if not user:
-        return jsonify({"status": "error", "message": "El parámetro 'user' es obligatorio"}), 400
+    if not user or not str(user).strip():
+        return jsonify({"status": "error", "message": "El parámetro 'user' es obligatorio y debe ser válido"}), 400
 
     try:
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
+        # Manejar la conexión y el cursor usando "with"
+        with get_db_connection() as conn:
+            with conn.cursor(dictionary=True) as cursor:
+                # Consulta para obtener el tipo de usuario
+                cursor.execute("""
+                    SELECT nombreR, idRol FROM UsuarioR WHERE idUsuarioR = %s
+                """, (user,))
+                user_type = cursor.fetchone()
 
-        # Consulta para obtener tipo de usuario
-        cursor.execute(
-            """
-            SELECT nombreR, idRol FROM UsuarioR WHERE idUsuarioR = %s
-            """,
-            (user,),
-        )
-        user_type = cursor.fetchone()
-
-        if user_type:
-            return jsonify({
-                "status": "success",
-                "message": "Tipo de usuario encontrado",
-                "userName": user_type["nombreR"],
-                "userRole": user_type["idRol"]
-            }), 200
-        else:
-            return jsonify({"status": "error", "message": "Usuario no encontrado"}), 404
+                # Validar si el usuario fue encontrado
+                if user_type:
+                    return jsonify({
+                        "status": "success",
+                        "message": "Tipo de usuario encontrado",
+                        "userName": str(user_type["nombreR"]).strip(),
+                        "userRole": user_type["idRol"]
+                    }), 200
+                else:
+                    return jsonify({"status": "error", "message": "Usuario no encontrado"}), 404
 
     except mysql.connector.Error as e:
-        return jsonify({"status": "error", "message": f"Error en la base de datos: {str(e)}"}), 500
+        return jsonify({
+            "status": "error",
+            "message": f"Error en la base de datos: {str(e)}"
+        }), 500
 
     except Exception as e:
-        return jsonify({"status": "error", "message": f"Error inesperado: {str(e)}"}), 500
-
-    finally:
-        try:
-            cursor.close()
-            conn.close()
-        except:
-            pass
+        return jsonify({
+            "status": "error",
+            "message": f"Error inesperado: {str(e)}"
+        }), 500
 
 if __name__ == "__main__":
     app.run()
