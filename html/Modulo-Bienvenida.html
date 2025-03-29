@@ -84,7 +84,7 @@
 
         //URL de la API para obtener el nombre del usuario
         const apiUrl = `https://hugoc.pythonanywhere.com/api/usertype?user=${user}`;
-        
+
 
         
         try {
@@ -106,7 +106,7 @@
                 // Guardar los datos en sessionStorage
                 sessionStorage.setItem('idRol', userRole);
                 sessionStorage.setItem('userName', userName);
-
+                alert('Bienvenido ' + userName);
                 // Seleccionar el contenedor y mostrar el nombre del usuario
                 const contenedor = document.getElementById('contenedor');
                 if (contenedor) {
