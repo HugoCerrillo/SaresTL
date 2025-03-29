@@ -96,8 +96,8 @@
         </div>
         <h1>¡SaresTL, Construyendo un acceso seguro!</h1>
         <form id="loginForm">
-            <input type="text" name = "user" id="user" placeholder="Usuario" required>
-            <input type="password" name = "password" id="password" placeholder="Contraseña" required>
+            <input type="text" name="user" id="user" placeholder="Usuario" required>
+            <input type="password" name="password" id="password" placeholder="Contraseña" required>
             <!--Hidden-->
             <div>
                 <input type="hidden" id="formulario" name="formulario" value="login">
@@ -105,13 +105,13 @@
             <button type="submit">Iniciar Sesión</button>
         </form>
 
-        
+
         <a href="../php/Modulo-TipoUsuario.php">Registrarse</a>
         <a href="#">Manual de usuario</a>
         <a href="../php/Modulo-OlvidarContrasena.php">¿Olvidó su contraseña?</a>
         <div class="footer">© Sares TL, 2024</div>
     </div>
-    <script src="js/procesar.js"></script>  
+    <script src="js/procesar.js"></script>
     <script>
         document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault(); // Evita que la página se recargue
@@ -133,18 +133,49 @@
                 const data = await response.json();
 
                 if (response.ok && data.status === 'success') {
-                    //const success = new GenerateSuccess("Operación realizada con éxito", "https://hugocerrillo.github.io/SaresTL/");
-                    generateSuccess("Inicio exitoso", "https://hugocerrillo.github.io/SaresTL/");
-                    //alert('Login exitoso'); // Mostrar mensaje
-                    //window.location.href = 'index.html'; // Redirigir a otra página
+                    Swal.fire({
+                        title: "¡Éxito!",
+                        text: "Bienvenido al sistema SaresTL",
+                        icon: "success",
+                        background: "#1C1766",  // Fondo personalizado
+                        color: "#ffffff",       // Texto en color blanco
+                        confirmButtonColor: "#3085d6",
+                        confirmButtonText: "Aceptar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "https://hugocerrillo.github.io/SaresTL/";
+                        }
+                    });
                 } else {
-                    generateError("Error", "https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html");
-                    alert('Credenciales incorrectas: ' + data.message);
+                    Swal.fire({
+                        title: "¡Error!",
+                        text: "El usuario y/o la contraseña son incorrectos",
+                        icon: "error",
+                        background: "#1C1766",  // Fondo personalizado
+                        color: "#ffffff",       // Texto en color blanco
+                        confirmButtonColor: "#3085d6",
+                        confirmButtonText: "Aceptar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html";
+                        }
+                    });
                 }
             } catch (error) {
                 console.error('Error en la solicitud:', error);
-                generateError("Error", "https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html");
-                //alert('Hubo un error al conectar con el servidor');
+                Swal.fire({
+                    title: "¡Error!",
+                    text: "Hubo un error al conectar con el servidor",
+                    icon: "error",
+                    background: "#1C1766",  // Fondo personalizado
+                    color: "#ffffff",       // Texto en color blanco
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "Aceptar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html";
+                    }
+                });
             }
         });
     </script>
