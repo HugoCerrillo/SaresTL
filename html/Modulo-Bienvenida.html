@@ -20,24 +20,19 @@
         </div>
         <div class="user-profile" onclick="toggleMenu()">
             <img src="" alt="Foto de Perfil">
-            <span class="menu-icon"><img src="../img/list.svg" ></span>
+            <span class="menu-icon"><img src="../img/list.svg"></span>
         </div>
         <div class="menu-dropdown" id="menuDropdown">
             <ul>
                 <!-- Contenido del Menu -->
-                
+
             </ul>
         </div>
     </div>
     <div class="container">
         <div class="welcome-text">
             <h1 id="bienvenida"> </h1>
-            <script>
-                const contenedor = document.getElementById('bienvenida');
-
-                contenedor.innerHTML = 'Bienvenido';
-            </script>
-            <p>Eres un:  en TECNM Campus León Campus 1</p>
+            <p>Eres un: en TECNM Campus León Campus 1</p>
             <p>Con rol en nuestro sistema de: </p>
         </div>
         <div class="action-buttons">
@@ -67,18 +62,57 @@
             menu.classList.toggle('open');
         }
     </script>
-    <script>        
+    <script>
         // Comprobar si el usuario está autenticado
         const userId = sessionStorage.getItem('user');
 
         if (userId) {
-            console.log('Usuario autenticado:', userId, userName);           
+            console.log('Usuario autenticado:', userId, userName);
         } else {
             alert('No has iniciado sesión. Redirigiendo al login...');
             window.location.href = 'https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html'; // Redirigir al login si no está autenticado
         }
 
-        
+
+    </script>
+
+    <script>
+        const contenedor = document.getElementById('bienvenida');
+
+        // Obtener el nombre del usuario desde sessionStorage
+        const user = sessionStorage.getItem('user'); // Asegúrate de que este valor se haya guardado al iniciar sesión
+
+        //URL de la API para obtener el nombre del usuario
+        const apiUrl = 'https://hugoc.pythonanywhere.com/api/usertype/';
+
+        // Realizar la solicitud a la API
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await response.json();
+            if (response.ok && data) {
+                // Extraer el rol del usuario
+                const userRole = data.idRol; // Asegúrate de que tu API devuelva "tipoUsuario"
+                const userName = data.nombreR; // Asegúrate de que tu API devuelva "nombre"
+                sessionStorage.setItem('userRole', userRole); // Guardar el rol en sessionStorage
+                sessionStorage.setItem('userName', userName); // Guardar el nombre en sessionStorage
+                contenedor.innerHTML = `Bienvenido ${userName}`; // Mostrar el nombre del usuario en el contenedor
+                //generarMenu(userRole); // Llamar a la función para generar el menú dinámico
+            } else {
+                alert('No se pudo cargar el menú. Verifica tu conexión o credenciales.');
+                window.location.href = 'https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html'; // Redirigir al login
+            }
+
+        }catch (error) {
+            console.error('Error en la solicitud:', error);
+            alert('Error al cargar el nombre del usuario. Verifica tu conexión.');
+            window.location.href = 'https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html'; // Redirigir al login
+        }
+
     </script>
 </body>
 

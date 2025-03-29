@@ -142,10 +142,11 @@ def register():
             pass
 
 
-@app.route("/api/usertype", methods=["POST"])
+@app.route("/api/usertype", methods=["GET"])
 def usertype():
     data = request.get_json()
     user = data.get("user")
+    
 
     if not user:
         return jsonify({"status": "error", "message": "Faltan parámetros"}), 400
@@ -157,7 +158,7 @@ def usertype():
         # Buscar el tipo de usuario en la base de datos
         cursor.execute(
             """
-            SELECT idRol FROM UsuarioR WHERE idUsuarioR = %s
+            SELECT nombreR, idRol FROM UsuarioR WHERE idUsuarioR = %s
             """,
             (user,),
         )
