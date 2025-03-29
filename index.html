@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +17,7 @@
             justify-content: center;
             align-items: center;
         }
-        
+
         .container {
             background-color: white;
             border-radius: 8px;
@@ -26,32 +27,33 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
-        
+
         .logos {
             display: flex;
             justify-content: center;
             gap: 15px;
             margin-bottom: 20px;
+            flex-wrap: wrap; /* Permite que las imágenes se ajusten en pantallas más pequeñas */
         }
-        
+
         .logo {
             height: 50px;
             width: auto;
         }
-        
+
         h1 {
             font-size: 24px;
             color: #333;
             margin-bottom: 30px;
         }
-        
+
         .welcome-message {
             font-size: 28px;
             color: #333;
             margin-bottom: 30px;
             font-weight: bold;
         }
-        
+
         .btn {
             display: block;
             width: 100%;
@@ -63,32 +65,87 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        
+
         .btn-primary {
             background-color: #2c3e50;
             color: white;
         }
-        
+
         .btn-primary:hover {
             background-color: #1a2530;
         }
-        
+
         .btn-secondary {
             background-color: #3498db;
             color: white;
         }
-        
+
         .btn-secondary:hover {
             background-color: #2980b9;
         }
-        
+
         .footer {
             margin-top: 30px;
             font-size: 14px;
             color: #777;
         }
+
+        /* Media Queries para Responsividad */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                width: 90%; /* Ajusta el tamaño del contenedor */
+            }
+
+            .logos img {
+                height: 40px; /* Reducir el tamaño de los logos en pantallas pequeñas */
+                margin: 5px; /* Espaciado más pequeño entre los logos */
+            }
+
+            h1 {
+                font-size: 22px; /* Ajustar el tamaño de la fuente en pantallas pequeñas */
+            }
+
+            .welcome-message {
+                font-size: 24px; /* Ajustar el tamaño de la fuente */
+            }
+
+            .btn {
+                font-size: 14px; /* Ajustar el tamaño de los botones */
+                padding: 10px; /* Reducir el padding */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                width: 90%; /* Asegurar que el contenedor ocupe el 90% en dispositivos muy pequeños */
+            }
+
+            .logos img {
+                height: 35px; /* Ajustar aún más el tamaño de los logos */
+            }
+
+            h1 {
+                font-size: 20px; /* Ajustar aún más el tamaño del texto */
+            }
+
+            .welcome-message {
+                font-size: 22px; /* Ajustar el tamaño del mensaje */
+            }
+
+            .btn {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .footer {
+                font-size: 12px; /* Reducir el tamaño del pie de página */
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="logos">
@@ -97,20 +154,21 @@
             <img src="img/tec.png" alt="Logo Institución" class="logo">
             <img src="img/sares.jpeg" alt="Logo SaresTL" class="logo">
         </div>
-        
+
         <h1>¡SaresTL, Construyendo un acceso seguro!</h1>
-        
+
         <div class="welcome-message">
             Bienvenido a nuestro sistema
         </div>
-        
-        <button onclick="window.location.href='https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html';" class="btn btn-primary" >Iniciar Sesión</button>
+
+        <button onclick="window.location.href='https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html';" class="btn btn-primary">Iniciar Sesión</button>
         <button onclick="window.location.href='php/Modulo-TipoUsuario.php';" class="btn btn-secondary">Registrarse</button>
-        
+
         <div class="footer">
             © Sares TL, 2024
         </div>
     </div>
-      
+
 </body>
+
 </html>
