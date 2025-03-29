@@ -71,7 +71,7 @@
                 return;
             }
 
-            const apiUrl = `https://hugoc.pythonanywhere.com/api/usertype?user=${user}`;
+            const apiUrl = 'https://hugoc.pythonanywhere.com/api/usertype';
 
             console.log(`URL solicitada: ${apiUrl}`); // Depuración: mostrar la URL
 
@@ -81,6 +81,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    body: JSON.stringify({ user}),
                 });
 
                 const data = await response.json();
