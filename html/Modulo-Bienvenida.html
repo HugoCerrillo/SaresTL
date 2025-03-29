@@ -85,60 +85,42 @@
         //URL de la API para obtener el nombre del usuario
         const apiUrl = 'https://hugoc.pythonanywhere.com/api/usertype/';
 
-        // Realizar la solicitud a la API
+        
         try {
-            // Obtener el nombre del usuario desde sessionStorage
-            const user = sessionStorage.getItem('user'); // Asegúrate de que este valor se haya guardado al iniciar sesión
+            // Realizar la solicitud a la API
+            const response = await fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
 
-            // Validar si el usuario está definido
-            if (!user) {
-                alert('No has iniciado sesión. Redirigiendo al login...');
-                window.location.href = 'https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html';
-                return;
-            }
+            const data = await response.json();
 
-            // URL de la API para obtener el nombre del usuario
-            const apiUrl = `https://hugoc.pythonanywhere.com/api/usertype?user=${user}`;
+            if (response.ok && data) {
+                // Extraer el rol y el nombre del usuario
+                const userRole = data.idRol; // Asegúrate de que tu API devuelva "userRole"
+                const userName = data.nombreR; // Asegúrate de que tu API devuelva "userName"
 
-            try {
-                // Realizar la solicitud a la API
-                const response = await fetch(apiUrl, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
+                // Guardar los datos en sessionStorage
+                sessionStorage.setItem('idRol', userRole);
+                sessionStorage.setItem('userName', userName);
 
-                const data = await response.json();
-
-                if (response.ok && data) {
-                    // Extraer el rol y el nombre del usuario
-                    const userRole = data.userRole; // Asegúrate de que tu API devuelva "userRole"
-                    const userName = data.userName; // Asegúrate de que tu API devuelva "userName"
-
-                    // Guardar los datos en sessionStorage
-                    sessionStorage.setItem('userRole', userRole);
-                    sessionStorage.setItem('userName', userName);
-
-                    // Seleccionar el contenedor y mostrar el nombre del usuario
-                    const contenedor = document.getElementById('contenedor');
-                    if (contenedor) {
-                        contenedor.innerHTML = `Bienvenido, ${userName}`; // Usar plantilla literal
-                    } else {
-                        console.error('El contenedor no existe en el DOM.');
-                    }
-
-                    // Llamar a la función para generar el menú dinámico según el rol
-                    generarMenu(userRole);
+                // Seleccionar el contenedor y mostrar el nombre del usuario
+                const contenedor = document.getElementById('contenedor');
+                if (contenedor) {
+                    contenedor.innerHTML = `Bienvenido, ${userName}`; // Usar plantilla literal
                 } else {
-                    alert('No se pudo cargar el menú. Verifica tu conexión o credenciales.');
-                    window.location.href = 'https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html'; // Redirigir al login
+                    console.error('El contenedor no existe en el DOM.');
                 }
-            } catch (error) {
-                console.error('Error en la conexión con el servidor:', error);
-                alert('Hubo un error al conectar con el servidor. Intenta nuevamente más tarde.');
-                window.location.href = 'https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html';
+
+                // Llamar a la función para generar el menú dinámico según el rol
+                generarMenu(userRole);
+            } else {
+                alert('No se pudo cargar el menú. Verifica tu conexión o credenciales.');
+                window.location.href = 'https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html'; // Redirigir al login
             }
+
 
         } catch (error) {
             console.error('Error en la solicitud:', error);
