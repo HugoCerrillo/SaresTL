@@ -138,6 +138,7 @@
                     //alert('Login exitoso'); // Mostrar mensaje
                     //window.location.href = 'index.html'; // Redirigir a otra página
                 } else {
+                    generateError("Error", "https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html");
                     alert('Credenciales incorrectas: ' + data.message);
                 }
             } catch (error) {
