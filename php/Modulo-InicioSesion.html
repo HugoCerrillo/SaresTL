@@ -110,7 +110,7 @@
         <a href="../php/Modulo-OlvidarContrasena.php">¿Olvidó su contraseña?</a>
         <div class="footer">© Sares TL, 2024</div>
     </div>
-
+    <script src="js/procesar.js"></script>  
     <script>
         document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault(); // Evita que la página se recargue
@@ -132,8 +132,9 @@
                 const data = await response.json();
 
                 if (response.ok && data.status === 'success') {
-                    alert('Login exitoso'); // Mostrar mensaje
-                    window.location.href = 'index.html'; // Redirigir a otra página
+                    const success = new GenerateSuccess("Operación realizada con éxito", "https://hugocerrillo.github.io/SaresTL/");
+                    //alert('Login exitoso'); // Mostrar mensaje
+                    //window.location.href = 'index.html'; // Redirigir a otra página
                 } else {
                     alert('Credenciales incorrectas: ' + data.message);
                 }
