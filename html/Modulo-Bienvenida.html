@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="../img/sares.jpeg" type="image/x-icon">
     <link rel="stylesheet" href="../css/Modulo-Bienvenida.css">
     <title>Bienvenida</title>
-
 </head>
 
 <body>
@@ -24,11 +22,11 @@
         </div>
         <div class="menu-dropdown" id="menuDropdown">
             <ul>
-                <!-- Contenido del Menu -->
-
+                <!-- Contenido dinámico del menú -->
             </ul>
         </div>
     </div>
+
     <div class="container">
         <div class="welcome-text">
             <h1 id="bienvenida"> </h1>
@@ -57,79 +55,88 @@
     <div class="footer">© Sares TL, 2024</div>
 
     <script>
+        // Función para alternar el menú desplegable
         function toggleMenu() {
             const menu = document.getElementById('menuDropdown');
             menu.classList.toggle('open');
         }
-    </script>
-    <script>
-        // Comprobar si el usuario está autenticado
-        const userId = sessionStorage.getItem('user');
 
-        if (userId) {
-            console.log('Usuario autenticado:', userId, userName);
-        } else {
-            alert('No has iniciado sesión. Redirigiendo al login...');
-            window.location.href = 'https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html'; // Redirigir al login si no está autenticado
-        }
+        // Función para obtener datos del usuario y generar contenido dinámico
+        async function obtenerDatosUsuario() {
+            const user = sessionStorage.getItem('user'); // Obtener el ID del usuario
 
-
-    </script>
-
-    <script>
-        const contenedor = document.getElementById('bienvenida');
-
-        // Obtener el nombre del usuario desde sessionStorage
-        const user = sessionStorage.getItem('user'); // Asegúrate de que este valor se haya guardado al iniciar sesión
-
-        //URL de la API para obtener el nombre del usuario
-        const apiUrl = `https://hugoc.pythonanywhere.com/api/usertype?user=${user}`;
-
-
-        
-        try {
-            // Realizar la solicitud a la API
-            const response = await fetch(apiUrl, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            const data = await response.json();
-
-            if (response.ok && data) {
-                // Extraer el rol y el nombre del usuario
-                const userRole = data.idRol; // Asegúrate de que tu API devuelva "userRole"
-                const userName = data.nombreR; // Asegúrate de que tu API devuelva "userName"
-
-                // Guardar los datos en sessionStorage
-                sessionStorage.setItem('idRol', userRole);
-                sessionStorage.setItem('userName', userName);
-                alert('Bienvenido ' + userName);
-                // Seleccionar el contenedor y mostrar el nombre del usuario
-                const contenedor = document.getElementById('contenedor');
-                if (contenedor) {
-                    contenedor.innerHTML = `Bienvenido, ${userName}`; // Usar plantilla literal
-                } else {
-                    console.error('El contenedor no existe en el DOM.');
-                }
-
-                // Llamar a la función para generar el menú dinámico según el rol
-                generarMenu(userRole);
-            } else {
-                alert('No se pudo cargar el menú. Verifica tu conexión o credenciales.');
-                window.location.href = 'https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html'; // Redirigir al login
+            if (!user) {
+                alert('No has iniciado sesión. Redirigiendo al login...');
+                window.location.href = 'https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html';
+                return;
             }
 
+            const apiUrl = `https://hugoc.pythonanywhere.com/api/usertype?user=${user}`;
 
-        } catch (error) {
-            console.error('Error en la solicitud:', error);
-            alert('Error al cargar el nombre del usuario. Verifica tu conexión.');
-            window.location.href = 'https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html'; // Redirigir al login
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data) {
+                    const userRole = data.userRole; // Asegúrate de que la API devuelve "userRole"
+                    const userName = data.userName; // Asegúrate de que la API devuelve "userName"
+
+                    // Guardar los datos en sessionStorage
+                    sessionStorage.setItem('userRole', userRole);
+                    sessionStorage.setItem('userName', userName);
+
+                    // Actualizar el texto de bienvenida
+                    const contenedor = document.getElementById('bienvenida');
+                    if (contenedor) {
+                        contenedor.innerHTML = `Bienvenido, ${userName}`; // Usar plantilla literal
+                    } else {
+                        console.error('El contenedor no existe en el DOM.');
+                    }
+
+                    // Llamar a la función para generar el menú dinámico según el rol
+                    generarMenu(userRole);
+                } else {
+                    alert('No se pudo cargar el menú. Verifica tu conexión o credenciales.');
+                    window.location.href = 'https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html';
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+                alert('Error al cargar el nombre del usuario. Verifica tu conexión.');
+                window.location.href = 'https://hugocerrillo.github.io/SaresTL/php/Modulo-InicioSesion.html';
+            }
         }
 
+        // Función para generar el menú dinámico (placeholder)
+        function generarMenu(userRole) {
+            const menuDropdown = document.getElementById('menuDropdown');
+            const menuList = menuDropdown.querySelector('ul');
+
+            // Generar contenido según el rol del usuario
+            if (userRole === 'Administrador') {
+                menuList.innerHTML = `
+                    <li><a href="#">Panel Principal</a></li>
+                    <li><a href="#">Gestionar Usuarios</a></li>
+                    <li><a href="#">Reportes</a></li>
+                    <li><a href="#">Salir</a></li>
+                `;
+            } else {
+                menuList.innerHTML = `
+                    <li><a href="#">Inicio</a></li>
+                    <li><a href="#">Perfil</a></li>
+                    <li><a href="#">Ayuda</a></li>
+                    <li><a href="#">Cerrar Sesión</a></li>
+                `;
+            }
+        }
+
+        // Llamar a la función al cargar la página
+        obtenerDatosUsuario();
     </script>
 </body>
-
 </html>
