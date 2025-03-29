@@ -1,234 +1,183 @@
-#EnviarConsulta {
-    background-color: red;
-    border-radius: 10px;
-    border-color: black;
-    width: 150px;
-    height: 40px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: larger;
-}
-
-#asuntoCampo {
-    width: 50%;
-    height: 60px;
-}
-
-.contacto {
-    background-color: black;
-}
-
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to bottom, #5C92FF, #F4F4F4);
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #6ba1ff, #b3d1ff);
     margin: 0;
     padding: 0;
 }
 
-.menu1 {
-    background-color: white;
-    max-width: 100%;
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 10px 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
-.Image {
-    position: relative;
-    max-width: 12%;
-    margin-bottom: 13px;
-    margin-top: 10px;
-    margin-left: 15px;
+.header .logos {
+    display: flex;
+    align-items: center;
 }
 
-.Image1 {
-    position: relative;
-    max-width: 6%;
-    margin-bottom: 13px;
-    margin-top: 10px;
-    margin-left: 7px;
+.header .logos img {
+    max-width: 50px;
+    margin-right: 10px;
 }
 
-.Avatar-Perfil {
-    position: relative;
-    margin-bottom: 17px;
-    margin-left: 33%;
-    max-width: 4%;
-}
-
-.Notificacion {
-    position: relative;
-    margin-left: 11%;
-    margin-bottom: 28px;
-    max-width: 2%;
-}
-
-.Menu-Icono {
-    position: relative;
-    margin-top: 10px;
-    margin-left: 6%;
-    margin-bottom: 22px;
-    max-width: 40px;
+.header .user-profile {
+    display: flex;
+    align-items: center;
     cursor: pointer;
 }
 
-.sideMenu {
-    position: fixed;
-    top: 0;
-    right: -250px;
-    width: 250px;
-    height: 100%;
-    background-color: rgb(146, 63, 223);
-    transition: all 0.3s ease;
+.header .user-profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
 }
 
-.sideMenu.show {
-    right: 0;
+.header .menu-icon {
+    font-size: 24px;
 }
 
-.menu-general,
-.contenidoManual,
-.autorImg {
-    transition: margin-right 0.3s ease;
-}
-
-.menu-show,
-.contenidoManual-show {
-    margin-right: 250px;
-}
-
-.autorImg-show {
-    margin-right: 250px;
-}
-
-.sideLogotipo {
-    display: block;
-    margin: 20px auto;
-    margin-top: 52px;
-    max-width: 45%;
-}
-
-.item-links {
-    display: block;
-    padding: 10px;
-    color: #fff;
-    text-decoration: none;
-    text-align: center;
-    margin-bottom: 20px;
-    margin-top: 10px;
-}
-
-.item-links:hover {
-    background-color: #b047f6;
-}
-
-.close-btn {
+/* Menú desplegable */
+.menu-dropdown {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    color: #fff;
-    font-size: 20px;
-    text-decoration: none;
+    top: 100%;
+    right: 20px;
+    background: #3478b3; /* Fondo azul */
+    color: white;
+    width: 200px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    z-index: 1;
 }
 
-.textoManual {
-    margin-top: 15px;
-    margin-bottom: 25px;
-    border: 3px solid #155fc7;
-    background-color: #8dadee;
-    border-radius: 0.5rem;
-    color: #fff;
-    width: 18%;
-    font-size: 21px;
-    margin-left: auto;
-    margin-right: auto;
+.menu-dropdown.open {
+    display: flex;
 }
 
-.contenidoManual {
-    position: relative;
-    text-align: center;
-    align-items: center;
-    margin-top: 48px;
-}
-
-.autorImg {
-    overflow: hidden;
-    background-color: #5C92FF;
-    margin-top: 3%;
-    padding: 10px;
-}
-
-.autor {
-    float: left;
+.menu-dropdown ul {
+    list-style: none;
+    padding: 0;
     margin: 0;
-    margin-top: 38px;
 }
 
-.Logotipo {
-    float: right;
-    max-width: 7%;
+.menu-dropdown ul li {
+    padding: 10px;
+    border-bottom: 1px solid #1f4a71;
+    cursor: pointer;
 }
 
-@media screen and (max-width: 760px) {
-    .Image {
-        display: none;
-    }
+.menu-dropdown ul li:hover {
+    background: #295a83;
+}
 
-    .Image1 {
-        max-width: 15%;
-        margin-left: 19px;
-    }
+.menu-dropdown ul li:last-child {
+    border: none;
+}
 
-    .videoManual {
-        max-width: 90%;
-        padding: 5%;
-    }
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 60px);
+    padding: 20px;
+    text-align: center;
+}
 
-    .textoManual {
-        width: 80%;
-        font-size: 18px;
-        margin: 15px auto;
-    }
+.welcome-text h1 {
+    font-size: 2.5em;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
 
-    .autorImg {
+.welcome-text p {
+    font-size: 1.2em;
+    color: #34495e;
+    margin: 0 0 15px;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.action-buttons button {
+    background: #2c3e50;
+    color: white;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.action-buttons button:hover {
+    background: #34495e;
+}
+
+.info-cards {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.info-card {
+    background: white;
+    width: 250px;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    color: #34495e;
+}
+
+.info-card h3 {
+    margin: 0 0 10px;
+    font-size: 1.2em;
+    color: #2c3e50;
+}
+
+.info-card p {
+    font-size: 1em;
+    margin: 0;
+}
+
+.footer {
+    text-align: center;
+    padding: 10px 20px;
+    color: #777;
+    font-size: 0.9em;
+}
+
+@media (max-width: 768px) {
+    .header .logos img {
+        max-width: 40px;
+    }
+    .header .user-profile img {
+        width: 30px;
+        height: 30px;
+    }
+    .welcome-text h1 {
+        font-size: 2em;
+    }
+    .info-cards {
         flex-direction: column;
-        padding: 10px 10px;
+        gap: 20px;
     }
-
-    .autor {
-        margin: 0;
-        margin-bottom: 8px;
-        margin-top: 9%;
+    .info-card {
+        width: 100%;
     }
-
-    .Avatar-Perfil {
-        margin-left: 24%;
-        max-width: 12%;
-    }
-
-    .Notificacion {
-        display: none;
-    }
-
-    .Menu-Icono {
-        margin-left: 28%;
-        max-width: 10%;
-    }
-
-    .Logotipo {
-        max-width: 20%;
-        margin: 0 auto;
-    }
-
-    .sideMenu {
-        right: -180px;
-        width: 180px;
-        height: 100%;
-    }
-
-    .menu-show,
-    .contenidoManual-show,
-    .autorImg-show {
-        max-width: 75%;
-        margin-right: 182px;
-        margin-block-start: auto;
-        margin-bottom: auto;
-    }
-
 }
