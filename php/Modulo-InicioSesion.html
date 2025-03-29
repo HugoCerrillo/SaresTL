@@ -83,6 +83,7 @@
             color: #777;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -132,7 +133,8 @@
                 const data = await response.json();
 
                 if (response.ok && data.status === 'success') {
-                    const success = new GenerateSuccess("Operación realizada con éxito", "https://hugocerrillo.github.io/SaresTL/");
+                    //const success = new GenerateSuccess("Operación realizada con éxito", "https://hugocerrillo.github.io/SaresTL/");
+                    generateSuccess("Inicio exitoso", "https://hugocerrillo.github.io/SaresTL/");
                     //alert('Login exitoso'); // Mostrar mensaje
                     //window.location.href = 'index.html'; // Redirigir a otra página
                 } else {

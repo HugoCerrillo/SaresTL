@@ -47,3 +47,10 @@ class GenerateError {
         });
     }
 }
+
+function generateSuccess(text, location) {
+    new GenerateSuccess(text, location);
+}
+function generateError(text, location) {
+    new GenerateError(text, location);
+}
