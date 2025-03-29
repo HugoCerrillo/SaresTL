@@ -83,7 +83,8 @@
         const user = sessionStorage.getItem('user'); // Asegúrate de que este valor se haya guardado al iniciar sesión
 
         //URL de la API para obtener el nombre del usuario
-        const apiUrl = 'https://hugoc.pythonanywhere.com/api/usertype/';
+        const apiUrl = `https://hugoc.pythonanywhere.com/api/usertype?user=${user}`;
+        
 
         
         try {
