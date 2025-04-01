@@ -67,7 +67,8 @@
 
             if (!user) {
                 alert('No has iniciado sesión. Redirigiendo al login...');
-                window.location.href = 'https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html';
+                //window.location.href = 'https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html';
+                window.location.href = "../html/Modulo-InicioSesion.html";
                 return;
             }else{
                 alert('Bienvenido al sistema SaresTL: ' + user);
@@ -90,7 +91,8 @@
             } catch (error) {
                 console.error('Error en la solicitud:', error);
                 alert('Hubo un problema al conectar con el servidor. Intenta nuevamente.', error);
-                window.location.href = 'https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html';
+                //window.location.href = 'https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html';
+                window.location.href = "../html/Modulo-InicioSesion.html";
             }
         }
 
