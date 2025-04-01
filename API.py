@@ -184,6 +184,51 @@ def usertype():
             "status": "error",
             "message": f"Error inesperado: {str(e)}"
         }), 500
+    
+
+
+@app.route("/api/userPicture", methods=["POST"])
+def userPicture():
+    # Obtener los datos enviados en el cuerpo de la solicitud
+    data = request.get_json()
+    user = data.get("user")
+
+    # Validar parámetro
+    if not user or not str(user).strip():
+        return jsonify({"status": "error", "message": "El parámetro 'user' es obligatorio y debe ser válido"}), 400
+
+    try:
+        # Manejar la conexión y el cursor usando "with"
+        with get_db_connection() as conn:
+            with conn.cursor(dictionary=True) as cursor:
+                # Consulta para obtener el tipo de usuario
+                cursor.execute("""
+                    SELECT fotoPerfil FROM Perfil WHERE idUsuario = %s
+                """, (user,))
+                user_profile = cursor.fetchone()
+
+                # Validar si el usuario fue encontrado
+                if user_profile:
+                    return jsonify({
+                        "status": "success",
+                        "message": "Tipo de usuario encontrado",
+                        "userPicture": str(user_profile["fotoPerfil"]).strip()                       
+                    }), 200
+                else:
+                    return jsonify({"status": "error", "message": "Usuario no encontrado"}), 404
+
+    except mysql.connector.Error as e:
+        return jsonify({
+            "status": "error",
+            "message": f"Error en la base de datos: {str(e)}"
+        }), 500
+
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": f"Error inesperado: {str(e)}"
+        }), 500
+
 
 if __name__ == "__main__":
     app.run()

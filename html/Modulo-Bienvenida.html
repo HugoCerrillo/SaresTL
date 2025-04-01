@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,11 +18,11 @@
             <img src="../img/sares.jpeg" alt="SARES Logo">
         </div>
         <div class="user-profile" onclick="toggleMenu()">
-            <img src="" alt="Foto de Perfil">
+            <img src="" alt="Foto de Perfil" id="profileImage">
             <span class="menu-icon"><img src="../img/list.svg"></span>
         </div>
         <div class="menu-dropdown" id="menuDropdown">
-            <ul>
+            <ul id="menuList">
                 <!-- Contenido dinámico del menú -->
             </ul>
         </div>
@@ -30,8 +31,8 @@
     <div class="container">
         <div class="welcome-text">
             <h1 id="bienvenida"> </h1>
-            <p>Eres un: en TECNM Campus León Campus 1</p>
-            <p>Con rol en nuestro sistema de: </p>
+            <p id="typeP">Eres un: en TECNM Campus León Campus 1</p>
+            <p id="rolP">Con rol en nuestro sistema de: </p>
         </div>
         <div class="action-buttons">
             <button>Ver Perfil</button>
@@ -70,13 +71,9 @@
                 //window.location.href = 'https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html';
                 window.location.href = "../html/Modulo-InicioSesion.html";
                 return;
-            }else{
-                alert('Bienvenido al sistema SaresTL: ' + user);
             }
 
             const apiUrl = 'https://hugoc.pythonanywhere.com/api/usertype';
-
-            console.log(`URL solicitada: ${apiUrl}`); // Depuración: mostrar la URL
 
             try {
                 const response = await fetch(apiUrl, {
@@ -84,10 +81,52 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ user}),
+                    body: JSON.stringify({ user }),
                 });
 
                 const data = await response.json();
+                if (response.ok && data.status == "success") {
+                    const userRoleNumber = data.userRole ?? null ?? '';
+                    const userName = data.userName ?? null ?? '';
+                    switch (userRoleNumber) {
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            //alert("Eres un administrador: " + userName)
+                            try {
+                                const apiUrlPicture = 'https://hugoc.pythonanywhere.com/api/userPicture';
+                                const responsePicture = await fetch(apiUrlPicture, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({ user }),
+                                });
+                                const dataPicture = await responsePicture.json();
+                                if (responsePicture.ok && dataPicture.status == "success") {
+                                    const userPicture = dataPicture.userPicture ?? null ?? '';
+
+                                    // Actualizar la imagen de perfil
+                                    //const profileImage = document.querySelector('.user-profile img');
+                                    profileImage.src = userPicture;
+                                } else {
+                                    console.error('Error al obtener la imagen de perfil:', dataPicture.message);
+                                }
+
+                            } catch (errorP) {
+                                console.error('Error en la solicitud:', errorP);
+                                alert('Hubo un problema al conectar con el servidor. Intenta nuevamente.', errorP);
+                            }
+                            bienvenida.innerHTML = 'Bienvenido (a): ' + userName;
+                            typeP.innerHTML = 'Eres un: Administrador en TECNM Campus León Campus 1';
+                            rolP.innerHTML = 'Con rol en nuestro sistema de: Administrador';
+                            generarMenu('Administrador');
+
+                            break;
+                    }
+                }
             } catch (error) {
                 console.error('Error en la solicitud:', error);
                 alert('Hubo un problema al conectar con el servidor. Intenta nuevamente.', error);
@@ -99,28 +138,33 @@
         // Función para generar el menú dinámico según el rol del usuario
         function generarMenu(userRole) {
             const menuDropdown = document.getElementById('menuDropdown');
-            const menuList = menuDropdown.querySelector('ul');
+            //const menuList = menuDropdown.querySelector('ul');
 
             // Generar contenido según el rol del usuario
             if (userRole === 'Administrador') {
                 menuList.innerHTML = `
-                    <li><a href="#">Panel Principal</a></li>
+                    <li><a href="../html/Modulo-Bienvenida.html">Panel Principal</a></li>
                     <li><a href="#">Gestionar Usuarios</a></li>
                     <li><a href="#">Reportes</a></li>
-                    <li><a href="#">Salir</a></li>
+                    <li><a href="../html/Modulo-InicioSesion.html" onclick="logOut()">Salir</a></li>
                 `;
             } else {
                 menuList.innerHTML = `
                     <li><a href="#">Inicio</a></li>
                     <li><a href="#">Perfil</a></li>
                     <li><a href="#">Ayuda</a></li>
-                    <li><a href="#">Cerrar Sesión</a></li>
+                    <li><a onclick="logOut()">Cerrar Sesión</a></li>
                 `;
             }
+        }
+        function logOut() {
+            // Limpiar el sessionStorage y redirigir al inicio de sesión
+            sessionStorage.clear();
         }
 
         // Llamar a la función al cargar la página
         obtenerDatosUsuario();
     </script>
 </body>
+
 </html>
