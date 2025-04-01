@@ -69,6 +69,8 @@
                 alert('No has iniciado sesión. Redirigiendo al login...');
                 window.location.href = 'https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html';
                 return;
+            }else{
+                alert('Bienvenido al sistema SaresTL: ' + user);
             }
 
             const apiUrl = 'https://hugoc.pythonanywhere.com/api/usertype';
