@@ -85,30 +85,6 @@
                 });
 
                 const data = await response.json();
-
-                if (response.ok && data.status === "success") {
-                    const userRole = data.userType.idRol; // Asegúrate de que la API devuelve "userType"
-                    const userName = data.userType.nombreR; // Asegúrate de que la API devuelve el "nombreR"
-
-                    // Guardar los datos en sessionStorage
-                    sessionStorage.setItem('userRole', userRole);
-                    sessionStorage.setItem('userName', userName);
-
-                    // Actualizar el texto de bienvenida
-                    const contenedor = document.getElementById('bienvenida');
-                    if (contenedor) {
-                        contenedor.innerHTML = `Bienvenido, ${userName}`; // Usar plantilla literal
-                    } else {
-                        console.error('El contenedor no existe en el DOM.');
-                    }
-
-                    // Llamar a la función para generar el menú dinámico según el rol
-                    generarMenu(userRole);
-                } else {
-                    console.error('Error en la respuesta de la API:', data.message || 'Sin mensaje');
-                    alert('No se pudo cargar la información del usuario. Verifica tu conexión.');
-                    window.location.href = 'https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html';
-                }
             } catch (error) {
                 console.error('Error en la solicitud:', error);
                 alert('Hubo un problema al conectar con el servidor. Intenta nuevamente más tarde.', error);
