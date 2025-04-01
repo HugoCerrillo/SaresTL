@@ -57,24 +57,36 @@ def login():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
-@app.route("/api/register", methods=["POST"])
-def register():
+@app.route("/api/registerStudent", methods=["POST"])
+def registerStudent():
     # Obtener los datos enviados en la solicitud
     data = request.get_json()
 
     # Extraer los parámetros necesarios
     name = data.get("name")
     email = data.get("email")
-    department = data.get("department")
+    career = data.get("career")
+    semester = data.get("semester")
     phoneNumber = data.get("phoneNumber")
     gender = data.get("gender")
     dateOfBirth = data.get("dateOfBirth")
     user = data.get("user")
     password = data.get("password")
-    userType = data.get("userType")
 
     # Validación básica: asegurar que no falten parámetros
-    if not all([name, email, department, phoneNumber, gender, dateOfBirth, user, password, userType]):
+    if not all(
+        [
+            name,
+            email,
+            career,
+            semester,
+            phoneNumber,
+            gender,
+            dateOfBirth,
+            user,
+            password,
+        ]
+    ):
         return jsonify({"status": "error", "message": "Faltan parámetros"}), 400
 
     try:
@@ -87,9 +99,7 @@ def register():
         existing_user = cursor.fetchone()
         if existing_user:
             return jsonify({"status": "error", "message": "El usuario ya existe"}), 409
-
-        # Insertar nuevo usuario en la base de datos
-        rol = 3 if userType == 'Administrador' else 2  # Rol predeterminado según el tipo de usuario
+        rol = 1
         cursor.execute(
             """
             INSERT INTO UsuarioR (idUsuarioR, contraseñaR, nombreR, correoR, telefonoR, generoR, fechaNacimientoR, idRol)
@@ -101,27 +111,30 @@ def register():
         # Obtener el ID del usuario insertado
         idUsuarioR = cursor.lastrowid
 
-        # Realizar las inserciones adicionales si es Administrador
-        if userType == 'Administrador':
-            cursor.execute(
-                "INSERT INTO DocenteAdmin (departamento, idUsD) VALUES (%s, %s)",
-                (department, idUsuarioR),
-            )
-            cursor.execute(
-                "INSERT INTO es (idUsuario, clave) VALUES (%s, %s)",
-                (user, user),
-            )
+        cursor.execute(
+            "INSERT INTO Alumno (carrera, semestre, idUsA) VALUES (%s, %s)",
+            (career, semester, idUsuarioR),
+        )
+        cursor.execute(
+            "INSERT INTO es (idUsuario, clave) VALUES (%s, %s)",
+            (user, user),
+        )
 
-            route = "../profile_pics/perfil.png"
-            cursor.execute(
-                "INSERT INTO Perfil (fotoPerfil, idUsuario) VALUES (%s, %s)",
-                (route, user),
-            )
+        route = "../profile_pics/perfil.png"
+        cursor.execute(
+            "INSERT INTO Perfil (fotoPerfil, idUsuario) VALUES (%s, %s)",
+            (route, user),
+        )
 
         # Confirmar los cambios en la base de datos
         conn.commit()
 
-        return jsonify({"status": "success", "message": "Usuario registrado exitosamente"}), 201
+        return (
+            jsonify(
+                {"status": "success", "message": "Usuario registrado exitosamente"}
+            ),
+            201,
+        )
 
     except mysql.connector.Error as e:
         # Log del error en la base de datos
@@ -131,7 +144,122 @@ def register():
     except Exception as e:
         # Log de errores generales
         app.logger.error(f"Error inesperado: {e}")
-        return jsonify({"status": "error", "message": "Error interno del servidor"}), 500
+        return (
+            jsonify({"status": "error", "message": "Error interno del servidor"}),
+            500,
+        )
+
+    finally:
+        # Cerrar conexión y cursor (asegurarse de que siempre se cierren)
+        try:
+            cursor.close()
+            conn.close()
+        except:
+            pass
+
+
+@app.route("/api/registerMember", methods=["POST"])
+def registerMember():
+    # Obtener los datos enviados en la solicitud
+    data = request.get_json()
+
+    # Extraer los parámetros necesarios
+    name = data.get("name")
+    email = data.get("email")
+    department = data.get("department")    
+    phoneNumber = data.get("phoneNumber")
+    gender = data.get("gender")
+    dateOfBirth = data.get("dateOfBirth")
+    user = data.get("user")
+    password = data.get("password")
+    userType = data.get("userType")
+
+    # Validación básica: asegurar que no falten parámetros
+    if not all(
+        [
+            name,
+            email,
+            department,
+            phoneNumber,
+            gender,
+            dateOfBirth,
+            user,
+            password,
+            userType
+        ]
+    ):
+        return jsonify({"status": "error", "message": "Faltan parámetros"}), 400
+
+    try:
+        # Conectar a la base de datos
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        if (userType == "Docente"):
+            rol = 2
+        elif (userType == "Administrador"):
+            rol = 3
+        elif (userType == "Administrativo"):
+            rol = 4
+        elif (userType == "Guardia"):
+            rol = 5
+        elif (userType == "Intendente"):
+            rol = 6
+        else:
+            rol =0
+        
+        # Verificar si el usuario ya existe
+        cursor.execute("SELECT idUsuarioR FROM UsuarioR WHERE idUsuarioR = %s", (user,))
+        existing_user = cursor.fetchone()
+        if existing_user:
+            return jsonify({"status": "error", "message": "El usuario ya existe"}), 409        
+        cursor.execute(
+            """
+            INSERT INTO UsuarioR (idUsuarioR, contraseñaR, nombreR, correoR, telefonoR, generoR, fechaNacimientoR, idRol)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """,
+            (user, password, name, email, phoneNumber, gender, dateOfBirth, rol),
+        )
+
+        # Obtener el ID del usuario insertado
+        idUsuarioR = cursor.lastrowid
+
+        cursor.execute(
+            "INSERT INTO DocenteAdmin (departamento, idUsD) VALUES (%s, %s)",
+            (department, idUsuarioR),
+        )
+        cursor.execute(
+            "INSERT INTO es (idUsuario, clave) VALUES (%s, %s)",
+            (user, user),
+        )
+
+        route = "../profile_pics/perfil.png"
+        cursor.execute(
+            "INSERT INTO Perfil (fotoPerfil, idUsuario) VALUES (%s, %s)",
+            (route, user),
+        )
+
+        # Confirmar los cambios en la base de datos
+        conn.commit()
+
+        return (
+            jsonify(
+                {"status": "success", "message": "Usuario registrado exitosamente"}
+            ),
+            201,
+        )
+
+    except mysql.connector.Error as e:
+        # Log del error en la base de datos
+        app.logger.error(f"Error en MySQL: {e}")
+        return jsonify({"status": "error", "message": "Error en la base de datos"}), 500
+
+    except Exception as e:
+        # Log de errores generales
+        app.logger.error(f"Error inesperado: {e}")
+        return (
+            jsonify({"status": "error", "message": "Error interno del servidor"}),
+            500,
+        )
 
     finally:
         # Cerrar conexión y cursor (asegurarse de que siempre se cierren)
@@ -150,41 +278,63 @@ def usertype():
 
     # Validar parámetro
     if not user or not str(user).strip():
-        return jsonify({"status": "error", "message": "El parámetro 'user' es obligatorio y debe ser válido"}), 400
+        return (
+            jsonify(
+                {
+                    "status": "error",
+                    "message": "El parámetro 'user' es obligatorio y debe ser válido",
+                }
+            ),
+            400,
+        )
 
     try:
         # Manejar la conexión y el cursor usando "with"
         with get_db_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:
                 # Consulta para obtener el tipo de usuario
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT nombreR, idRol FROM UsuarioR WHERE idUsuarioR = %s
-                """, (user,))
+                """,
+                    (user,),
+                )
                 user_type = cursor.fetchone()
 
                 # Validar si el usuario fue encontrado
                 if user_type:
-                    return jsonify({
-                        "status": "success",
-                        "message": "Tipo de usuario encontrado",
-                        "userName": str(user_type["nombreR"]).strip(),
-                        "userRole": user_type["idRol"]
-                    }), 200
+                    return (
+                        jsonify(
+                            {
+                                "status": "success",
+                                "message": "Tipo de usuario encontrado",
+                                "userName": str(user_type["nombreR"]).strip(),
+                                "userRole": user_type["idRol"],
+                            }
+                        ),
+                        200,
+                    )
                 else:
-                    return jsonify({"status": "error", "message": "Usuario no encontrado"}), 404
+                    return (
+                        jsonify(
+                            {"status": "error", "message": "Usuario no encontrado"}
+                        ),
+                        404,
+                    )
 
     except mysql.connector.Error as e:
-        return jsonify({
-            "status": "error",
-            "message": f"Error en la base de datos: {str(e)}"
-        }), 500
+        return (
+            jsonify(
+                {"status": "error", "message": f"Error en la base de datos: {str(e)}"}
+            ),
+            500,
+        )
 
     except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": f"Error inesperado: {str(e)}"
-        }), 500
-    
+        return (
+            jsonify({"status": "error", "message": f"Error inesperado: {str(e)}"}),
+            500,
+        )
 
 
 @app.route("/api/userPicture", methods=["POST"])
@@ -195,39 +345,62 @@ def userPicture():
 
     # Validar parámetro
     if not user or not str(user).strip():
-        return jsonify({"status": "error", "message": "El parámetro 'user' es obligatorio y debe ser válido"}), 400
+        return (
+            jsonify(
+                {
+                    "status": "error",
+                    "message": "El parámetro 'user' es obligatorio y debe ser válido",
+                }
+            ),
+            400,
+        )
 
     try:
         # Manejar la conexión y el cursor usando "with"
         with get_db_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:
                 # Consulta para obtener el tipo de usuario
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT fotoPerfil FROM Perfil WHERE idUsuario = %s
-                """, (user,))
+                """,
+                    (user,),
+                )
                 user_profile = cursor.fetchone()
 
                 # Validar si el usuario fue encontrado
                 if user_profile:
-                    return jsonify({
-                        "status": "success",
-                        "message": "Tipo de usuario encontrado",
-                        "userPicture": str(user_profile["fotoPerfil"]).strip()                       
-                    }), 200
+                    return (
+                        jsonify(
+                            {
+                                "status": "success",
+                                "message": "Tipo de usuario encontrado",
+                                "userPicture": str(user_profile["fotoPerfil"]).strip(),
+                            }
+                        ),
+                        200,
+                    )
                 else:
-                    return jsonify({"status": "error", "message": "Usuario no encontrado"}), 404
+                    return (
+                        jsonify(
+                            {"status": "error", "message": "Usuario no encontrado"}
+                        ),
+                        404,
+                    )
 
     except mysql.connector.Error as e:
-        return jsonify({
-            "status": "error",
-            "message": f"Error en la base de datos: {str(e)}"
-        }), 500
+        return (
+            jsonify(
+                {"status": "error", "message": f"Error en la base de datos: {str(e)}"}
+            ),
+            500,
+        )
 
     except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": f"Error inesperado: {str(e)}"
-        }), 500
+        return (
+            jsonify({"status": "error", "message": f"Error inesperado: {str(e)}"}),
+            500,
+        )
 
 
 if __name__ == "__main__":
