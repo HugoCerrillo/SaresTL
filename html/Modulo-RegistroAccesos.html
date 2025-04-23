@@ -1,340 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Entrada y Salida</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-        
-        body {
-            background-color: #f5f5f5;
-        }
-        
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .logos {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .logo {
-            height: 40px;
-            width: auto;
-        }
-        
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        
-        .user-icon {
-            width: 35px;
-            height: 35px;
-            background-color: #ccc;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-        
-        .menu-icon {
-            font-size: 24px;
-            cursor: pointer;
-        }
-        
-        .main-content {
-            background: linear-gradient(135deg, #4e8cff 0%, #3a7bd5 100%);
-            min-height: calc(100vh - 60px);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-        
-        .title {
-            font-size: 28px;
-            color: white;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-        
-        .datetime-container {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-            margin-bottom: 30px;
-        }
-        
-        .date-box, .time-box {
-            text-align: left;
-            color: white;
-        }
-        
-        .date-box h3, .time-box h3 {
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-        
-        .date-value, .time-value {
-            font-size: 32px;
-            font-weight: bold;
-        }
-        
-        .input-section {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-            width: 100%;
-            max-width: 500px;
-        }
-        
-        .input-container {
-            margin-bottom: 15px;
-        }
-        
-        .input-field {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-        
-        .select-container {
-            margin-bottom: 15px;
-        }
-        
-        .select-field {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            background-color: white;
-        }
-        
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            font-weight: bold;
-        }
-        
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: #0069d9;
-        }
-        
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-            margin-left: 10px;
-        }
-        
-        .btn-secondary:hover {
-            background-color: #5a6268;
-        }
-        
-        .scanner-section {
-            margin-top: 30px;
-            width: 100%;
-            max-width: 500px;
-        }
-        
-        .scanner-title {
-            color: white;
-            font-size: 18px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .scanner-title svg {
-            margin-right: 10px;
-        }
-        
-        .scanner-container {
-            position: relative;
-            width: 100%;
-            height: 0;
-            padding-bottom: 75%;
-            overflow: hidden;
-            border-radius: 10px;
-            background-color: #333;
-            margin-bottom: 15px;
-        }
-        
-        #scanner-video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .scanner-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-        }
-        
-        .scanner-message {
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-        
-        .scanner-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .footer {
-            margin-top: auto;
-            width: 100%;
-            padding: 15px;
-            background-color: rgba(0, 0, 0, 0.1);
-            color: white;
-            text-align: center;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .footer-logo {
-            height: 40px;
-            width: auto;
-        }
-        
-        .tab-container {
-            display: flex;
-            margin-bottom: 20px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        
-        .tab {
-            flex: 1;
-            padding: 12px;
-            text-align: center;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .tab.active {
-            background-color: rgba(255, 255, 255, 0.2);
-            font-weight: bold;
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .last-scan {
-            margin-top: 20px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 15px;
-            color: white;
-        }
-        
-        .last-scan h3 {
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-        
-        .last-scan-info {
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .last-scan-item {
-            text-align: left;
-        }
-        
-        .last-scan-label {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-        
-        .last-scan-value {
-            font-size: 16px;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="shortcut icon" href="../img/sares.jpeg" type="image/x-icon">
+    <link rel="stylesheet" href="../css/Modulo-RegistroAccesos.css">
+    <link rel="stylesheet" href="../css/genericDesign.css">
+    <title>Registro Accesos</title>
 </head>
+
 <body>
-    <!-- Barra de navegación (no la modificamos) -->
-    <nav class="navbar">
+    <div class="header">
         <div class="logos">
-            <img src="/placeholder.svg?height=40&width=80" alt="Logo SEP" class="logo">
-            <img src="/placeholder.svg?height=40&width=80" alt="Logo TECNM" class="logo">
-            <img src="/placeholder.svg?height=40&width=40" alt="Logo ITL" class="logo">
+            <img src="../img/sep.png" alt="Logo SEP">
+            <img src="../img/tecnm.jpg" alt="TECNM Logo">
+            <img src="../img/tec.png" alt="ITL Logo">
+            <img src="../img/sares.jpeg" alt="SARES Logo">
         </div>
-        <div class="nav-right">
-            <div class="user-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-            </div>
-            <div class="menu-icon">☰</div>
+        <div class="user-profile" onclick="toggleMenu()">
+            <img src="" alt="Foto de Perfil" id="profileImage">
+            <span class="menu-icon"><img src="../img/list.svg"></span>
         </div>
-    </nav>
-    
-    <!-- Contenido principal (área azul) -->
+        <div class="menu-dropdown" id="menuDropdown">
+            <ul id="menuList">
+                <!-- Contenido dinámico del menú -->
+            </ul>
+        </div>
+    </div>
+
+
     <div class="main-content">
         <div class="container">
             <h1 class="title">Registro de entrada y salida</h1>
-            
+
             <!-- Fecha y hora actual -->
             <div class="datetime-container">
                 <div class="date-box">
@@ -346,13 +45,13 @@
                     <div class="time-value" id="current-time"></div>
                 </div>
             </div>
-            
+
             <!-- Pestañas para elegir método de registro -->
             <div class="tab-container">
                 <div class="tab active" data-tab="manual">Registro Manual</div>
                 <div class="tab" data-tab="scanner">Escanear Código</div>
             </div>
-            
+
             <!-- Contenido de la pestaña de registro manual -->
             <div class="tab-content active" id="manual-tab">
                 <div class="input-section">
@@ -368,12 +67,13 @@
                     <button class="btn btn-primary" id="register-btn">Registrar</button>
                 </div>
             </div>
-            
+
             <!-- Contenido de la pestaña de escáner -->
             <div class="tab-content" id="scanner-tab">
                 <div class="scanner-section">
                     <div class="scanner-title">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
                             <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
                             <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
@@ -398,12 +98,13 @@
                         </select>
                     </div>
                     <div class="input-container">
-                        <input type="text" class="input-field" placeholder="Código escaneado..." id="scanner-result" readonly>
+                        <input type="text" class="input-field" placeholder="Código escaneado..." id="scanner-result"
+                            readonly>
                     </div>
                     <button class="btn btn-primary" id="register-scan-btn">Registrar</button>
                 </div>
             </div>
-            
+
             <!-- Último registro -->
             <div class="last-scan">
                 <h3>Último Registro</h3>
@@ -424,33 +125,38 @@
             </div>
         </div>
     </div>
+
+
+    <div class="footer">© Sares TL, 2024</div>
     
+    
+    <!-- main script for the functionality-->
     <script>
         // Función para actualizar la fecha y hora
         function updateDateTime() {
             const now = new Date();
-            
+
             // Formatear fecha (DD/MM/YYYY)
             const day = String(now.getDate()).padStart(2, '0');
             const month = String(now.getMonth() + 1).padStart(2, '0');
             const year = now.getFullYear();
             const dateStr = `${day}/${month}/${year}`;
-            
+
             // Formatear hora (HH:MM:SS)
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
             const timeStr = `${hours}:${minutes}:${seconds}`;
-            
+
             // Actualizar elementos en el DOM
             document.getElementById('current-date').textContent = dateStr;
             document.getElementById('current-time').textContent = timeStr;
         }
-        
+
         // Actualizar fecha y hora cada segundo
         updateDateTime();
         setInterval(updateDateTime, 1000);
-        
+
         // Cambio de pestañas
         const tabs = document.querySelectorAll('.tab');
         tabs.forEach(tab => {
@@ -459,68 +165,68 @@
                 tabs.forEach(t => t.classList.remove('active'));
                 // Añadir clase active a la pestaña clickeada
                 tab.classList.add('active');
-                
+
                 // Ocultar todos los contenidos de pestañas
                 document.querySelectorAll('.tab-content').forEach(content => {
                     content.classList.remove('active');
                 });
-                
+
                 // Mostrar el contenido de la pestaña seleccionada
                 const tabId = tab.getAttribute('data-tab');
                 document.getElementById(`${tabId}-tab`).classList.add('active');
-                
+
                 // Si se selecciona la pestaña de escáner, detener la cámara
                 if (tabId !== 'scanner' && window.scanner) {
                     stopScanner();
                 }
             });
         });
-        
+
         // Variables para el escáner
         let scanner = null;
         let videoStream = null;
-        
+
         // Iniciar el escáner de código de barras
         document.getElementById('start-scanner').addEventListener('click', startScanner);
-        
+
         async function startScanner() {
             try {
                 // Acceder a la cámara
-                videoStream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: "environment" } 
+                videoStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" }
                 });
-                
+
                 const video = document.getElementById('scanner-video');
                 video.srcObject = videoStream;
-                
+
                 // Ocultar overlay cuando la cámara está activa
                 document.getElementById('scanner-overlay').style.display = 'none';
-                
+
                 // Configurar el escáner de código de barras
                 // Nota: Aquí normalmente usaríamos una biblioteca como QuaggaJS o ZXing
                 // Para este ejemplo, simularemos la detección
-                
+
                 // Simulación de escaneo (cada 3 segundos genera un código aleatorio)
                 scanner = setInterval(() => {
                     const randomCode = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
                     document.getElementById('scanner-result').value = randomCode;
-                    
+
                     // Opcional: Notificar al usuario que se detectó un código
                     alert(`Código detectado: ${randomCode}`);
                 }, 10000); // Simula detección cada 10 segundos
-                
+
             } catch (error) {
                 console.error('Error al acceder a la cámara:', error);
                 alert('No se pudo acceder a la cámara. Verifique los permisos.');
             }
         }
-        
+
         function stopScanner() {
             if (scanner) {
                 clearInterval(scanner);
                 scanner = null;
             }
-            
+
             if (videoStream) {
                 videoStream.getTracks().forEach(track => track.stop());
                 videoStream = null;
@@ -528,57 +234,57 @@
                 document.getElementById('scanner-overlay').style.display = 'flex';
             }
         }
-        
+
         // Registrar entrada/salida manual
         document.getElementById('register-btn').addEventListener('click', () => {
             const code = document.getElementById('manual-input').value;
             const type = document.getElementById('entry-type').value;
-            
+
             if (!code) {
                 alert('Por favor ingrese una clave');
                 return;
             }
-            
+
             registerEntry(code, type);
         });
-        
+
         // Registrar entrada/salida por escáner
         document.getElementById('register-scan-btn').addEventListener('click', () => {
             const code = document.getElementById('scanner-result').value;
             const type = document.getElementById('scanner-entry-type').value;
-            
+
             if (!code) {
                 alert('No se ha escaneado ningún código');
                 return;
             }
-            
+
             registerEntry(code, type);
         });
-        
+
         // Función para registrar entrada/salida
         function registerEntry(code, type) {
             // Aquí normalmente enviarías los datos al servidor
             // Para este ejemplo, solo actualizaremos la UI
-            
+
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
             const timeStr = `${hours}:${minutes}:${seconds}`;
-            
+
             // Actualizar último registro
             document.getElementById('last-code').textContent = code;
             document.getElementById('last-type').textContent = type.charAt(0).toUpperCase() + type.slice(1);
             document.getElementById('last-time').textContent = timeStr;
-            
+
             // Limpiar campos
             document.getElementById('manual-input').value = '';
             document.getElementById('scanner-result').value = '';
-            
+
             // Mostrar mensaje de éxito
             alert(`Registro de ${type} exitoso para la clave: ${code}`);
         }
-        
+
         // Limpiar recursos al cerrar la página
         window.addEventListener('beforeunload', () => {
             if (scanner) {
@@ -587,4 +293,5 @@
         });
     </script>
 </body>
+
 </html>

@@ -1,0 +1,92 @@
+/* Starts CSS code base */ 
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #6ba1ff, #b3d1ff);
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 10px 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.header .logos {
+    display: flex;
+    align-items: center;
+}
+
+.header .logos img {
+    max-width: 50px;
+    margin-right: 10px;
+}
+
+.header .user-profile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.header .user-profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.header .menu-icon {
+    font-size: 24px;
+}
+
+/* Menú desplegable */
+.menu-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 20px;
+    background: #3478b3; /* Fondo azul */
+    color: white;
+    width: 200px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    z-index: 1;
+}
+
+.menu-dropdown.open {
+    display: flex;
+}
+
+.menu-dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-dropdown ul li {
+    padding: 10px;
+    border-bottom: 1px solid #1f4a71;
+    cursor: pointer;
+}
+
+.menu-dropdown ul li:hover {
+    background: #295a83;
+}
+
+.menu-dropdown ul li:last-child {
+    border: none;
+}
+
+.footer {
+    text-align: center;
+    padding: 10px 20px;
+    color: #777;
+    font-size: 0.9em;
+}
+/*Ends CSS code base  */
