@@ -1,0 +1,361 @@
+.main-content {
+    min-height: calc(100vh - 122px);
+    padding: 20px;
+}
+
+.user-role {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 8px 15px;
+    border-radius: 5px;
+    color: white;
+    font-weight: 500;
+    display: inline-block;
+    margin-bottom: 15px;
+    backdrop-filter: blur(5px);
+}
+
+.page-title {
+    text-align: center;
+    background-color: rgba(78, 140, 255, 0.2);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    backdrop-filter: blur(5px);
+}
+
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: #2e7d32;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #1b5e20;
+}
+
+.btn-edit {
+    background-color: #ffc107;
+    color: #333;
+    font-size: 12px;
+    padding: 6px 12px;
+}
+
+.btn-edit:hover {
+    background-color: #ffb300;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 5px;
+    padding: 5px 10px;
+    width: 250px;
+}
+
+.search-container input {
+    border: none;
+    outline: none;
+    padding: 5px;
+    width: 100%;
+}
+
+.search-icon {
+    color: #666;
+    margin-right: 5px;
+}
+
+.table-container {
+    background-color: white;
+    border-radius: 8px;
+    overflow-x: auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1000px;
+}
+
+.data-table th {
+    background-color: #f5f5f5;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+    white-space: nowrap;
+}
+
+.data-table th.sortable {
+    cursor: pointer;
+}
+
+.data-table th.sortable::after {
+    content: '↕';
+    position: absolute;
+    right: 10px;
+    color: #999;
+}
+
+.data-table td {
+    padding: 12px 15px;
+    color: #333;
+    white-space: nowrap;
+}
+
+.data-table tbody tr {
+    border-bottom: 1px solid #eee;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge-danger {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.pagination {
+    display: flex;
+    justify-content: end;
+    padding: 15px;
+    background-color: #f5f5f5;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.pagination-info {
+    color: #666;
+    font-size: 13px;
+    margin-right: auto;
+}
+
+.pagination-btn {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd;
+    background-color: white;
+    cursor: pointer;
+    margin: 0 2px;
+    transition: all 0.2s;
+}
+
+.pagination-btn:hover {
+    background-color: #f5f5f5;
+}
+
+.pagination-btn.active {
+    background-color: #4e8cff;
+    color: white;
+    border-color: #4e8cff;
+}
+
+/* Modal styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.3s;
+}
+
+.modal-overlay.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+.modal {
+    background-color: white;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    flex: 1;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-control:focus {
+    border-color: #4e8cff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(78, 140, 255, 0.2);
+}
+
+.modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-secondary {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+    background-color: #e5e5e5;
+}
+
+.btn-save {
+    background-color: #4e8cff;
+    color: white;
+}
+
+.btn-save:hover {
+    background-color: #3a7bd5;
+}
+
+/* Responsive design */
+@media (max-width: 992px) {
+    .form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 8px;
+    }
+
+    .data-table {
+        min-width: 1000px;
+        width: 100%;
+    }
+
+    .data-table th,
+    .data-table td {
+        white-space: nowrap;
+    }
+}
+
+/* Entries per page dropdown */
+.entries-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #333;
+    font-size: 14px;
+}
+
+.entries-dropdown {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Gender options */
+.gender-option {
+    margin-right: 10px;
+}
+
+/* Required fields */
+.required::after {
+    content: ' *';
+    color: #e53935;
+}

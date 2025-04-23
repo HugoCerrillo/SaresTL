@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../img/sares.jpeg" type="image/x-icon">
+    <link rel="stylesheet" href="../css/genericDesign.css">
+    <link rel="stylesheet" href="../css/Modulo-RegistrarNuevoMiembro.css">
+    <title>Edicion Miembros</title>
+</head>
+
+<body>
+    <div class="header">
+        <div class="logos">
+            <img src="../img/sep.png" alt="Logo SEP">
+            <img src="../img/tecnm.jpg" alt="TECNM Logo">
+            <img src="../img/tec.png" alt="ITL Logo">
+            <img src="../img/sares.jpeg" alt="SARES Logo">
+        </div>
+        <div class="user-profile" onclick="toggleMenu()">
+            <img src="" alt="Foto de Perfil" id="profileImage">
+            <span class="menu-icon"><img src="../img/list.svg"></span>
+        </div>
+        <div class="menu-dropdown" id="menuDropdown">
+            <ul id="menuList">
+                <!-- Contenido dinámico del menú -->
+            </ul>
+        </div>
+    </div>
+
+    <!--main content-->    
+    <div class="main-content">
+        <div class="user-role">Administrador de sistema</div>
+        <div class="page-title">Registrar Nuevo Miembro</div>
+
+        <div class="action-bar">
+            <div class="entries-container">
+                <span>Mostrar</span>
+                <select class="entries-dropdown" id="entries-dropdown">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                <span>entradas por página</span>
+            </div>
+
+            <button class="btn btn-primary" id="new-member-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    style="margin-right: 5px; vertical-align: text-top;">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Registrar Nuevo Miembro
+            </button>
+
+            <div class="search-container">
+                <span class="search-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </span>
+                <input type="text" placeholder="Buscar..." id="search-input">
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table" id="members-table">
+                <thead>
+                    <tr>
+                        <th class="sortable">Clave</th>
+                        <th class="sortable">Nombre</th>
+                        <th class="sortable">Correo</th>
+                        <th class="sortable">Género</th>
+                        <th class="sortable">Tipo</th>
+                        <th class="sortable">Edad</th>
+                        <th class="sortable">Área</th>
+                        <th class="sortable">Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los datos se cargarán dinámicamente con JavaScript -->
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <div class="pagination-info" id="pagination-info">Mostrando 1 a 5 de 5 entradas</div>
+                <button class="pagination-btn" id="prev-page">&lt;</button>
+                <button class="pagination-btn active">1</button>
+                <button class="pagination-btn" id="next-page">&gt;</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">© Sares TL, 2024</div>
+
+    <!-- Modal para añadir/editar miembro -->
+    <div class="modal-overlay" id="member-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Registrar Nuevo Miembro</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="member-form">
+                    <input type="hidden" id="edit-mode" value="false">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="member-clave" class="required">Clave</label>
+                            <input type="text" class="form-control" id="member-clave" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="member-nombre" class="required">Nombre</label>
+                            <input type="text" class="form-control" id="member-nombre" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="member-correo" class="required">Correo</label>
+                            <input type="email" class="form-control" id="member-correo" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Género</label>
+                            <div style="margin-top: 8px;">
+                                <label class="gender-option">
+                                    <input type="radio" name="member-genero" value="Masculino" required> Masculino
+                                </label>
+                                <label class="gender-option">
+                                    <input type="radio" name="member-genero" value="Femenino"> Femenino
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="member-tipo" class="required">Tipo</label>
+                            <select class="form-control" id="member-tipo" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="Administrador">Administrador</option>
+                                <option value="Docente">Docente</option>
+                                <option value="Estudiante">Estudiante</option>
+                                <option value="Guardia">Guardia</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="member-edad" class="required">Edad</label>
+                            <input type="number" class="form-control" id="member-edad" min="18" max="100" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="member-area" class="required">Área</label>
+                            <input type="text" class="form-control" id="member-area" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="member-estado" class="required">Estado</label>
+                            <select class="form-control" id="member-estado" required>
+                                <option value="">Seleccionar estado</option>
+                                <option value="Activo">Activo</option>
+                                <option value="No Activo">No Activo</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-modal-btn">Cancelar</button>
+                <button class="btn btn-save" id="save-member">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo para la tabla
+        let membersData = [
+            { clave: '047', nombre: 'Patricia Castillo', correo: 'patriciamaría.castillo@leon.tecnm.mx', genero: 'Femenino', tipo: 'Docente', edad: 20, area: 'Área de sistemas', estado: 'No Activo' },
+            { clave: '21240200', nombre: 'Navarro Basurto Gabriela del Goretti', correo: '21240200@leon.tecnm.mx', genero: 'Femenino', tipo: 'Guardia', edad: 20, area: 'Entrada principal', estado: 'Activo' },
+            { clave: '21240236', nombre: 'Cerrillo Cano Hugo Emmanuel', correo: 'hugocano85@gmail.com', genero: 'Masculino', tipo: 'Administrador', edad: 20, area: 'Área de Servidor', estado: 'Activo' },
+            { clave: '21240551', nombre: 'Morales Escudero Johari', correo: '21240551@leon.tecnm.mx', genero: 'Femenino', tipo: 'Estudiante', edad: 20, area: 'Ingeniería en Sistemas Computacionales', estado: 'No Activo' },
+            { clave: 'G-1', nombre: 'Guardia', correo: 'g@gmail.com', genero: 'Masculino', tipo: 'Guardia', edad: 40, area: 'Entrada principal', estado: 'Activo' }
+        ];
+
+        // Configuración de la paginación
+        let currentPage = 1;
+        let entriesPerPage = 10;
+        let filteredData = [...membersData];
+
+        // Referencias a elementos DOM
+        const membersTable = document.getElementById('members-table');
+        const paginationInfo = document.getElementById('pagination-info');
+        const searchInput = document.getElementById('search-input');
+        const entriesDropdown = document.getElementById('entries-dropdown');
+        const prevPageBtn = document.getElementById('prev-page');
+        const nextPageBtn = document.getElementById('next-page');
+        const memberModal = document.getElementById('member-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const memberForm = document.getElementById('member-form');
+        const editModeInput = document.getElementById('edit-mode');
+        const newMemberBtn = document.getElementById('new-member-btn');
+
+        // Función para renderizar la tabla
+        function renderTable() {
+            // Calcular índices para la paginación
+            const startIndex = (currentPage - 1) * entriesPerPage;
+            const endIndex = startIndex + entriesPerPage;
+            const paginatedData = filteredData.slice(startIndex, endIndex);
+
+            // Limpiar el cuerpo de la tabla
+            const tableBody = membersTable.querySelector('tbody');
+            tableBody.innerHTML = '';
+
+            // Generar filas de la tabla
+            paginatedData.forEach(member => {
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+                    <td>${member.clave}</td>
+                    <td>${member.nombre}</td>
+                    <td>${member.correo}</td>
+                    <td>${member.genero}</td>
+                    <td>${member.tipo}</td>
+                    <td>${member.edad}</td>
+                    <td>${member.area}</td>
+                    <td>
+                        <span class="badge ${member.estado === 'Activo' ? 'badge-success' : 'badge-danger'}">
+                            ${member.estado}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-edit" data-clave="${member.clave}">Editar</button>
+                    </td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+
+            // Actualizar información de paginación
+            const totalEntries = filteredData.length;
+            const firstEntryIndex = totalEntries === 0 ? 0 : startIndex + 1;
+            const lastEntryIndex = Math.min(startIndex + entriesPerPage, totalEntries);
+
+            paginationInfo.textContent = `Mostrando ${firstEntryIndex} a ${lastEntryIndex} de ${totalEntries} entradas`;
+
+            // Configurar botones de edición
+            document.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const clave = btn.getAttribute('data-clave');
+                    openEditModal(clave);
+                });
+            });
+        }
+
+        // Función para filtrar datos
+        function filterData() {
+            const searchTerm = searchInput.value.toLowerCase();
+
+            filteredData = membersData.filter(member => {
+                return (
+                    member.clave.toLowerCase().includes(searchTerm) ||
+                    member.nombre.toLowerCase().includes(searchTerm) ||
+                    member.correo.toLowerCase().includes(searchTerm) ||
+                    member.tipo.toLowerCase().includes(searchTerm) ||
+                    member.area.toLowerCase().includes(searchTerm)
+                );
+            });
+
+            currentPage = 1; // Reset a la primera página cuando se filtra
+            renderTable();
+        }
+
+        // Función para abrir el modal en modo nuevo miembro
+        function openNewMemberModal() {
+            editModeInput.value = 'false';
+            modalTitle.textContent = 'Registrar Nuevo Miembro';
+            memberForm.reset();
+            memberModal.classList.add('active');
+        }
+
+        // Función para abrir el modal en modo edición
+        function openEditModal(clave) {
+            const member = membersData.find(m => m.clave === clave);
+
+            if (member) {
+                editModeInput.value = 'true';
+                modalTitle.textContent = 'Editar Miembro';
+
+                // Llenar el formulario con los datos del miembro
+                document.getElementById('member-clave').value = member.clave;
+                document.getElementById('member-nombre').value = member.nombre;
+                document.getElementById('member-correo').value = member.correo;
+                document.querySelector(`input[name="member-genero"][value="${member.genero}"]`).checked = true;
+                document.getElementById('member-tipo').value = member.tipo;
+                document.getElementById('member-edad').value = member.edad;
+                document.getElementById('member-area').value = member.area;
+                document.getElementById('member-estado').value = member.estado;
+
+                memberModal.classList.add('active');
+            }
+        }
+
+        // Función para guardar un miembro (nuevo o editado)
+        function saveMember() {
+            // Obtener los valores del formulario
+            const clave = document.getElementById('member-clave').value;
+            const nombre = document.getElementById('member-nombre').value;
+            const correo = document.getElementById('member-correo').value;
+            const genero = document.querySelector('input[name="member-genero"]:checked').value;
+            const tipo = document.getElementById('member-tipo').value;
+            const edad = parseInt(document.getElementById('member-edad').value);
+            const area = document.getElementById('member-area').value;
+            const estado = document.getElementById('member-estado').value;
+
+            // Crear el objeto miembro
+            const member = {
+                clave,
+                nombre,
+                correo,
+                genero,
+                tipo,
+                edad,
+                area,
+                estado
+            };
+
+            // Verificar si es modo edición o nuevo registro
+            const isEditMode = editModeInput.value === 'true';
+
+            if (isEditMode) {
+                // Actualizar miembro existente
+                const index = membersData.findIndex(m => m.clave === clave);
+
+                if (index !== -1) {
+                    membersData[index] = member;
+                }
+            } else {
+                // Verificar si la clave ya existe
+                const exists = membersData.some(m => m.clave === clave);
+
+                if (exists) {
+                    alert('¡Error! Ya existe un miembro con esa clave.');
+                    return;
+                }
+
+                // Agregar nuevo miembro
+                membersData.push(member);
+            }
+
+            // Actualizar datos filtrados y tabla
+            filteredData = [...membersData];
+            if (searchInput.value) {
+                filterData();
+            } else {
+                renderTable();
+            }
+
+            // Cerrar el modal
+            closeModal();
+        }
+
+        // Función para cerrar el modal
+        function closeModal() {
+            memberModal.classList.remove('active');
+            memberForm.reset();
+        }
+
+        // Event listeners
+        // Buscar al escribir
+        searchInput.addEventListener('input', filterData);
+
+        // Cambiar entradas por página
+        entriesDropdown.addEventListener('change', () => {
+            entriesPerPage = parseInt(entriesDropdown.value);
+            currentPage = 1;
+            renderTable();
+        });
+
+        // Botón de página anterior
+        prevPageBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+            }
+        });
+
+        // Botón de página siguiente
+        nextPageBtn.addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredData.length / entriesPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+            }
+        });
+
+        // Botón para abrir modal de nuevo miembro
+        newMemberBtn.addEventListener('click', openNewMemberModal);
+
+        // Botones para cerrar modal
+        document.querySelector('.close-modal').addEventListener('click', closeModal);
+        document.querySelector('.close-modal-btn').addEventListener('click', closeModal);
+
+        // Guardar miembro
+        document.getElementById('save-member').addEventListener('click', (e) => {
+            e.preventDefault();
+
+            // Validar formulario
+            if (memberForm.checkValidity()) {
+                saveMember();
+            } else {
+                alert('Por favor complete todos los campos obligatorios');
+                // Trigger HTML5 validation
+                const submitButton = document.createElement('button');
+                submitButton.style.display = 'none';
+                memberForm.appendChild(submitButton);
+                submitButton.click();
+                memberForm.removeChild(submitButton);
+            }
+        });
+
+        // Ordenar por columna
+        document.querySelectorAll('.data-table th.sortable').forEach(header => {
+            header.addEventListener('click', () => {
+                const columnIndex = Array.from(header.parentNode.children).indexOf(header);
+                const key = getKeyByColumnIndex(columnIndex);
+
+                // Ordenar datos
+                filteredData.sort((a, b) => {
+                    if (a[key] < b[key]) return -1;
+                    if (a[key] > b[key]) return 1;
+                    return 0;
+                });
+
+                renderTable();
+            });
+        });
+
+        // Función auxiliar para obtener la clave de propiedad según el índice de columna
+        function getKeyByColumnIndex(index) {
+            const keys = ['clave', 'nombre', 'correo', 'genero', 'tipo', 'edad', 'area', 'estado'];
+            return keys[index];
+        }
+
+        // Inicializar la tabla
+        renderTable();
+    </script>
+
+</body>
+
+</html>
