@@ -33,46 +33,99 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
-        emailjs.init('4H1ygL7VIG6OTd08O'); // tu Public Key
-
         const form = document.getElementById('verify-form');
         const emailI = document.getElementById('email');
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const userEmail = emailI.value.trim();
-            if (!userEmail) return;
-
-            form.querySelector('button').disabled = true;            
+        document.getElementById('verify-form').addEventListener('submit', async function (e) {
+            e.preventDefault(); // Evita que el formulario se envíe de forma tradicional
 
             try {
-                await emailjs.send(
-                    'service_edw0v1t',          // Service ID
-                    'template_3gduato',         // Template ID
-                    {
-                        email: userEmail,
-                        link: 'https://hugocerrillo.github.io/SaresTL/html/Modulo-RestaurarContrasena.html'
-                    }
-                );
-                Swal.fire({
-                    title: "¡Éxito!",
-                    text: "Se ha enviado un correo de verificación para restablcer su contraseña",
-                    icon: "success",
-                    background: "#1C1766",  // Fondo personalizado
-                    color: "#ffffff",       // Texto en color blanco
-                    confirmButtonColor: "#3085d6",
-                    confirmButtonText: "Aceptar"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html";                        
-                    }
+                const response = await fetch('https://hugoc.pythonanywhere.com/api/verifyEmail', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: emailI.value.trim() }),
                 });
-                form.reset();
-            } catch (err) {
-                console.error(err);
+                const data = await response.json();
+                if (response.ok && data.status === 'success') {
+                    baseUrl = 'https://hugocerrillo.github.io/SaresTL/html/Modulo-RestaurarContrasena.html';
+                    userId = data.user.idUsuarioR; // Guardar el ID del usuario en una variable
+                    const recoveryLink = `${baseUrl}?id=${encodeURIComponent(userId)}`;
+                    // Aquí puedes manejar la respuesta exitosa
+                    emailjs.init('4H1ygL7VIG6OTd08O'); // tu Public Key
+
+                    form.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        const userEmail = emailI.value.trim();
+                        if (!userEmail) return;
+
+                        form.querySelector('button').disabled = true;
+
+                        try {
+                            await emailjs.send(
+                                'service_edw0v1t',          // Service ID
+                                'template_3gduato',         // Template ID
+                                {
+                                    email: userEmail,
+                                    link: recoveryLink, // Enlace de recuperación
+                                }
+                            );
+                            Swal.fire({
+                                title: "¡Éxito!",
+                                text: "Se ha enviado un correo de verificación para restablcer su contraseña",
+                                icon: "success",
+                                background: "#1C1766",  // Fondo personalizado
+                                color: "#ffffff",       // Texto en color blanco
+                                confirmButtonColor: "#3085d6",
+                                confirmButtonText: "Aceptar"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html";
+                                }
+                            });
+                            form.reset();
+                        } catch (err) {
+                            console.error(err);
+                            Swal.fire({
+                                title: "¡Error!",
+                                text: "Ocurrio un error al intentar enviar el correo",
+                                icon: "error",
+                                background: "#1C1766",  // Fondo personalizado
+                                color: "#ffffff",       // Texto en color blanco
+                                confirmButtonColor: "#3085d6",
+                                confirmButtonText: "Aceptar"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-OlvidarContrasena.html";
+                                }
+                            });
+                        } finally {
+                            form.querySelector('button').disabled = false;
+                        }
+                    });
+                } else {
+                    // Aquí puedes manejar el error de verificación
+                    console.error('Error al verificar el correo:', data.message);
+                    Swal.fire({
+                        title: "¡Error!",
+                        text: "El correo electronico no existe en el sistema, intentalo nuevamente",
+                        icon: "error",
+                        background: "#1C1766",  // Fondo personalizado
+                        color: "#ffffff",       // Texto en color blanco
+                        confirmButtonColor: "#3085d6",
+                        confirmButtonText: "Aceptar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-OlvidarContrasena.html";
+                        }
+                    });
+                }
+            } catch {
+                console.error('Error en la solicitud:', error);
                 Swal.fire({
                     title: "¡Error!",
-                    text: "Ocurrio un error al intentar enviar el correo",
+                    text: "Hubo un error al conectar con el servidor",
                     icon: "error",
                     background: "#1C1766",  // Fondo personalizado
                     color: "#ffffff",       // Texto en color blanco
@@ -83,10 +136,9 @@
                         window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-OlvidarContrasena.html";
                     }
                 });
-            } finally {
-                form.querySelector('button').disabled = false;
             }
         });
+
     </script>
 </body>
 
