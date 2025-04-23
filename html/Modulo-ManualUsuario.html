@@ -234,6 +234,132 @@
             `;
         });
     </script>
+
+    <script>
+        // Función para alternar el menú desplegable
+        function toggleMenu() {
+            const menu = document.getElementById('menuDropdown');
+            menu.classList.toggle('open');
+        }
+
+        // Función para obtener datos del usuario y generar contenido dinámico
+        async function obtenerDatosUsuario() {
+            const user = sessionStorage.getItem('user'); // Obtener el ID del usuario
+
+            if (!user) {
+                alert('No has iniciado sesión. Redirigiendo al login...');
+                //window.location.href = 'https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html';
+                window.location.href = "../html/Modulo-InicioSesion.html";
+                return;
+            }
+
+            const apiUrl = 'https://hugoc.pythonanywhere.com/api/usertype';
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user }),
+                });
+
+                const data = await response.json();
+                if (response.ok && data.status == "success") {
+                    const userRoleNumber = data.userRole ?? null ?? '';
+                    const userName = data.userName ?? null ?? '';
+                    switch (userRoleNumber) {
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            //alert("Eres un administrador: " + userName)
+                            try {
+                                const apiUrlPicture = 'https://hugoc.pythonanywhere.com/api/userPicture';
+                                const responsePicture = await fetch(apiUrlPicture, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({ user }),
+                                });
+                                const dataPicture = await responsePicture.json();
+                                if (responsePicture.ok && dataPicture.status == "success") {
+                                    const userPicture = dataPicture.userPicture ?? null ?? '';
+
+                                    // Actualizar la imagen de perfil
+                                    //const profileImage = document.querySelector('.user-profile img');
+                                    profileImage.src = userPicture;
+                                } else {
+                                    console.error('Error al obtener la imagen de perfil:', dataPicture.message);
+                                }
+
+                            } catch (errorP) {
+                                console.error('Error en la solicitud:', errorP);
+                                alert('Hubo un problema al conectar con el servidor. Intenta nuevamente.', errorP);
+                            }
+                            bienvenida.innerHTML = 'Bienvenido (a): ' + userName;
+                            typeP.innerHTML = 'Eres un: Administrador en TECNM Campus León Campus 1';
+                            rolP.innerHTML = 'Con rol en nuestro sistema de: Administrador';
+                            generarMenu('Administrador');
+
+                            break;
+                    }
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+                alert('Hubo un problema al conectar con el servidor. Intenta nuevamente.', error);
+                //window.location.href = 'https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html';
+                window.location.href = "../html/Modulo-InicioSesion.html";
+            }
+        }
+
+        // Función para generar el menú dinámico según el rol del usuario
+        function generarMenu(userRole) {
+            const menuDropdown = document.getElementById('menuDropdown');
+            //const menuList = menuDropdown.querySelector('ul');
+
+            // Generar contenido según el rol del usuario
+            if (userRole === 'Administrador') {
+                menuList.innerHTML = `
+                <li><a href="../html/Modulo-Bienvenida.html">Panel Principal</a></li>
+                <li><a href="../html/Modulo-VisualizacionGeneral.html">Visualización Entradas y Salidas</a></li>
+                <li><a href="../html/Modulo-RevisarHistorial.html">Revisar Historial Personal</a></li>
+                <li><a href="../html/Modulo-RegistrarNuevoMiembro.html">Registrar Miembro Institución</a></li>
+                <li><a href="../html/Modulo-Perfil.html">Perfil</a></li>                    
+                <li><a href="../html/Modulo-ManualUsuario.html">Manual de Usuario</a></li>
+                <li><a href="../html/Modulo-InicioSesion.html" onclick="logOut()">Cerrar Sesión</a></li>
+            `;
+            } else if (userRole == 'Guardia') {
+                menuList.innerHTML = `
+                <li><a href="../html/Modulo-Bienvenida.html">Panel Principal</a></li>
+                <li><a href="../html/Modulo-RegistroAccesos.html">Registro Accesos</a></li>   
+                <li><a href="../html/Modulo-VisualizacionGeneral.html">Visualización Entradas y Salidas</a></li>
+                <li><a href="../html/Modulo-RevisarHistorial.html">Revisar Historial Personal</a></li>
+                <li><a href="../html/Modulo-Perfil.html">Perfil</a></li>                    
+                <li><a href="../html/Modulo-ManualUsuario.html">Manual de Usuario</a></li>
+                <li><a href="../html/Modulo-InicioSesion.html" onclick="logOut()">Cerrar Sesión</a></li>
+            `;
+
+            } else {
+                menuList.innerHTML = `
+                <li><a href="../html/Modulo-Bienvenida.html">Panel Principal</a></li>                                          
+                <li><a href="../html/Modulo-RevisarHistorial.html">Revisar Historial Personal</a></li>
+                <li><a href="../html/Modulo-Perfil.html">Perfil</a></li>                    
+                <li><a href="../html/Modulo-ManualUsuario.html">Manual de Usuario</a></li>
+                <li><a href="../html/Modulo-InicioSesion.html" onclick="logOut()">Cerrar Sesión</a></li>
+            `;
+            }
+        }
+        function logOut() {
+            // Limpiar el sessionStorage y redirigir al inicio de sesión
+            sessionStorage.clear();
+        }
+
+        // Llamar a la función al cargar la página
+        obtenerDatosUsuario();
+    </script>
 </body>
 
 </html>
