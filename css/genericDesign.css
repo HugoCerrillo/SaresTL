@@ -89,4 +89,9 @@ body {
     color: #777;
     font-size: 0.9em;
 }
+a{
+    text-decoration: none;
+    color: inherit; /* Hereda el color del elemento padre */
+}
+
 /*Ends CSS code base  */
