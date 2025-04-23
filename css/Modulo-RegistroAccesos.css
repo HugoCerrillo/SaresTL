@@ -232,3 +232,95 @@
     font-size: 16px;
     font-weight: bold;
 }
+
+
+/* Estilos existentes (sin cambios)... */
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+    .datetime-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .scanner-title {
+        font-size: 16px;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .scanner-title svg {
+        margin-bottom: 10px;
+    }
+
+    .tab-container {
+        flex-direction: column;
+    }
+
+    .tab {
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    .scanner-container {
+        padding-bottom: 100%;
+    }
+
+    .input-section,
+    .scanner-section {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .container {
+        padding: 0 15px;
+    }
+
+    .last-scan-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .last-scan-item {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 22px;
+    }
+
+    .date-box h3,
+    .time-box h3 {
+        font-size: 16px;
+    }
+
+    .date-value,
+    .time-value {
+        font-size: 24px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .scanner-message {
+        font-size: 16px;
+        text-align: center;
+        padding: 0 10px;
+    }
+
+    .scanner-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        margin: 5px 0;
+    }
+}
