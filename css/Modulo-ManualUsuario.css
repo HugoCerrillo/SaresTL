@@ -154,7 +154,7 @@
     padding: 20px;
     width: 100%;
     max-width: 800px;
-    color: white;
+    color: #34495e;
 }
 
 .description-title {
@@ -162,6 +162,7 @@
     font-weight: 600;
     margin-bottom: 15px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: #34495e;
     padding-bottom: 10px;
 }
 
