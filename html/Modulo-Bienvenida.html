@@ -149,13 +149,25 @@
                     <li><a href="../html/Modulo-RegistrarNuevoMiembro.html">Registrar Miembro Institución</a></li>
                     <li><a href="../html/Modulo-Perfil.html">Perfil</a></li>                    
                     <li><a href="../html/Modulo-ManualUsuario.html">Manual de Usuario</a></li>
-                    <li><a href="#">Cerrar Sesión</a></li>
+                    <li><a onclick="logOut()">Cerrar Sesión</a></li>
                 `;
+            } else if (userRole == 'Guardia') {
+                menuList.innerHTML = `
+                    <li><a href="../html/Modulo-Bienvenida.html">Panel Principal</a></li>
+                    <li><a href="../html/Modulo-RegistroAccesos.html">Registro Accesos</a></li>   
+                    <li><a href="../html/Modulo-VisualizacionGeneral.html">Visualización Entradas y Salidas</a></li>
+                    <li><a href="../html/Modulo-RevisarHistorial.html">Revisar Historial Personal</a></li>
+                    <li><a href="../html/Modulo-Perfil.html">Perfil</a></li>                    
+                    <li><a href="../html/Modulo-ManualUsuario.html">Manual de Usuario</a></li>
+                    <li><a onclick="logOut()">Cerrar Sesión</a></li>
+                `;
+
             } else {
                 menuList.innerHTML = `
-                    <li><a href="#">Inicio</a></li>
-                    <li><a href="#">Perfil</a></li>
-                    <li><a href="#">Ayuda</a></li>
+                    <li><a href="../html/Modulo-Bienvenida.html">Panel Principal</a></li>                                          
+                    <li><a href="../html/Modulo-RevisarHistorial.html">Revisar Historial Personal</a></li>
+                    <li><a href="../html/Modulo-Perfil.html">Perfil</a></li>                    
+                    <li><a href="../html/Modulo-ManualUsuario.html">Manual de Usuario</a></li>
                     <li><a onclick="logOut()">Cerrar Sesión</a></li>
                 `;
             }
