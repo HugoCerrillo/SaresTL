@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../img/sares.jpeg" type="image/x-icon">
+    <link rel="stylesheet" href="../css/genericDesign.css">
+    <link rel="stylesheet" href="../css/Modulo-Perfil.css">
+    <title>Perfil</title>
+</head>
+
+<body>
+    <div class="header">
+        <div class="logos">
+            <img src="../img/sep.png" alt="Logo SEP">
+            <img src="../img/tecnm.jpg" alt="TECNM Logo">
+            <img src="../img/tec.png" alt="ITL Logo">
+            <img src="../img/sares.jpeg" alt="SARES Logo">
+        </div>
+        <div class="user-profile" onclick="toggleMenu()">
+            <img src="" alt="Foto de Perfil" id="profileImage">
+            <span class="menu-icon"><img src="../img/list.svg"></span>
+        </div>
+        <div class="menu-dropdown" id="menuDropdown">
+            <ul id="menuList">
+                <!-- Contenido dinámico del menú -->
+            </ul>
+        </div>
+    </div>
+
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Modificar datos</h1>
+                <p class="page-subtitle">Actualiza tu información personal y credenciales</p>
+            </div>
+
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-photo-container">
+                        <img src="/placeholder.svg?height=120&width=120" alt="Foto de perfil" class="profile-photo"
+                            id="profile-photo">
+                        <label for="photo-upload" class="photo-overlay" title="Cambiar foto">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
+                                </path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                        </label>
+                        <input type="file" id="photo-upload" style="display: none" accept="image/*">
+                    </div>
+                    <h2 class="profile-name">Hugo Emmanuel Cerrillo</h2>
+                    <p class="profile-role">Administrador - TECNM Campus León</p>
+                </div>
+
+                <div class="form-container">
+                    <form id="update-form">
+                        <!-- Sección de contraseña -->
+                        <div class="form-section">
+                            <h3 class="section-title">Cambiar contraseña</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="current-password">Contraseña actual</label>
+                                    <div class="input-with-icon">
+                                        <input type="password" id="current-password" class="form-control" value="1234"
+                                            readonly>
+                                        <span class="input-icon password-toggle" data-for="current-password">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                <circle cx="12" cy="12" r="3"></circle>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="new-password">Nueva contraseña</label>
+                                    <div class="input-with-icon">
+                                        <input type="password" id="new-password" class="form-control"
+                                            placeholder="Ingrese nueva contraseña">
+                                        <span class="input-icon password-toggle" data-for="new-password">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                <circle cx="12" cy="12" r="3"></circle>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <p class="form-hint">La contraseña debe tener al menos 8 caracteres</p>
+                                    <p class="form-error" id="password-error">La contraseña no cumple con los requisitos
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="confirm-password">Confirmar nueva contraseña</label>
+                                    <div class="input-with-icon">
+                                        <input type="password" id="confirm-password" class="form-control"
+                                            placeholder="Confirme nueva contraseña">
+                                        <span class="input-icon password-toggle" data-for="confirm-password">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                <circle cx="12" cy="12" r="3"></circle>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <p class="form-error" id="confirm-error">Las contraseñas no coinciden</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sección de información de contacto -->
+                        <div class="form-section">
+                            <h3 class="section-title">Información de contacto</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="current-phone">Teléfono actual</label>
+                                    <input type="text" id="current-phone" class="form-control current"
+                                        value="4779235489" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="new-phone">Nuevo teléfono</label>
+                                    <input type="tel" id="new-phone" class="form-control"
+                                        placeholder="Ingrese nuevo número">
+                                    <p class="form-hint">Formato: 10 dígitos sin espacios</p>
+                                    <p class="form-error" id="phone-error">Número de teléfono inválido</p>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="current-email">Correo electrónico actual</label>
+                                    <input type="email" id="current-email" class="form-control current"
+                                        value="21240200@leon.tecnm.mx" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="new-email">Nuevo correo electrónico</label>
+                                    <input type="email" id="new-email" class="form-control"
+                                        placeholder="Ingrese nuevo correo">
+                                    <p class="form-error" id="email-error">Correo electrónico inválido</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-footer">
+                            <button type="button" class="btn btn-secondary" id="back-btn">Volver</button>
+                            <button type="submit" class="btn btn-primary" id="save-btn">Guardar cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función para mostrar/ocultar contraseñas
+        document.querySelectorAll('.password-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function () {
+                const inputId = this.getAttribute('data-for');
+                const input = document.getElementById(inputId);
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                    `;
+                } else {
+                    input.type = 'password';
+                    this.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    `;
+                }
+            });
+        });
+
+        // Función para cambiar la foto de perfil
+        document.getElementById('photo-upload').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('profile-photo').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Validación del formulario
+        document.getElementById('update-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            let isValid = true;
+
+            // Validar contraseña
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (newPassword && newPassword.length < 8) {
+                document.getElementById('password-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('password-error').style.display = 'none';
+            }
+
+            if (newPassword && newPassword !== confirmPassword) {
+                document.getElementById('confirm-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('confirm-error').style.display = 'none';
+            }
+
+            // Validar teléfono
+            const newPhone = document.getElementById('new-phone').value;
+            if (newPhone && !/^\d{10}$/.test(newPhone)) {
+                document.getElementById('phone-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('phone-error').style.display = 'none';
+            }
+
+            // Validar correo
+            const newEmail = document.getElementById('new-email').value;
+            if (newEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+                document.getElementById('email-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('email-error').style.display = 'none';
+            }
+
+            // Si todo es válido, enviar el formulario
+            if (isValid) {
+                alert('Cambios guardados correctamente');
+                // Aquí normalmente enviarías los datos al servidor
+            }
+        });
+
+        // Botón volver
+        document.getElementById('back-btn').addEventListener('click', function () {
+            // Normalmente redirigirías a la página anterior
+            alert('Volviendo a la página anterior...');
+        });
+    </script>
+
+
+    <div class="footer">© Sares TL, 2024</div>
+
+
+</body>
+
+</html>

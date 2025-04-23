@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../img/sares.jpeg" type="image/x-icon">
+    <link rel="stylesheet" href="../css/Modulo-ManualUsuario.css">
+    <link rel="stylesheet" href="../css/genericDesign.css">
+    <title>Manual de usuario</title>
+</head>
+
+<body>
+    <div class="header">
+        <div class="logos">
+            <img src="../img/sep.png" alt="Logo SEP">
+            <img src="../img/tecnm.jpg" alt="TECNM Logo">
+            <img src="../img/tec.png" alt="ITL Logo">
+            <img src="../img/sares.jpeg" alt="SARES Logo">
+        </div>
+        <div class="user-profile" onclick="toggleMenu()">
+            <img src="" alt="Foto de Perfil" id="profileImage">
+            <span class="menu-icon"><img src="../img/list.svg"></span>
+        </div>
+        <div class="menu-dropdown" id="menuDropdown">
+            <ul id="menuList">
+                <!-- Contenido dinámico del menú -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- main content-->
+    <!-- Banner -->
+    <div class="banner">
+        <div class="banner-content">
+            <h1 class="banner-title">Sistema de Acceso y Registro</h1>
+            <p class="banner-subtitle">Aprende a utilizar todas las funciones del sistema SaresTL</p>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <div class="title-container">
+            <h2 class="content-title">Manual de Usuario</h2>
+        </div>
+
+        <div class="video-container">
+            <div class="video-wrapper">
+                <video id="tutorial-video" poster="/placeholder.svg?height=450&width=800">
+                    <source src="../video/Corto Animado.mp4" type="video/mp4">
+                    Tu navegador no soporta videos HTML5.
+                </video>
+            </div>
+            <div class="video-controls">
+                <button class="control-btn" id="play-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                </button>
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <span class="time-display" id="time-display">0:00 / 0:00</span>
+                <button class="control-btn" id="mute-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    </svg>
+                </button>
+                <div class="volume-container">
+                    <div class="volume-slider" id="volume-slider">
+                        <div class="volume-level" id="volume-level"></div>
+                    </div>
+                </div>
+                <button class="control-btn" id="fullscreen-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="description-container">
+            <h3 class="description-title">Guía de uso del sistema</h3>
+            <div class="description-text">
+                <p>Este video tutorial te guiará paso a paso en el uso del sistema SaresTL. Aprenderás cómo:</p>
+                <br>
+                <ul style="padding-left: 20px; margin-bottom: 15px;">
+                    <li>Iniciar sesión en el sistema</li>
+                    <li>Registrar entradas y salidas</li>
+                    <li>Modificar tus datos personales</li>
+                    <li>Consultar registros históricos</li>
+                    <li>Generar reportes</li>
+                </ul>
+                <p>Si tienes alguna duda adicional después de ver el tutorial, puedes contactar al administrador del
+                    sistema para recibir asistencia personalizada.</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="footer">© Sares TL, 2024</div>
+    <script>
+        // Variables para el reproductor de video
+        const video = document.getElementById('tutorial-video');
+        const playBtn = document.getElementById('play-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const progressContainer = document.getElementById('progress-container');
+        const timeDisplay = document.getElementById('time-display');
+        const muteBtn = document.getElementById('mute-btn');
+        const volumeSlider = document.getElementById('volume-slider');
+        const volumeLevel = document.getElementById('volume-level');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+        // Función para formatear el tiempo (segundos a MM:SS)
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            seconds = Math.floor(seconds % 60);
+            return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        // Actualizar la barra de progreso y el tiempo
+        function updateProgress() {
+            const percent = (video.currentTime / video.duration) * 100;
+            progressBar.style.width = `${percent}%`;
+            timeDisplay.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+        }
+
+        // Reproducir/pausar video
+        playBtn.addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+                playBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="6" y="4" width="4" height="16"></rect>
+                        <rect x="14" y="4" width="4" height="16"></rect>
+                    </svg>
+                `;
+            } else {
+                video.pause();
+                playBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                `;
+            }
+        });
+
+        // Cambiar la posición del video al hacer clic en la barra de progreso
+        progressContainer.addEventListener('click', (e) => {
+            const pos = (e.offsetX / progressContainer.offsetWidth);
+            video.currentTime = pos * video.duration;
+        });
+
+        // Silenciar/activar sonido
+        muteBtn.addEventListener('click', () => {
+            video.muted = !video.muted;
+            if (video.muted) {
+                muteBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <line x1="23" y1="9" x2="17" y2="15"></line>
+                        <line x1="17" y1="9" x2="23" y2="15"></line>
+                    </svg>
+                `;
+                volumeLevel.style.width = '0%';
+            } else {
+                muteBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    </svg>
+                `;
+                volumeLevel.style.width = `${video.volume * 100}%`;
+            }
+        });
+
+        // Ajustar volumen
+        volumeSlider.addEventListener('click', (e) => {
+            const pos = (e.offsetX / volumeSlider.offsetWidth);
+            video.volume = pos;
+            volumeLevel.style.width = `${pos * 100}%`;
+
+            if (pos === 0) {
+                video.muted = true;
+                muteBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <line x1="23" y1="9" x2="17" y2="15"></line>
+                        <line x1="17" y1="9" x2="23" y2="15"></line>
+                    </svg>
+                `;
+            } else {
+                video.muted = false;
+                muteBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    </svg>
+                `;
+            }
+        });
+
+        // Pantalla completa
+        fullscreenBtn.addEventListener('click', () => {
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) { /* Safari */
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) { /* IE11 */
+                video.msRequestFullscreen();
+            }
+        });
+
+        // Actualizar la barra de progreso mientras se reproduce el video
+        video.addEventListener('timeupdate', updateProgress);
+
+        // Establecer la duración inicial cuando los metadatos están cargados
+        video.addEventListener('loadedmetadata', () => {
+            timeDisplay.textContent = `0:00 / ${formatTime(video.duration)}`;
+        });
+
+        // Cambiar el botón de reproducción cuando termina el video
+        video.addEventListener('ended', () => {
+            playBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+            `;
+        });
+    </script>
+</body>
+
+</html>
