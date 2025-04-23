@@ -44,11 +44,12 @@
         console.log("ID del usuario desde la URL:", userId);
 
 
-        const form = document.getElementById("recoveryForm");
+        const form = document.querySelector("#recoveryForm");
         const passwordInput = document.getElementById("password");
         const confirmPasswordInput = document.getElementById("confirmPassword");
 
         form.addEventListener("submit", async function (e) {
+            e.preventDefault();
             const password = passwordInput.value.trim();
             const confirmPassword = confirmPasswordInput.value.trim();
 
