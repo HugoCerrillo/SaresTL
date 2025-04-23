@@ -6,119 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="../img/sares.jpeg" type="image/x-icon">
     <title>Restablecer Contraseña</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom, #6ba1ff, #b3d1ff);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 900px;
-            padding: 20px;
-            margin: 20px;
-        }
-
-        .form-container {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
-
-        .logos {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .logos img {
-            max-width: 80px;
-            margin: 10px;
-        }
-
-        h1 {
-            font-size: 1.8em;
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-
-        .icon {
-            width: 100px;
-            height: 100px;
-            margin-bottom: 20px;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        label {
-            text-align: left;
-            font-weight: bold;
-            margin: 0 5px;
-            color: #34495e;
-        }
-
-        input,
-        select,
-        button {
-            width: calc(100% - 10px);
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 1em;
-        }
-
-        input:focus,
-        select:focus {
-            border-color: #3498db;
-            outline: none;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
-        }
-
-        button {
-            background: #2c3e50;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background: #34495e;
-        }
-
-        @media (max-width: 768px) {
-            .logos img {
-                max-width: 60px;
-            }
-
-            h1 {
-                font-size: 1.5em;
-            }
-
-            .icon {
-                width: 80px;
-                height: 80px;
-            }
-
-            .form-container {
-                padding: 20px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="../css/Modulo-RestaurarContrasena.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -131,7 +20,7 @@
                 <img src="../img/sares.jpeg" alt="SARES Logo">
             </div>
             <h1>Restablecer Contraseña</h1>
-            <form action="../php/procesar.php" method="POST">
+            <form action="../php/procesar.php" method="POST" id="recoveryForm">
                 <div>
                     <input type="hidden" id="formulario" name="formulario" value="recoveryPassword">
                 </div>
@@ -147,6 +36,98 @@
             </form>
         </div>
     </div>
+
+    <script>
+        // Obtener el ID de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('id'); // <- Aquí tienes el ID del usuario
+        console.log("ID del usuario desde la URL:", userId);
+
+
+        const form = document.querySelector("recoveryForm");
+        const passwordInput = document.getElementById("password");
+        const confirmPasswordInput = document.getElementById("confirmPassword");
+
+        form.addEventListener("submit", async function (e) {
+            const password = passwordInput.value.trim();
+            const confirmPassword = confirmPasswordInput.value.trim();
+
+            // Validar longitud
+            if (password.length < 8 || password.length > 12) {
+                e.preventDefault();
+                alert("La contraseña debe tener entre 8 y 12 caracteres.");
+                return;
+            }
+
+            // Validar coincidencia
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert("Las contraseñas no coinciden. Intenta nuevamente.");
+                return;
+            }
+
+            //llamar a la API para restablecer la contraseña
+            try {
+                const response = await fetch('https://hugoc.pythonanywhere.com/api/resetPassword', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({userId, password }),
+                });
+                const data = await response.json();
+
+                if (response.ok && data.status === 'success') {
+                    Swal.fire({
+                        title: "¡Éxito!",
+                        text: "La contraseña ha sido actualizada correctamente.",
+                        icon: "success",
+                        background: "#1C1766",  // Fondo personalizado
+                        color: "#ffffff",       // Texto en color blanco
+                        confirmButtonColor: "#3085d6",
+                        confirmButtonText: "Aceptar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html";
+                            //window.location.href = "../html/Modulo-Bienvenida.html";
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: "¡Error!",
+                        text: "La contraseña no se pudo actualizar. Intenta nuevamente.",
+                        icon: "error",
+                        background: "#1C1766",  // Fondo personalizado
+                        color: "#ffffff",       // Texto en color blanco
+                        confirmButtonColor: "#3085d6",
+                        confirmButtonText: "Aceptar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html";
+                            //window.location.href = "../html/Modulo-InicioSesion.html";
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+                Swal.fire({
+                    title: "¡Error!",
+                    text: "Hubo un error al conectar con el servidor",
+                    icon: "error",
+                    background: "#1C1766",  // Fondo personalizado
+                    color: "#ffffff",       // Texto en color blanco
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "Aceptar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html";
+                        //window.location.href = "../html/Modulo-InicioSesion.html";
+                    }
+                });
+            }
+        });
+    </script>
+
 </body>
 
 </html>
