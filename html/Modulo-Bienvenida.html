@@ -66,16 +66,18 @@
         async function obtenerDatosUsuario() {
             const user = sessionStorage.getItem('user'); // Obtener el ID del usuario
 
+            // Verifica si el usuario no está autenticado
             if (!user) {
                 alert('No has iniciado sesión. Redirigiendo al login...');
-                //window.location.href = 'https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html';
-                window.location.href = "../html/Modulo-InicioSesion.html";
+                window.location.href = "../html/Modulo-InicioSesion.html"; // Redirección al login
                 return;
             }
 
+            // URL del API para obtener tipo de usuario
             const apiUrl = 'https://hugoc.pythonanywhere.com/api/usertype';
 
             try {
+                // Realiza la solicitud POST para obtener el tipo de usuario
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
@@ -85,11 +87,13 @@
                 });
 
                 const data = await response.json();
-                if (response.ok && data.status == "success") {
-                    const userRoleNumber = data.userRole ?? null ?? '';
-                    const userName = data.userName ?? null ?? '';
-                    const userTypeInst =data.userTypeInst ?? null ?? '';
+                if (response.ok && data.status === "success") {
+                    const userRoleNumber = data.userRole ?? ''; // Asignación correcta
+                    const userName = data.userName ?? ''; // Asignación correcta
+                    const userTypeInst = data.userTypeInst ?? ''; // Asignación correcta
+
                     try {
+                        // Realiza la solicitud para obtener la imagen del usuario
                         const apiUrlPicture = 'https://hugoc.pythonanywhere.com/api/userPicture';
                         const responsePicture = await fetch(apiUrlPicture, {
                             method: 'POST',
@@ -99,71 +103,87 @@
                             body: JSON.stringify({ user }),
                         });
                         const dataPicture = await responsePicture.json();
-                        if (responsePicture.ok && dataPicture.status == "success") {
-                            const userPicture = dataPicture.userPicture ?? null ?? '';
 
-                            // Actualizar la imagen de perfil
-                            //const profileImage = document.querySelector('.user-profile img');
-                            profileImage.src = userPicture;
+                        if (responsePicture.ok && dataPicture.status === "success") {
+                            const userPicture = dataPicture.userPicture ?? '';
+
+                            // Verifica que profileImage exista en el DOM
+                            const profileImage = document.querySelector('.user-profile img');
+                            if (profileImage) {
+                                profileImage.src = userPicture; // Actualiza la imagen de perfil
+                            } else {
+                                console.error('No se encontró el elemento de la imagen de perfil');
+                            }
                         } else {
                             console.error('Error al obtener la imagen de perfil:', dataPicture.message);
                         }
 
                     } catch (errorP) {
-                        console.error('Error en la solicitud:', errorP);
-                        alert('Hubo un problema al conectar con el servidor. Intenta nuevamente.', errorP);
+                        console.error('Error en la solicitud de la imagen de perfil:', errorP);
+                        alert('Hubo un problema al conectar con el servidor para obtener la imagen de perfil. Intenta nuevamente.');
                     }
+
+                    // Mostrar bienvenida según el rol del usuario
+                    const bienvenida = document.querySelector('#bienvenida');
+                    const typeP = document.querySelector('#typeP');
+                    const rolP = document.querySelector('#rolP');
+
                     switch (userRoleNumber) {
                         case 1:
-                            //Estudiante                            
-                            bienvenida.innerHTML = 'Bienvenido (a): ' + userName;
-                            typeP.innerHTML = 'Eres un: ' + userTypeInst + 'TECNM Campus León Campus 1';
-                            rolP.innerHTML = 'Con rol en nuestro sistema de: Administrador';
+                            bienvenida.innerHTML = `Bienvenido (a): ${userName}`;
+                            typeP.innerHTML = `Eres un: ${userTypeInst} TECNM Campus León Campus 1`;
+                            rolP.innerHTML = 'Con rol en nuestro sistema de: Estudiante';
                             generarMenu('Estudiante');
                             break;
                         case 2:
-                            //docente
-                            bienvenida.innerHTML = 'Bienvenido (a): ' + userName;
-                            typeP.innerHTML = 'Eres un: ' + userTypeInst + 'TECNM Campus León Campus 1';
+                            bienvenida.innerHTML = `Bienvenido (a): ${userName}`;
+                            typeP.innerHTML = `Eres un: ${userTypeInst} TECNM Campus León Campus 1`;
                             rolP.innerHTML = 'Con rol en nuestro sistema de: Docente';
                             generarMenu('Docente');
                             break;
                         case 3:
-                            //Administrador
-                            bienvenida.innerHTML = 'Bienvenido (a): ' + userName;
-                            typeP.innerHTML = 'Eres un: Administrador en TECNM Campus León Campus 1';
+                            bienvenida.innerHTML = `Bienvenido (a): ${userName}`;
+                            typeP.innerHTML = `Eres un: Administrador en TECNM Campus León Campus 1`;
                             rolP.innerHTML = 'Con rol en nuestro sistema de: Administrador';
                             generarMenu('Administrador');
                             break;
                         case 4:
-                            //Administrativo
-                            bienvenida.innerHTML = 'Bienvenido (a): ' + userName;   
-                            typeP.innerHTML = 'Eres un: ' + userTypeInst + 'TECNM Campus León Campus 1';
+                            bienvenida.innerHTML = `Bienvenido (a): ${userName}`;
+                            typeP.innerHTML = `Eres un: ${userTypeInst} TECNM Campus León Campus 1`;
                             rolP.innerHTML = 'Con rol en nuestro sistema de: Administrativo';
                             generarMenu('Administrativo');
                             break;
                         case 5:
-                            //Intendente
-                            bienvenida.innerHTML = 'Bienvenido (a): ' + userName;
-                            typeP.innerHTML = 'Eres un: ' + userTypeInst + 'TECNM Campus León Campus 1';
+                            bienvenida.innerHTML = `Bienvenido (a): ${userName}`;
+                            typeP.innerHTML = `Eres un: ${userTypeInst} TECNM Campus León Campus 1`;
                             rolP.innerHTML = 'Con rol en nuestro sistema de: Intendente';
                             generarMenu('Intendente');
                             break;
                         case 6:
-                            //Guardia
-                            bienvenida.innerHTML = 'Bienvenido (a): ' + userName;
-                            typeP.innerHTML = 'Eres un: ' + userTypeInst + 'TECNM Campus León Campus 1';
+                            bienvenida.innerHTML = `Bienvenido (a): ${userName}`;
+                            typeP.innerHTML = `Eres un: ${userTypeInst} TECNM Campus León Campus 1`;
                             rolP.innerHTML = 'Con rol en nuestro sistema de: Guardia';
-                            generarMenu('Guardia');                            
-                            break
+                            generarMenu('Guardia');
+                            break;
+                        default:
+                            console.error('Rol de usuario desconocido');
+                            alert('No se pudo determinar el rol del usuario.');
+                            window.location.href = "../html/Modulo-InicioSesion.html"; // Redirige si hay error
+                            break;
                     }
+
+                } else {
+                    console.error('Error al obtener tipo de usuario:', data.message);
+                    alert('Hubo un problema al obtener el tipo de usuario. Intenta nuevamente.');
+                    window.location.href = "../html/Modulo-InicioSesion.html"; // Redirige si la respuesta no es correcta
                 }
+
             } catch (error) {
-                console.error('Error en la solicitud:', error);
-                alert('Hubo un problema al conectar con el servidor. Intenta nuevamente.', error);
-                //window.location.href = 'https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html';
-                window.location.href = "../html/Modulo-InicioSesion.html";
+                console.error('Error en la solicitud principal:', error);
+                alert('Hubo un problema al conectar con el servidor. Intenta nuevamente.');
+                window.location.href = "../html/Modulo-InicioSesion.html"; // Redirige en caso de error
             }
+
         }
 
         // Función para generar el menú dinámico según el rol del usuario
