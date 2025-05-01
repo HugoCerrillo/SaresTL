@@ -245,13 +245,7 @@
                     } catch (errorP) {
                         console.error('Error en la solicitud de la imagen de perfil:', errorP);
                         alert('Hubo un problema al conectar con el servidor para obtener la imagen de perfil. Intenta nuevamente.');
-                    }
-
-                    // Mostrar bienvenida según el rol del usuario
-                    const bienvenida = document.querySelector('#bienvenida');
-                    const typeP = document.querySelector('#typeP');
-                    const rolP = document.querySelector('#rolP');
-
+                    }                   
                     switch (userRoleNumber) {
                         case 1:
                             generarMenu('Estudiante');
