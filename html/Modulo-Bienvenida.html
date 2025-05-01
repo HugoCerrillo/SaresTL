@@ -88,9 +88,9 @@
 
                 const data = await response.json();
                 if (response.ok && data.status === "success") {
-                    const userRoleNumber = data.userRole ?? ''; // Asignación correcta
-                    const userName = data.userName ?? ''; // Asignación correcta
-                    const userTypeInst = data.userTypeInst ?? ''; // Asignación correcta
+                    const userRoleNumber = data.userRole ?? ''; 
+                    const userName = data.userName ?? ''; 
+                    const userTypeInst = data.userTypeInst ?? '';
 
                     try {
                         // Realiza la solicitud para obtener la imagen del usuario
