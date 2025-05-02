@@ -20,7 +20,7 @@
             </div>
             <h1>Registro de personal de seguridad</h1>
             <img src="../img/person-circle.svg" class="icon" alt="User Icon">
-            <form action="../php/procesar.php" method="POST">
+            <form id="registerForm">
                 <div>
                     <input type="hidden" id="formulario" name="formulario" value="guardType">
                 </div>
@@ -53,10 +53,58 @@
                 <label for="contrasena">Contraseña:</label>
                 <input type="password" id="password" name="password" required>
 
-                <button type="submit">Continuar</button>
+                <button type="submit">Registrar</button>
             </form>
+
+            <div id="responseMessage"></div>
         </div>
     </div>
+
+    <script>
+        // Obtener el formulario y el contenedor para el mensaje de respuesta
+        const form = document.getElementById('registerForm');
+        const responseMessage = document.getElementById('responseMessage');
+
+        // Evento de envío del formulario
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();  // Evitar que se recargue la página
+
+            // Obtener los datos del formulario
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                department: document.getElementById('department').value,
+                phoneNumber: document.getElementById('phoneNumber').value,
+                gender: document.getElementById('gender').value,
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                user: document.getElementById('user').value,
+                password: document.getElementById('password').value,
+                userType: 'Guardia'  // Tipo de usuario fijo como "Guardia"
+            };
+
+            try {
+                // Enviar la solicitud POST al servidor
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                // Manejar la respuesta del servidor
+                if (response.ok) {
+                    responseMessage.innerHTML = `<p class="success">¡Usuario registrado exitosamente!</p>`;
+                } else {
+                    responseMessage.innerHTML = `<p class="error">${data.message || 'Hubo un error al registrar al usuario.'}</p>`;
+                }
+            } catch (error) {
+                responseMessage.innerHTML = `<p class="error">Error al conectar con el servidor.</p>`;
+            }
+        });
+    </script>
 </body>
 
 </html>
