@@ -333,6 +333,20 @@
         // Llamar a la función al cargar la página
         obtenerDatosUsuario();
 
+        // Datos de ejemplo para la tabla
+        let membersData = [
+            { clave: '047', nombre: 'Patricia Castillo', correo: 'patriciamaría.castillo@leon.tecnm.mx', genero: 'Femenino', tipo: 'Docente', edad: 20, area: 'Área de sistemas', estado: 'No Activo' },
+            { clave: '21240200', nombre: 'Navarro Basurto Gabriela del Goretti', correo: '21240200@leon.tecnm.mx', genero: 'Femenino', tipo: 'Guardia', edad: 20, area: 'Entrada principal', estado: 'Activo' },
+            { clave: '21240236', nombre: 'Cerrillo Cano Hugo Emmanuel', correo: 'hugocano85@gmail.com', genero: 'Masculino', tipo: 'Administrador', edad: 20, area: 'Área de Servidor', estado: 'Activo' },
+            { clave: '21240551', nombre: 'Morales Escudero Johari', correo: '21240551@leon.tecnm.mx', genero: 'Femenino', tipo: 'Estudiante', edad: 20, area: 'Ingeniería en Sistemas Computacionales', estado: 'No Activo' },
+            { clave: 'G-1', nombre: 'Guardia', correo: 'g@gmail.com', genero: 'Masculino', tipo: 'Guardia', edad: 40, area: 'Entrada principal', estado: 'Activo' }
+        ];
+
+        // Configuración de la paginación
+        let currentPage = 1;
+        let entriesPerPage = 10;
+        let filteredData = [...membersData];
+
         // Referencias a elementos DOM
         const membersTable = document.getElementById('members-table');
         const paginationInfo = document.getElementById('pagination-info');
@@ -346,84 +360,43 @@
         const editModeInput = document.getElementById('edit-mode');
         const newMemberBtn = document.getElementById('new-member-btn');
 
-        // Datos iniciales
-        let membersData = [];
-        let filteredData = [];
-        let currentPage = 1;
-        let entriesPerPage = 5;
-
-        // Función para obtener miembros de la API
-        async function fetchMembers() {
-            try {
-                const response = await fetch('https://hugoc.pythonanywhere.com/api/obtain_institution_members', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-
-                const data = await response.json();
-                if (response.ok && data.status === 'success') {
-                    membersData = data.members; // Asignamos los miembros a la variable global
-                    filteredData = [...membersData]; // Asignamos a los datos filtrados
-                    renderTable(); // Renderizamos la tabla con los nuevos datos
-                } else {
-                    alert('Error al obtener los miembros: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Error al obtener los miembros:', error);
-                alert('Hubo un problema al obtener los datos.');
-            }
-        }
-
-        // Función para filtrar los datos
-        function filterData() {
-            const searchTerm = searchInput.value.toLowerCase(); // Obtener el término de búsqueda
-            filteredData = membersData.filter(member => {
-                return (
-                    member.clave.toLowerCase().includes(searchTerm) ||
-                    member.nombre.toLowerCase().includes(searchTerm) ||
-                    member.correo.toLowerCase().includes(searchTerm) ||
-                    member.tipo.toLowerCase().includes(searchTerm) ||
-                    member.area.toLowerCase().includes(searchTerm)
-                );
-            });
-
-            currentPage = 1;  // Resetear la página a la 1
-            renderTable();  // Volver a renderizar la tabla con los datos filtrados
-        }
-
         // Función para renderizar la tabla
         function renderTable() {
+            // Calcular índices para la paginación
             const startIndex = (currentPage - 1) * entriesPerPage;
             const endIndex = startIndex + entriesPerPage;
             const paginatedData = filteredData.slice(startIndex, endIndex);
 
+            // Limpiar el cuerpo de la tabla
             const tableBody = membersTable.querySelector('tbody');
             tableBody.innerHTML = '';
 
+            // Generar filas de la tabla
             paginatedData.forEach(member => {
                 const row = document.createElement('tr');
+
                 row.innerHTML = `
-            <td>${member.clave}</td>
-            <td>${member.nombre}</td>
-            <td>${member.correo}</td>
-            <td>${member.genero}</td>
-            <td>${member.tipo}</td>
-            <td>${member.edad}</td>
-            <td>${member.area}</td>
-            <td>
-                <span class="badge ${member.estado === 'Activo' ? 'badge-success' : 'badge-danger'}">
-                    ${member.estado}
-                </span>
-            </td>
-            <td>
-                <button class="btn btn-edit" data-clave="${member.clave}">Editar</button>
-            </td>
-        `;
+                    <td>${member.clave}</td>
+                    <td>${member.nombre}</td>
+                    <td>${member.correo}</td>
+                    <td>${member.genero}</td>
+                    <td>${member.tipo}</td>
+                    <td>${member.edad}</td>
+                    <td>${member.area}</td>
+                    <td>
+                        <span class="badge ${member.estado === 'Activo' ? 'badge-success' : 'badge-danger'}">
+                            ${member.estado}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-edit" data-clave="${member.clave}">Editar</button>
+                    </td>
+                `;
+
                 tableBody.appendChild(row);
             });
 
+            // Actualizar información de paginación
             const totalEntries = filteredData.length;
             const firstEntryIndex = totalEntries === 0 ? 0 : startIndex + 1;
             const lastEntryIndex = Math.min(startIndex + entriesPerPage, totalEntries);
@@ -439,12 +412,30 @@
             });
         }
 
+        // Función para filtrar datos
+        function filterData() {
+            const searchTerm = searchInput.value.toLowerCase();
+
+            filteredData = membersData.filter(member => {
+                return (
+                    member.clave.toLowerCase().includes(searchTerm) ||
+                    member.nombre.toLowerCase().includes(searchTerm) ||
+                    member.correo.toLowerCase().includes(searchTerm) ||
+                    member.tipo.toLowerCase().includes(searchTerm) ||
+                    member.area.toLowerCase().includes(searchTerm)
+                );
+            });
+
+            currentPage = 1; // Reset a la primera página cuando se filtra
+            renderTable();
+        }
+
         // Función para abrir el modal en modo nuevo miembro
         function openNewMemberModal() {
-            editModeInput.value = 'false'; // No es edición
-            modalTitle.textContent = 'Registrar Nuevo Miembro'; // Cambiar título
-            memberForm.reset(); // Limpiamos el formulario
-            memberModal.classList.add('active'); // Mostramos el modal
+            editModeInput.value = 'false';
+            modalTitle.textContent = 'Registrar Nuevo Miembro';
+            memberForm.reset();
+            memberModal.classList.add('active');
         }
 
         // Función para abrir el modal en modo edición
@@ -452,10 +443,10 @@
             const member = membersData.find(m => m.clave === clave);
 
             if (member) {
-                editModeInput.value = 'true'; // Modo edición
-                modalTitle.textContent = 'Editar Miembro'; // Cambiar título
+                editModeInput.value = 'true';
+                modalTitle.textContent = 'Editar Miembro';
 
-                // Rellenar los campos con los datos del miembro
+                // Llenar el formulario con los datos del miembro
                 document.getElementById('member-clave').value = member.clave;
                 document.getElementById('member-nombre').value = member.nombre;
                 document.getElementById('member-correo').value = member.correo;
@@ -465,12 +456,12 @@
                 document.getElementById('member-area').value = member.area;
                 document.getElementById('member-estado').value = member.estado;
 
-                memberModal.classList.add('active'); // Mostrar el modal
+                memberModal.classList.add('active');
             }
         }
 
         // Función para guardar un miembro (nuevo o editado)
-        async function saveMember() {
+        function saveMember() {
             // Obtener los valores del formulario
             const clave = document.getElementById('member-clave').value;
             const nombre = document.getElementById('member-nombre').value;
@@ -481,6 +472,7 @@
             const area = document.getElementById('member-area').value;
             const estado = document.getElementById('member-estado').value;
 
+            // Crear el objeto miembro
             const member = {
                 clave,
                 nombre,
@@ -492,84 +484,67 @@
                 estado
             };
 
+            // Verificar si es modo edición o nuevo registro
             const isEditMode = editModeInput.value === 'true';
 
-            try {
-                if (isEditMode) {
-                    // Si es modo edición, enviamos el miembro editado
-                    const response = await fetch(`https://hugoc.pythonanywhere.com/api/update_member`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(member)
-                    });
+            if (isEditMode) {
+                // Actualizar miembro existente
+                const index = membersData.findIndex(m => m.clave === clave);
 
-                    const data = await response.json();
-                    if (response.ok && data.status === 'success') {
-                        // Actualizamos los miembros locales
-                        const index = membersData.findIndex(m => m.clave === clave);
-                        if (index !== -1) {
-                            membersData[index] = member;
-                        }
-                        alert('Miembro actualizado con éxito');
-                    } else {
-                        alert('Error al actualizar el miembro: ' + data.message);
-                    }
-                } else {
-                    // Si es modo nuevo, enviamos la solicitud para crear un nuevo miembro
-                    const response = await fetch('https://hugoc.pythonanywhere.com/api/register_members_institution', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(member)
-                    });
+                if (index !== -1) {
+                    membersData[index] = member;
+                }
+            } else {
+                // Verificar si la clave ya existe
+                const exists = membersData.some(m => m.clave === clave);
 
-                    const data = await response.json();
-                    if (response.ok && data.status === 'success') {
-                        // Agregamos el nuevo miembro a la lista local
-                        membersData.push(member);
-                        alert('Miembro registrado con éxito');
-                    } else {
-                        alert('Error al registrar el miembro: ' + data.message);
-                    }
+                if (exists) {
+                    alert('¡Error! Ya existe un miembro con esa clave.');
+                    return;
                 }
 
-                // Actualizamos la tabla después de guardar
-                filteredData = [...membersData];
-                if (searchInput.value) {
-                    filterData(); // Filtramos si hay búsqueda activa
-                } else {
-                    renderTable();
-                }
-
-                closeModal(); // Cerrar el modal después de guardar
-            } catch (error) {
-                console.error('Error al guardar el miembro:', error);
-                alert('Hubo un error al guardar el miembro. Intenta nuevamente.');
+                // Agregar nuevo miembro
+                membersData.push(member);
             }
+
+            // Actualizar datos filtrados y tabla
+            filteredData = [...membersData];
+            if (searchInput.value) {
+                filterData();
+            } else {
+                renderTable();
+            }
+
+            // Cerrar el modal
+            closeModal();
         }
 
         // Función para cerrar el modal
         function closeModal() {
-            memberModal.classList.remove('active'); // Ocultar el modal
-            memberForm.reset(); // Limpiar formulario al cerrarlo
+            memberModal.classList.remove('active');
+            memberForm.reset();
         }
 
         // Event listeners
-        searchInput.addEventListener('input', filterData);  // Llamar filterData cuando se haga una búsqueda
+        // Buscar al escribir
+        searchInput.addEventListener('input', filterData);
+
+        // Cambiar entradas por página
         entriesDropdown.addEventListener('change', () => {
             entriesPerPage = parseInt(entriesDropdown.value);
             currentPage = 1;
             renderTable();
         });
+
+        // Botón de página anterior
         prevPageBtn.addEventListener('click', () => {
             if (currentPage > 1) {
                 currentPage--;
                 renderTable();
             }
         });
+
+        // Botón de página siguiente
         nextPageBtn.addEventListener('click', () => {
             const totalPages = Math.ceil(filteredData.length / entriesPerPage);
             if (currentPage < totalPages) {
@@ -577,20 +552,57 @@
                 renderTable();
             }
         });
+
+        // Botón para abrir modal de nuevo miembro
         newMemberBtn.addEventListener('click', openNewMemberModal);
+
+        // Botones para cerrar modal
         document.querySelector('.close-modal').addEventListener('click', closeModal);
         document.querySelector('.close-modal-btn').addEventListener('click', closeModal);
+
+        // Guardar miembro
         document.getElementById('save-member').addEventListener('click', (e) => {
             e.preventDefault();
+
+            // Validar formulario
             if (memberForm.checkValidity()) {
                 saveMember();
             } else {
-                alert('Por favor, completa todos los campos correctamente.');
+                alert('Por favor complete todos los campos obligatorios');
+                // Trigger HTML5 validation
+                const submitButton = document.createElement('button');
+                submitButton.style.display = 'none';
+                memberForm.appendChild(submitButton);
+                submitButton.click();
+                memberForm.removeChild(submitButton);
             }
         });
 
-        // Inicializar datos y renderizar la tabla
-        fetchMembers();
+        // Ordenar por columna
+        document.querySelectorAll('.data-table th.sortable').forEach(header => {
+            header.addEventListener('click', () => {
+                const columnIndex = Array.from(header.parentNode.children).indexOf(header);
+                const key = getKeyByColumnIndex(columnIndex);
+
+                // Ordenar datos
+                filteredData.sort((a, b) => {
+                    if (a[key] < b[key]) return -1;
+                    if (a[key] > b[key]) return 1;
+                    return 0;
+                });
+
+                renderTable();
+            });
+        });
+
+        // Función auxiliar para obtener la clave de propiedad según el índice de columna
+        function getKeyByColumnIndex(index) {
+            const keys = ['clave', 'nombre', 'correo', 'genero', 'tipo', 'edad', 'area', 'estado'];
+            return keys[index];
+        }
+
+        // Inicializar la tabla
+        renderTable();
 
     </script>
 
