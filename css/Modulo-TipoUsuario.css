@@ -56,6 +56,23 @@ body {
     background: #34495e;
 }
 
+/* Estilo para el enlace "Regresar" */
+a {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 1em;
+    text-decoration: none;
+    color: white;
+    background-color: #3498db;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+a:hover {
+    background-color: #2980b9;
+}
+
 .logos {
     display: flex;
     justify-content: center;
@@ -104,6 +121,12 @@ img {
     .form-container button {
         width: calc(100% - 30px); /* Asegurar que los inputs y botones se ajusten al contenedor */
     }
+
+    /* Ajustar estilo del botón Regresar en pantallas más pequeñas */
+    a {
+        font-size: 0.9em;
+        padding: 8px 18px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -115,16 +138,25 @@ img {
     .form-container h1 {
         font-size: 1.1em; /* Ajustar aún más el tamaño del título */
     }
+
     .form-container img {
         max-width: 35px; /* Ajustar el tamaño de los logos */
     }
+
     .form-container input[type="text"],
     .form-container input[type="password"],
     .form-container select,
     .form-container button {
         width: 100%; /* Asegurar que los elementos llenen el ancho de la pantalla */
     }
+
     .footer {
         font-size: 12px; /* Reducir el tamaño del pie de página */
+    }
+
+    /* Ajustar el estilo del enlace "Regresar" en pantallas muy pequeñas */
+    a {
+        font-size: 0.8em;
+        padding: 7px 15px;
     }
 }
