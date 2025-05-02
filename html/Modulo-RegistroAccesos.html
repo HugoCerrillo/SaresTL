@@ -169,10 +169,14 @@
         // Registrar entrada manual
         document.getElementById('register-btn').addEventListener('click', () => {
             const code = document.getElementById('manual-input').value;
-            const type = document.getElementById('entry-type').value;
+            const type = document.getElementById('entry-type').value;  // Obtener el tipo desde el selector
             const time = new Date().toLocaleTimeString(); // Hora actual
             const date = new Date().toLocaleDateString("es-ES"); // Fecha actual
-            const message = "Registro manual"; // Mensaje por defecto
+            if (type === "entrada") {
+                const message = "Usted ha realizado un registro de entrada el dia: " + date + " a las: " + time;
+            } else if (type === "salida") {
+                const message = "Usted ha realizado un registro de salida el dia: " + date + " a las: " + time; 
+            }            
 
             registerEntry(code, time, date, type, message);
         });
@@ -180,15 +184,19 @@
         // Registrar entrada por escáner
         document.getElementById('register-scan-btn').addEventListener('click', () => {
             const code = document.getElementById('scanner-result').value;
-            const type = document.getElementById('scanner-entry-type').value;
+            const type = document.getElementById('scanner-entry-type').value;  // Obtener el tipo desde el selector
             const time = new Date().toLocaleTimeString(); // Hora actual
             const date = new Date().toLocaleDateString("es-ES"); // Fecha actual
-            const message = "Código escaneado"; // Mensaje por defecto
+            if (type === "entrada") {
+                const message = "Usted ha realizado un registro de entrada el dia: " + date + " a las: " + time;
+            } else if (type === "salida") {
+                const message = "Usted ha realizado un registro de salida el dia: " + date + " a las: " + time; 
+            }  
 
             registerEntry(code, time, date, type, message);
         });
 
-        // Función para registrar entrada
+        // Función para registrar entrada en la base de datos
         async function registerEntry(clave, hr, date, typeR, message) {
             if (!clave || !hr || !date || !typeR || !message) {
                 alert('Faltan datos para registrar la entrada.');
