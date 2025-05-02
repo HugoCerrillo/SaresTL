@@ -29,7 +29,6 @@
         </div>
     </div>
 
-
     <!-- Contenido principal -->
     <div class="main-content">
         <div class="welcome-text">
@@ -81,12 +80,20 @@
                 <form id="editForm">
                     <input type="hidden" id="editId">
                     <div class="form-group">
+                        <label for="editClaveUsuario">Clave Usuario:</label>
+                        <input type="text" id="editClaveUsuario" class="form-control" required>
+                    </div>
+                    <div class="form-group">
                         <label for="editNombre">Nombre:</label>
                         <input type="text" id="editNombre" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="editDepartamento">Departamento:</label>
-                        <input type="text" id="editDepartamento" class="form-control" required>
+                        <label for="editFecha">Fecha:</label>
+                        <input type="date" id="editFecha" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editHora">Hora:</label>
+                        <input type="time" id="editHora" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label for="editRol">Rol:</label>
@@ -98,18 +105,14 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="editEstatus">Estatus:</label>
-                        <select id="editEstatus" class="form-control" required>
-                            <option value="Activo">Activo</option>
-                            <option value="Inactivo">Inactivo</option>
-                        </select>
+                        <label for="editTipoUsuario">Tipo Usuario:</label>
+                        <input type="text" id="editTipoUsuario" class="form-control" required>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary close-modal">Cancelar</button>
-                <button class="btn btn-primary" id="saveEdit">Guardar
-                    Cambios</button>
+                <button class="btn btn-primary" id="saveEdit">Guardar Cambios</button>
             </div>
         </div>
     </div>
@@ -122,8 +125,7 @@
                 <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <p>¿Está seguro que desea eliminar este registro? Esta
-                    acción no se puede deshacer.</p>
+                <p>¿Está seguro que desea eliminar este registro? Esta acción no se puede deshacer.</p>
                 <input type="hidden" id="deleteId">
             </div>
             <div class="modal-footer">
@@ -287,6 +289,7 @@
         // Llamar a la función al cargar la página
         obtenerDatosUsuario();
 
+
         // Llamar a la API para obtener los registros
         async function obtenerDatos() {
             try {
@@ -330,10 +333,10 @@
                 nombreCell.textContent = item.nombreUsuario;
 
                 const fechaCell = document.createElement('td');
-                fechaCell.textContent = item.fechaR;  // Aquí puedes formatear la fecha si es necesario
+                fechaCell.textContent = item.fechaR;
 
                 const horaCell = document.createElement('td');
-                horaCell.textContent = item.horaR;  // Si es un campo hora, puedes formatearlo
+                horaCell.textContent = item.horaR;
 
                 const rolCell = document.createElement('td');
                 rolCell.textContent = item.tipoR;
@@ -383,60 +386,37 @@
             document.getElementById('editRol').value = item.tipoR;
             document.getElementById('editTipoUsuario').value = item.tipoUsuario;
 
-            document.getElementById('editModal').classList.add('active');
+            const modal = document.getElementById('editModal');
+            modal.classList.add('open');
         }
 
-        // Función para guardar los cambios de edición
-        function saveEdit() {
-            const id = parseInt(document.getElementById('editId').value);
-            const claveUsuario = document.getElementById('editClaveUsuario').value;
-            const nombre = document.getElementById('editNombre').value;
-            const fecha = document.getElementById('editFecha').value;
-            const hora = document.getElementById('editHora').value;
-            const rol = document.getElementById('editRol').value;
-            const tipoUsuario = document.getElementById('editTipoUsuario').value;
-
-            // Actualiza la tabla con el nuevo registro (esto es solo para demostración, en un caso real deberías hacer una solicitud PUT)
-            alert(`Editando registro con ID: ${id}, Clave Usuario: ${claveUsuario}, Nombre: ${nombre}, Fecha: ${fecha}, Hora: ${hora}, Rol: ${rol}, Tipo Usuario: ${tipoUsuario}`);
-            closeModals();
+        // Función para cerrar el modal de edición
+        function closeEditModal() {
+            const modal = document.getElementById('editModal');
+            modal.classList.remove('open');
         }
 
         // Función para abrir el modal de eliminación
         function openDeleteModal(id) {
             document.getElementById('deleteId').value = id;
-            document.getElementById('deleteModal').classList.add('active');
+            const modal = document.getElementById('deleteModal');
+            modal.classList.add('open');
         }
 
-        // Función para confirmar la eliminación
-        function confirmDelete() {
-            const id = document.getElementById('deleteId').value;
-
-            // Eliminar el registro (en un caso real deberías hacer una solicitud DELETE)
-            alert(`Eliminando registro con ID: ${id}`);
-            closeModals();
+        // Función para cerrar el modal de eliminación
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            modal.classList.remove('open');
         }
 
-        // Función para cerrar los modales
-        function closeModals() {
-            document.querySelectorAll('.modal-overlay').forEach(modal => modal.classList.remove('active'));
-        }
+        // Llamar a la función para obtener los datos
+        window.onload = obtenerDatos;
 
-        // Filtro en tiempo real
-        document.getElementById('searchInput').addEventListener('input', function () {
-            const searchTerm = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#dataTable tbody tr');
-            rows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                const matches = Array.from(cells).some(cell => cell.textContent.toLowerCase().includes(searchTerm));
-                row.style.display = matches ? '' : 'none';
-            });
+        // Agregar eventos para cerrar modales
+        const closeEditBtns = document.querySelectorAll('.close-modal');
+        closeEditBtns.forEach(btn => {
+            btn.addEventListener('click', closeEditModal);
         });
-
-        // Cargar los datos cuando se cargue la página
-        document.addEventListener('DOMContentLoaded', function () {
-            obtenerDatos();
-        });
-
     </script>
 </body>
 
