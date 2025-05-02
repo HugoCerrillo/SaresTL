@@ -83,11 +83,11 @@
             };
 
             try {
-                // Enviar la solicitud POST al servidor
-                const response = await fetch('/api/register', {
+                // Enviar la solicitud POST al servidor en PythonAnywhere
+                const response = await fetch('https://hugoc.pythonanywhere.com/api/register', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(formData)
                 });
