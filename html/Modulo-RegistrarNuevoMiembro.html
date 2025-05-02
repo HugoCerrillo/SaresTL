@@ -144,10 +144,12 @@
                             <label for="member-tipo" class="required">Tipo</label>
                             <select class="form-control" id="member-tipo" required>
                                 <option value="">Seleccionar tipo</option>
-                                <option value="Administrador">Administrador</option>
-                                <option value="Docente">Docente</option>
                                 <option value="Estudiante">Estudiante</option>
+                                <option value="Docente">Docente</option>
+                                <option value="Administrador">Administrador</option>
+                                <option value="Administrativo">Administrativo</option>
                                 <option value="Guardia">Guardia</option>
+                                <option value="Intendente">Intendente</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -331,8 +333,6 @@
         // Llamar a la función al cargar la página
         obtenerDatosUsuario();
 
-        // Datos de ejemplo eliminados, vamos a obtenerlos desde la API
-
         // Referencias a elementos DOM
         const membersTable = document.getElementById('members-table');
         const paginationInfo = document.getElementById('pagination-info');
@@ -348,12 +348,15 @@
 
         // Datos iniciales
         let membersData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        let entriesPerPage = 5;
 
         // Función para obtener miembros de la API
         async function fetchMembers() {
             try {
                 const response = await fetch('https://hugoc.pythonanywhere.com/api/obtain_institution_members', {
-                    method: 'POST',
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                     }
@@ -419,15 +422,23 @@
             });
         }
 
+        // Función para abrir el modal en modo nuevo miembro
+        function openNewMemberModal() {
+            editModeInput.value = 'false'; // No es edición
+            modalTitle.textContent = 'Registrar Nuevo Miembro'; // Cambiar título
+            memberForm.reset(); // Limpiamos el formulario
+            memberModal.classList.add('active'); // Mostramos el modal
+        }
+
         // Función para abrir el modal en modo edición
         function openEditModal(clave) {
             const member = membersData.find(m => m.clave === clave);
 
             if (member) {
-                editModeInput.value = 'true';
-                modalTitle.textContent = 'Editar Miembro';
+                editModeInput.value = 'true'; // Modo edición
+                modalTitle.textContent = 'Editar Miembro'; // Cambiar título
 
-                // Llenar el formulario con los datos del miembro
+                // Rellenar los campos con los datos del miembro
                 document.getElementById('member-clave').value = member.clave;
                 document.getElementById('member-nombre').value = member.nombre;
                 document.getElementById('member-correo').value = member.correo;
@@ -437,12 +448,13 @@
                 document.getElementById('member-area').value = member.area;
                 document.getElementById('member-estado').value = member.estado;
 
-                memberModal.classList.add('active');
+                memberModal.classList.add('active'); // Mostrar el modal
             }
         }
 
         // Función para guardar un miembro (nuevo o editado)
-        function saveMember() {
+        async function saveMember() {
+            // Obtener los valores del formulario
             const clave = document.getElementById('member-clave').value;
             const nombre = document.getElementById('member-nombre').value;
             const correo = document.getElementById('member-correo').value;
@@ -465,35 +477,67 @@
 
             const isEditMode = editModeInput.value === 'true';
 
-            if (isEditMode) {
-                // Actualizar miembro existente
-                const index = membersData.findIndex(m => m.clave === clave);
-                if (index !== -1) {
-                    membersData[index] = member;
-                }
-            } else {
-                const exists = membersData.some(m => m.clave === clave);
-                if (exists) {
-                    alert('¡Error! Ya existe un miembro con esa clave.');
-                    return;
-                }
-                membersData.push(member);
-            }
+            try {
+                if (isEditMode) {
+                    // Si es modo edición, enviamos el miembro editado
+                    const response = await fetch(`https://hugoc.pythonanywhere.com/api/update_member`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(member)
+                    });
 
-            filteredData = [...membersData];
-            if (searchInput.value) {
-                filterData();
-            } else {
-                renderTable();
-            }
+                    const data = await response.json();
+                    if (response.ok && data.status === 'success') {
+                        // Actualizamos los miembros locales
+                        const index = membersData.findIndex(m => m.clave === clave);
+                        if (index !== -1) {
+                            membersData[index] = member;
+                        }
+                        alert('Miembro actualizado con éxito');
+                    } else {
+                        alert('Error al actualizar el miembro: ' + data.message);
+                    }
+                } else {
+                    // Si es modo nuevo, enviamos la solicitud para crear un nuevo miembro
+                    const response = await fetch('https://hugoc.pythonanywhere.com/api/register_members_institution', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(member)
+                    });
 
-            closeModal();
+                    const data = await response.json();
+                    if (response.ok && data.status === 'success') {
+                        // Agregamos el nuevo miembro a la lista local
+                        membersData.push(member);
+                        alert('Miembro registrado con éxito');
+                    } else {
+                        alert('Error al registrar el miembro: ' + data.message);
+                    }
+                }
+
+                // Actualizamos la tabla después de guardar
+                filteredData = [...membersData];
+                if (searchInput.value) {
+                    filterData();
+                } else {
+                    renderTable();
+                }
+
+                closeModal(); // Cerrar el modal después de guardar
+            } catch (error) {
+                console.error('Error al guardar el miembro:', error);
+                alert('Hubo un error al guardar el miembro. Intenta nuevamente.');
+            }
         }
 
         // Función para cerrar el modal
         function closeModal() {
-            memberModal.classList.remove('active');
-            memberForm.reset();
+            memberModal.classList.remove('active'); // Ocultar el modal
+            memberForm.reset(); // Limpiar formulario al cerrarlo
         }
 
         // Event listeners
@@ -524,147 +568,13 @@
             if (memberForm.checkValidity()) {
                 saveMember();
             } else {
-                alert('Por favor complete todos los campos obligatorios');
-                const submitButton = document.createElement('button');
-                submitButton.style.display = 'none';
-                memberForm.appendChild(submitButton);
-                submitButton.click();
-                memberForm.removeChild(submitButton);
+                alert('Por favor, completa todos los campos correctamente.');
             }
         });
 
-        // Llamar a la función para obtener los datos al cargar la página
+        // Inicializar datos y renderizar la tabla
         fetchMembers();
 
-        // Función para filtrar los datos
-        function filterData() {
-            const searchTerm = searchInput.value.toLowerCase();
-            filteredData = membersData.filter(member => {
-                return (
-                    member.clave.toLowerCase().includes(searchTerm) ||
-                    member.nombre.toLowerCase().includes(searchTerm) ||
-                    member.correo.toLowerCase().includes(searchTerm) ||
-                    member.tipo.toLowerCase().includes(searchTerm) ||
-                    member.area.toLowerCase().includes(searchTerm)
-                );
-            });
-
-            currentPage = 1;
-            renderTable();
-        }
-
-        // Función para abrir el modal en modo nuevo miembro
-        function openNewMemberModal() {
-            // Establecemos que estamos en modo de creación
-            editModeInput.value = 'false'; // No es edición
-            modalTitle.textContent = 'Registrar Nuevo Miembro'; // Cambiar título
-            memberForm.reset(); // Limpiamos el formulario
-            memberModal.classList.add('active'); // Mostramos el modal
-        }
-
-        // Función para abrir el modal en modo edición
-        function openEditModal(clave) {
-            const member = membersData.find(m => m.clave === clave);
-
-            if (member) {
-                // Establecemos que estamos en modo de edición
-                editModeInput.value = 'true'; // Modo edición
-                modalTitle.textContent = 'Editar Miembro'; // Cambiar título
-
-                // Rellenar los campos con los datos del miembro
-                document.getElementById('member-clave').value = member.clave;
-                document.getElementById('member-nombre').value = member.nombre;
-                document.getElementById('member-correo').value = member.correo;
-                document.querySelector(`input[name="member-genero"][value="${member.genero}"]`).checked = true;
-                document.getElementById('member-tipo').value = member.tipo;
-                document.getElementById('member-edad').value = member.edad;
-                document.getElementById('member-area').value = member.area;
-                document.getElementById('member-estado').value = member.estado;
-
-                memberModal.classList.add('active'); // Mostrar el modal
-            }
-        }
-
-        // Función para cerrar el modal
-        function closeModal() {
-            memberModal.classList.remove('active'); // Ocultar el modal
-            memberForm.reset(); // Limpiar formulario al cerrarlo
-        }
-
-        // Event listeners
-
-        // Abrir el modal para registrar un nuevo miembro
-        newMemberBtn.addEventListener('click', openNewMemberModal);
-
-        // Cerrar el modal
-        document.querySelector('.close-modal').addEventListener('click', closeModal);
-        document.querySelector('.close-modal-btn').addEventListener('click', closeModal);
-
-        // Guardar el miembro (nuevo o editado)
-        document.getElementById('save-member').addEventListener('click', (e) => {
-            e.preventDefault();
-
-            // Validar formulario
-            if (memberForm.checkValidity()) {
-                saveMember();
-            } else {
-                alert('Por favor complete todos los campos obligatorios');
-            }
-        });
-
-        // Función para guardar un miembro (nuevo o editado)
-        function saveMember() {
-            // Obtener los valores del formulario
-            const clave = document.getElementById('member-clave').value;
-            const nombre = document.getElementById('member-nombre').value;
-            const correo = document.getElementById('member-correo').value;
-            const genero = document.querySelector('input[name="member-genero"]:checked').value;
-            const tipo = document.getElementById('member-tipo').value;
-            const edad = parseInt(document.getElementById('member-edad').value);
-            const area = document.getElementById('member-area').value;
-            const estado = document.getElementById('member-estado').value;
-
-            const member = {
-                clave,
-                nombre,
-                correo,
-                genero,
-                tipo,
-                edad,
-                area,
-                estado
-            };
-
-            const isEditMode = editModeInput.value === 'true';
-
-            if (isEditMode) {
-                // Actualizar miembro existente
-                const index = membersData.findIndex(m => m.clave === clave);
-                if (index !== -1) {
-                    membersData[index] = member;
-                }
-            } else {
-                // Verificar si la clave ya existe
-                const exists = membersData.some(m => m.clave === clave);
-                if (exists) {
-                    alert('¡Error! Ya existe un miembro con esa clave.');
-                    return;
-                }
-                // Agregar nuevo miembro
-                membersData.push(member);
-            }
-
-            // Actualizar los datos filtrados y la tabla
-            filteredData = [...membersData];
-            if (searchInput.value) {
-                filterData();
-            } else {
-                renderTable();
-            }
-
-            // Cerrar el modal
-            closeModal();
-        }
 
     </script>
 
