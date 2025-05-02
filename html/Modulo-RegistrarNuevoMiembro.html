@@ -376,6 +376,23 @@
             }
         }
 
+        // Función para filtrar los datos
+        function filterData() {
+            const searchTerm = searchInput.value.toLowerCase(); // Obtener el término de búsqueda
+            filteredData = membersData.filter(member => {
+                return (
+                    member.clave.toLowerCase().includes(searchTerm) ||
+                    member.nombre.toLowerCase().includes(searchTerm) ||
+                    member.correo.toLowerCase().includes(searchTerm) ||
+                    member.tipo.toLowerCase().includes(searchTerm) ||
+                    member.area.toLowerCase().includes(searchTerm)
+                );
+            });
+
+            currentPage = 1;  // Resetear la página a la 1
+            renderTable();  // Volver a renderizar la tabla con los datos filtrados
+        }
+
         // Función para renderizar la tabla
         function renderTable() {
             const startIndex = (currentPage - 1) * entriesPerPage;
@@ -522,7 +539,7 @@
                 // Actualizamos la tabla después de guardar
                 filteredData = [...membersData];
                 if (searchInput.value) {
-                    filterData();
+                    filterData(); // Filtramos si hay búsqueda activa
                 } else {
                     renderTable();
                 }
@@ -541,7 +558,7 @@
         }
 
         // Event listeners
-        searchInput.addEventListener('input', filterData);
+        searchInput.addEventListener('input', filterData);  // Llamar filterData cuando se haga una búsqueda
         entriesDropdown.addEventListener('change', () => {
             entriesPerPage = parseInt(entriesDropdown.value);
             currentPage = 1;
@@ -574,7 +591,6 @@
 
         // Inicializar datos y renderizar la tabla
         fetchMembers();
-
 
     </script>
 
