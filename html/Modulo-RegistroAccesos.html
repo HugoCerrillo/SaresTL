@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="../css/Modulo-RegistroAccesos.css">
     <link rel="stylesheet" href="../css/genericDesign.css">
     <title>Registro Accesos</title>
+    <!-- Agregar librería Luxon -->
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.3.0/build/global/luxon.min.js"></script>
 </head>
 <body>
     <div class="header">
@@ -132,15 +134,18 @@
             menu.classList.toggle('open');
         }
 
-        // Función para actualizar la fecha y hora
+        // Función para actualizar la fecha y hora (utilizando Luxon para la zona horaria de CDMX)
         function updateDateTime() {
-            const now = new Date();
-            
+            const DateTime = luxon.DateTime;
+
+            // Obtener la fecha y hora en la zona horaria de Ciudad de México (America/Mexico_City)
+            const now = DateTime.now().setZone('America/Mexico_City');
+
             // Formateo de la fecha en formato YYYY-MM-DD
-            const dateStr = now.toISOString().split('T')[0];
+            const dateStr = now.toFormat('yyyy-MM-dd');
             
             // Formateo de la hora en formato HH:mm:ss
-            const timeStr = now.toISOString().split('T')[1].split('.')[0];
+            const timeStr = now.toFormat('HH:mm:ss');
             
             document.getElementById('current-date').textContent = dateStr;
             document.getElementById('current-time').textContent = timeStr;
@@ -175,11 +180,12 @@
         document.getElementById('register-btn').addEventListener('click', () => {
             const code = document.getElementById('manual-input').value;
             const type = document.getElementById('entry-type').value;
-            
+
             // Obtener fecha y hora formateadas
-            const now = new Date();
-            const date = now.toISOString().split('T')[0]; // YYYY-MM-DD
-            const time = now.toISOString().split('T')[1].split('.')[0]; // HH:mm:ss
+            const DateTime = luxon.DateTime;
+            const now = DateTime.now().setZone('America/Mexico_City');
+            const date = now.toFormat('yyyy-MM-dd'); // YYYY-MM-DD
+            const time = now.toFormat('HH:mm:ss'); // HH:mm:ss
 
             let message = "Vacio";
             if (type === "entrada") {
@@ -195,11 +201,12 @@
         document.getElementById('register-scan-btn').addEventListener('click', () => {
             const code = document.getElementById('scanner-result').value;
             const type = document.getElementById('scanner-entry-type').value;
-            
+
             // Obtener fecha y hora formateadas
-            const now = new Date();
-            const date = now.toISOString().split('T')[0]; // YYYY-MM-DD
-            const time = now.toISOString().split('T')[1].split('.')[0]; // HH:mm:ss
+            const DateTime = luxon.DateTime;
+            const now = DateTime.now().setZone('America/Mexico_City');
+            const date = now.toFormat('yyyy-MM-dd'); // YYYY-MM-DD
+            const time = now.toFormat('HH:mm:ss'); // HH:mm:ss
 
             let message = "Vacio";
             if (type === "entrada") {
