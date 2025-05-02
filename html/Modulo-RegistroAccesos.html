@@ -170,8 +170,8 @@
         document.getElementById('register-btn').addEventListener('click', () => {
             const code = document.getElementById('manual-input').value;
             const type = document.getElementById('entry-type').value;  // Obtener el tipo desde el selector
-            const time = new Date().toLocaleTimeString(); // Hora actual
-            const date = new Date().toLocaleDateString("es-ES"); // Fecha actual
+            const time = now.toLocaleTimeString("es-ES"); // Hora actual 
+            const date = now.toLocaleDateString("es-ES"); // Fecha actual
             message = "Vacio";
             if (type === "entrada") {
                 message = "Usted ha realizado un registro de entrada el dia: " + date + " a las: " + time;
@@ -186,8 +186,8 @@
         document.getElementById('register-scan-btn').addEventListener('click', () => {
             const code = document.getElementById('scanner-result').value;
             const type = document.getElementById('scanner-entry-type').value;  // Obtener el tipo desde el selector
-            const time = new Date().toLocaleTimeString(); // Hora actual
-            const date = new Date().toLocaleDateString("es-ES"); // Fecha actual
+            const time = now.toLocaleTimeString("es-ES"); // Hora actual 
+            const date = now.toLocaleDateString("es-ES"); // Fecha actual
             message = "Vacio";
             if (type === "entrada") {
                 message = "Usted ha realizado un registro de entrada el dia: " + date + " a las: " + time;
