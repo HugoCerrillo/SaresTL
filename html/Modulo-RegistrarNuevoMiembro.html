@@ -553,6 +553,119 @@
             renderTable();
         }
 
+        // Función para abrir el modal en modo nuevo miembro
+        function openNewMemberModal() {
+            // Establecemos que estamos en modo de creación
+            editModeInput.value = 'false'; // No es edición
+            modalTitle.textContent = 'Registrar Nuevo Miembro'; // Cambiar título
+            memberForm.reset(); // Limpiamos el formulario
+            memberModal.classList.add('active'); // Mostramos el modal
+        }
+
+        // Función para abrir el modal en modo edición
+        function openEditModal(clave) {
+            const member = membersData.find(m => m.clave === clave);
+
+            if (member) {
+                // Establecemos que estamos en modo de edición
+                editModeInput.value = 'true'; // Modo edición
+                modalTitle.textContent = 'Editar Miembro'; // Cambiar título
+
+                // Rellenar los campos con los datos del miembro
+                document.getElementById('member-clave').value = member.clave;
+                document.getElementById('member-nombre').value = member.nombre;
+                document.getElementById('member-correo').value = member.correo;
+                document.querySelector(`input[name="member-genero"][value="${member.genero}"]`).checked = true;
+                document.getElementById('member-tipo').value = member.tipo;
+                document.getElementById('member-edad').value = member.edad;
+                document.getElementById('member-area').value = member.area;
+                document.getElementById('member-estado').value = member.estado;
+
+                memberModal.classList.add('active'); // Mostrar el modal
+            }
+        }
+
+        // Función para cerrar el modal
+        function closeModal() {
+            memberModal.classList.remove('active'); // Ocultar el modal
+            memberForm.reset(); // Limpiar formulario al cerrarlo
+        }
+
+        // Event listeners
+
+        // Abrir el modal para registrar un nuevo miembro
+        newMemberBtn.addEventListener('click', openNewMemberModal);
+
+        // Cerrar el modal
+        document.querySelector('.close-modal').addEventListener('click', closeModal);
+        document.querySelector('.close-modal-btn').addEventListener('click', closeModal);
+
+        // Guardar el miembro (nuevo o editado)
+        document.getElementById('save-member').addEventListener('click', (e) => {
+            e.preventDefault();
+
+            // Validar formulario
+            if (memberForm.checkValidity()) {
+                saveMember();
+            } else {
+                alert('Por favor complete todos los campos obligatorios');
+            }
+        });
+
+        // Función para guardar un miembro (nuevo o editado)
+        function saveMember() {
+            // Obtener los valores del formulario
+            const clave = document.getElementById('member-clave').value;
+            const nombre = document.getElementById('member-nombre').value;
+            const correo = document.getElementById('member-correo').value;
+            const genero = document.querySelector('input[name="member-genero"]:checked').value;
+            const tipo = document.getElementById('member-tipo').value;
+            const edad = parseInt(document.getElementById('member-edad').value);
+            const area = document.getElementById('member-area').value;
+            const estado = document.getElementById('member-estado').value;
+
+            const member = {
+                clave,
+                nombre,
+                correo,
+                genero,
+                tipo,
+                edad,
+                area,
+                estado
+            };
+
+            const isEditMode = editModeInput.value === 'true';
+
+            if (isEditMode) {
+                // Actualizar miembro existente
+                const index = membersData.findIndex(m => m.clave === clave);
+                if (index !== -1) {
+                    membersData[index] = member;
+                }
+            } else {
+                // Verificar si la clave ya existe
+                const exists = membersData.some(m => m.clave === clave);
+                if (exists) {
+                    alert('¡Error! Ya existe un miembro con esa clave.');
+                    return;
+                }
+                // Agregar nuevo miembro
+                membersData.push(member);
+            }
+
+            // Actualizar los datos filtrados y la tabla
+            filteredData = [...membersData];
+            if (searchInput.value) {
+                filterData();
+            } else {
+                renderTable();
+            }
+
+            // Cerrar el modal
+            closeModal();
+        }
+
     </script>
 
 </body>
