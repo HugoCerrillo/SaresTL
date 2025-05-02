@@ -170,29 +170,58 @@
         document.getElementById('register-btn').addEventListener('click', () => {
             const code = document.getElementById('manual-input').value;
             const type = document.getElementById('entry-type').value;
-            registerEntry(code, type);
+            const time = new Date().toLocaleTimeString(); // Hora actual
+            const date = new Date().toLocaleDateString("es-ES"); // Fecha actual
+            const message = "Registro manual"; // Mensaje por defecto
+
+            registerEntry(code, time, date, type, message);
         });
 
         // Registrar entrada por escáner
         document.getElementById('register-scan-btn').addEventListener('click', () => {
             const code = document.getElementById('scanner-result').value;
             const type = document.getElementById('scanner-entry-type').value;
-            registerEntry(code, type);
+            const time = new Date().toLocaleTimeString(); // Hora actual
+            const date = new Date().toLocaleDateString("es-ES"); // Fecha actual
+            const message = "Código escaneado"; // Mensaje por defecto
+
+            registerEntry(code, time, date, type, message);
         });
 
         // Función para registrar entrada
-        function registerEntry(code, type) {
-            if (!code) {
-                alert("Por favor, ingresa un código válido");
+        async function registerEntry(clave, hr, date, typeR, message) {
+            if (!clave || !hr || !date || !typeR || !message) {
+                alert('Faltan datos para registrar la entrada.');
                 return;
             }
-            const time = new Date().toLocaleTimeString();
-            document.getElementById('last-code').textContent = code;
-            document.getElementById('last-type').textContent = type;
-            document.getElementById('last-time').textContent = time;
 
-            // Aquí deberías hacer la llamada a la API para guardar los datos
-            console.log(`Registrando: Clave: ${code}, Tipo: ${type}, Hora: ${time}`);
+            try {
+                const response = await fetch('https://hugoc.pythonanywhere.com/api/register_entries', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        clave,
+                        hr,
+                        date,
+                        typeR,
+                        message
+                    })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Registro exitoso');
+                    document.getElementById('last-code').textContent = clave;
+                    document.getElementById('last-type').textContent = typeR;
+                    document.getElementById('last-time').textContent = hr;
+                } else {
+                    alert(`Error: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error de conexión:', error);
+                alert('Error al registrar el acceso.');
+            }
         }
 
         // Iniciar el escáner
