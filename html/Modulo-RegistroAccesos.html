@@ -135,8 +135,13 @@
         // Función para actualizar la fecha y hora
         function updateDateTime() {
             const now = new Date();
-            const dateStr = now.toLocaleDateString("es-ES");
-            const timeStr = now.toLocaleTimeString("es-ES");
+            
+            // Formateo de la fecha en formato YYYY-MM-DD
+            const dateStr = now.toISOString().split('T')[0];
+            
+            // Formateo de la hora en formato HH:mm:ss
+            const timeStr = now.toISOString().split('T')[1].split('.')[0];
+            
             document.getElementById('current-date').textContent = dateStr;
             document.getElementById('current-time').textContent = timeStr;
         }
@@ -169,15 +174,19 @@
         // Registrar entrada manual
         document.getElementById('register-btn').addEventListener('click', () => {
             const code = document.getElementById('manual-input').value;
-            const type = document.getElementById('entry-type').value;  // Obtener el tipo desde el selector
-            const time = document.getElementById('current-time').value // Hora actual 
-            const date = document.getElementById('current-date').value // Fecha actual
-            message = "Vacio";
+            const type = document.getElementById('entry-type').value;
+            
+            // Obtener fecha y hora formateadas
+            const now = new Date();
+            const date = now.toISOString().split('T')[0]; // YYYY-MM-DD
+            const time = now.toISOString().split('T')[1].split('.')[0]; // HH:mm:ss
+
+            let message = "Vacio";
             if (type === "entrada") {
                 message = "Usted ha realizado un registro de entrada el dia: " + date + " a las: " + time;
             } else if (type === "salida") {
-                message = "Usted ha realizado un registro de salida el dia: " + date + " a las: " + time; 
-            }           
+                message = "Usted ha realizado un registro de salida el dia: " + date + " a las: " + time;
+            }
 
             registerEntry(code, time, date, type, message);
         });
@@ -185,15 +194,19 @@
         // Registrar entrada por escáner
         document.getElementById('register-scan-btn').addEventListener('click', () => {
             const code = document.getElementById('scanner-result').value;
-            const type = document.getElementById('scanner-entry-type').value;  // Obtener el tipo desde el selector
-            const time = document.getElementById('current-time').value // Hora actual 
-            const date = document.getElementById('current-date').value // Fecha actual
-            message = "Vacio";
+            const type = document.getElementById('scanner-entry-type').value;
+            
+            // Obtener fecha y hora formateadas
+            const now = new Date();
+            const date = now.toISOString().split('T')[0]; // YYYY-MM-DD
+            const time = now.toISOString().split('T')[1].split('.')[0]; // HH:mm:ss
+
+            let message = "Vacio";
             if (type === "entrada") {
                 message = "Usted ha realizado un registro de entrada el dia: " + date + " a las: " + time;
             } else if (type === "salida") {
-                message = "Usted ha realizado un registro de salida el dia: " + date + " a las: " + time; 
-            }  
+                message = "Usted ha realizado un registro de salida el dia: " + date + " a las: " + time;
+            }
 
             registerEntry(code, time, date, type, message);
         });
@@ -232,66 +245,6 @@
                 console.error('Error de conexión:', error);
                 alert('Error al registrar el acceso.');
             }
-        }
-
-        // Iniciar el escáner
-        let videoStream;
-        document.getElementById('start-scanner').addEventListener('click', () => {
-            startScanner();
-        });
-
-        function startScanner() {
-            const scannerMessage = document.getElementById('scanner-overlay');
-            scannerMessage.style.display = 'none';
-            const video = document.getElementById('scanner-video');
-
-            // Acceder a la cámara
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-                .then((stream) => {
-                    videoStream = stream;
-                    video.srcObject = stream;
-                    video.play();
-
-                    // Iniciar Quagga para el escaneo de código de barras
-                    Quagga.init({
-                        inputStream: {
-                            name: "Live",
-                            type: "LiveStream",
-                            target: video,    // HTML video element
-                            constraints: {
-                                facingMode: "environment"
-                            }
-                        },
-                        decoder: {
-                            readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader"] // Agregar más tipos según sea necesario
-                        },
-                    }, function(err) {
-                        if (err) {
-                            console.error(err);
-                            alert('Error al iniciar el escáner.');
-                            return;
-                        }
-                        Quagga.start();
-                    });
-
-                    // Procesar el código escaneado
-                    Quagga.onDetected(function(result) {
-                        const code = result.codeResult.code;
-                        document.getElementById('scanner-result').value = code;
-                    });
-                })
-                .catch((err) => {
-                    console.error('Error al acceder a la cámara', err);
-                    alert('No se pudo acceder a la cámara');
-                });
-        }
-
-        // Detener el escáner
-        function stopScanner() {
-            if (videoStream) {
-                videoStream.getTracks().forEach(track => track.stop());
-            }
-            Quagga.stop();
         }
     </script>
 </body>
