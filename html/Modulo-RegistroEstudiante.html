@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="../img/sares.jpeg" type="image/x-icon">
     <link rel="stylesheet" href="../css/Modulo-Registros.css">
-    <title>Registro Alumno</title>
+    <title>Registro de Estudiantes</title>
 </head>
 
 <body>
@@ -18,12 +18,13 @@
                 <img src="../img/tec.png" alt="ITL Logo">
                 <img src="../img/sares.jpeg" alt="SARES Logo">
             </div>
-            <h1>Registro de estudiantes</h1>
+            <h1>Registro de Estudiantes</h1>
             <img src="../img/person-circle.svg" class="icon" alt="User Icon">
-            <form action="../php/procesar.php" method="POST">
+            <form id="registerForm" method="POST">
                 <div>
                     <input type="hidden" id="formulario" name="formulario" value="studentType">
                 </div>
+
                 <label for="nombre">Nombre:</label>
                 <input type="text" id="name" name="name" required>
 
@@ -35,10 +36,8 @@
                     <option value="">Seleccione una opción</option>
                     <option value="Ingeniería en Gestión Empresarial">Ingeniería en Gestión Empresarial</option>
                     <option value="Ingeniería Industrial">Ingeniería Industrial</option>
-                    <option value="Ingeniería en Sistemas Computacionales">Ingeniería en Sistemas Computacionales
-                    </option>
-                    <option value="Ingeniería en Tecnologías de la Información y Comunicación">Ingeniería en
-                        Tecnologías de la Información y Comunicación</option>
+                    <option value="Ingeniería en Sistemas Computacionales">Ingeniería en Sistemas Computacionales</option>
+                    <option value="Ingeniería en Tecnologías de la Información y Comunicación">Ingeniería en Tecnologías de la Información y Comunicación</option>
                     <option value="Ingeniería en Logística">Ingeniería en Logística</option>
                     <option value="Ingeniería en Electromecánica">Ingeniería en Electromecánica</option>
                     <option value="Ingeniería en Electrónica">Ingeniería en Electrónica</option>
@@ -65,7 +64,6 @@
                 <label for="usuario">Usuario:</label>
                 <input type="text" id="user" name="user" required>
 
-                
                 <label for="contrasena">Contraseña:</label>
                 <input type="password" id="password" name="password" required>
 
@@ -73,6 +71,89 @@
             </form>
         </div>
     </div>
+
+    <script>
+        // Obtener el formulario y el contenedor para el mensaje de respuesta
+        const form = document.getElementById('registerForm');
+
+        // Evento de envío del formulario
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();  // Evitar que se recargue la página
+
+            // Obtener los datos del formulario
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                department: document.getElementById('career').value,
+                semester: document.getElementById('semester').value,
+                phoneNumber: document.getElementById('phoneNumber').value,
+                gender: document.getElementById('gender').value,
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                user: document.getElementById('user').value,
+                password: document.getElementById('password').value,
+                userType: 'Estudiante'  // Tipo de usuario "Estudiante"
+            };
+
+            try {
+                // Enviar la solicitud POST al servidor
+                const response = await fetch('https://hugoc.pythonanywhere.com/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                // Manejar la respuesta del servidor
+                if (response.ok) {
+                    Swal.fire({
+                        title: "¡Éxito!",
+                        text: "Te has registrado correctamente como estudiante en el sistema SaresTL",
+                        icon: "success",
+                        background: "#1C1766",  // Fondo personalizado
+                        color: "#ffffff",       // Texto en color blanco
+                        confirmButtonColor: "#3085d6",
+                        confirmButtonText: "Aceptar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html";                            
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: "¡Error!",
+                        text: "Ha ocurrido un error al registrar el estudiante: " + data.message,
+                        icon: "error",
+                        background: "#1C1766",  // Fondo personalizado
+                        color: "#ffffff",       // Texto en color blanco
+                        confirmButtonColor: "#3085d6",  
+                        confirmButtonText: "Aceptar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-RegistroEstudiante.html";                        
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+                Swal.fire({
+                    title: "¡Error!",
+                    text: "Error al conectar con el servidor: " + error.message,
+                    icon: "error",
+                    background: "#1C1766",  // Fondo personalizado
+                    color: "#ffffff",       // Texto en color blanco
+                    confirmButtonColor: "#3085d6",  
+                    confirmButtonText: "Aceptar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-RegistroEstudiante.html";                            
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

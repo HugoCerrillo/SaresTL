@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="../img/sares.jpeg" type="image/x-icon">
     <link rel="stylesheet" href="../css/Modulo-Registros.css">
-    <title>Registro personal</title>
+    <title>Registro de Personal de Intendencia</title>
 </head>
 
 <body>
@@ -20,21 +20,24 @@
             </div>
             <h1>Registro de personal de intendencia</h1>
             <img src="../img/person-circle.svg" class="icon" alt="User Icon">
-            <form action="../php/procesar.php" method="POST">
-            <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" required>
+            <form id="registerForm">
+                <div>
+                    <input type="hidden" id="formulario" name="formulario" value="intendenteType">
+                </div>
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="name" name="name" required>
 
-                <label for="correo">Correo:</label>
-                <input type="email" id="correo" name="correo" required>
+                <label for="correo">Correo Institucional:</label>
+                <input type="email" id="email" name="email" required>
 
                 <label for="departamento">Departamento:</label>
-                <input type="text" id="departamento" name="departamento" required>
+                <input type="text" id="department" name="department" required>
 
                 <label for="telefono">Teléfono:</label>
-                <input type="tel" id="telefono" name="telefono" required>
+                <input type="tel" id="phoneNumber" name="phoneNumber" required>
 
                 <label for="genero">Género:</label>
-                <select id="genero" name="genero" required>
+                <select id="gender" name="gender" required>
                     <option value="">Seleccione una opción</option>
                     <option value="masculino">Masculino</option>
                     <option value="femenino">Femenino</option>
@@ -42,18 +45,103 @@
                 </select>
 
                 <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
-                <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                <input type="date" id="dateOfBirth" name="dateOfBirth" required>
 
                 <label for="usuario">Usuario:</label>
-                <input type="text" id="usuario" name="usuario" required>
+                <input type="text" id="user" name="user" required>
 
                 <label for="contrasena">Contraseña:</label>
-                <input type="password" id="contrasena" name="contrasena" required>
+                <input type="password" id="password" name="password" required>
 
                 <button type="submit">Continuar</button>
+                <a href="https://hugocerrillo.github.io/SaresTL/html/Modulo-TipoUsuario.html">Regresar</a>
             </form>
         </div>
     </div>
+
+    <script>
+        // Obtener el formulario y el contenedor para el mensaje de respuesta
+        const form = document.getElementById('registerForm');
+        const responseMessage = document.getElementById('responseMessage');
+
+        // Evento de envío del formulario
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();  // Evitar que se recargue la página
+
+            // Obtener los datos del formulario
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                department: document.getElementById('department').value,
+                semester: "NULO", // Para intendente no es necesario
+                phoneNumber: document.getElementById('phoneNumber').value,
+                gender: document.getElementById('gender').value,
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                user: document.getElementById('user').value,
+                password: document.getElementById('password').value,
+                userType: 'Intendente'  // Tipo de usuario fijo como "Intendente"
+            };
+
+            try {
+                // Enviar la solicitud POST al servidor en PythonAnywhere
+                const response = await fetch('https://hugoc.pythonanywhere.com/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                // Manejar la respuesta del servidor
+                if (response.ok) {
+                    Swal.fire({
+                        title: "¡Éxito!",
+                        text: "Te has registrado correctamente como personal de intendencia en el sistema SaresTL",
+                        icon: "success",
+                        background: "#1C1766",  // Fondo personalizado
+                        color: "#ffffff",       // Texto en color blanco
+                        confirmButtonColor: "#3085d6",
+                        confirmButtonText: "Aceptar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html";                            
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: "¡Error!",
+                        text: "Ha ocurrido un error al registrar al usuario: " + data.message,
+                        icon: "error",
+                        background: "#1C1766",  // Fondo personalizado
+                        color: "#ffffff",       // Texto en color blanco
+                        confirmButtonColor: "#3085d6",  
+                        confirmButtonText: "Aceptar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-RegistroIntendente.html";                        
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+                Swal.fire({
+                        title: "¡Error!",
+                        text: "Error al conectar con el servidor: " + error.message,
+                        icon: "error",
+                        background: "#1C1766",  // Fondo personalizado
+                        color: "#ffffff",       // Texto en color blanco
+                        confirmButtonColor: "#3085d6",  
+                        confirmButtonText: "Aceptar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-RegistroIntendente.html";                            
+                        }
+                    });
+            }
+        });
+    </script>
 </body>
 
 </html>
