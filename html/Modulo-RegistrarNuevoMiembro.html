@@ -396,22 +396,22 @@
             paginatedData.forEach(member => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-            <td>${member.clave}</td>
-            <td>${member.nombre}</td>
-            <td>${member.correo}</td>
-            <td>${member.genero}</td>
-            <td>${member.tipo}</td>
-            <td>${member.edad}</td>
-            <td>${member.area}</td>
-            <td>
-                <span class="badge ${member.estado === 'Activo' ? 'badge-success' : 'badge-danger'}">
-                    ${member.estado}
-                </span>
-            </td>
-            <td>
-                <button class="btn btn-edit" data-clave="${member.clave}">Editar</button>
-            </td>
-        `;
+                <td>${member.clave}</td>
+                <td>${member.nombre}</td>
+                <td>${member.correo}</td>
+                <td>${member.genero}</td>
+                <td>${member.tipo}</td>
+                <td>${member.edad}</td>
+                <td>${member.area}</td>
+                <td>
+                    <span class="badge ${member.estado === 'Activo' ? 'badge-success' : 'badge-danger'}">
+                        ${member.estado}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn btn-edit" data-clave="${member.clave}">Editar</button>
+                </td>
+            `;
                 tableBody.appendChild(row);
             });
 
@@ -428,35 +428,8 @@
             });
         }
 
-        // Función para abrir el modal en modo edición
-        function openEditModal(clave) {
-            // Buscar el miembro en los datos locales usando la clave
-            const member = membersData.find(m => m.clave === clave);
-            if (!member) {
-                alert('Miembro no encontrado');
-                return;
-            }
-
-            // Cambiar el título del modal y activar el modo de edición
-            editModeInput.value = 'true';
-            modalTitle.textContent = 'Editar Miembro';
-
-            // Rellenar los campos del formulario con los datos del miembro
-            document.getElementById('member-clave').value = member.clave;
-            document.getElementById('member-nombre').value = member.nombre;
-            document.getElementById('member-correo').value = member.correo;
-            document.querySelector(`input[name="member-genero"][value="${member.genero}"]`).checked = true;
-            document.getElementById('member-tipo').value = member.tipo;
-            document.getElementById('member-edad').value = member.edad;
-            document.getElementById('member-area').value = member.area;
-            document.getElementById('member-estado').value = member.estado;
-
-            // Mostrar el modal
-            memberModal.classList.add('active');
-        }
-
-        // Función para guardar miembro (nuevo o editado)
-        function saveMember() {
+        // Función para registrar un nuevo miembro
+        function registerNewMember() {
             const clave = document.getElementById('member-clave').value;
             const nombre = document.getElementById('member-nombre').value;
             const correo = document.getElementById('member-correo').value;
@@ -472,7 +445,7 @@
                 return;
             }
 
-            const updatedMember = {
+            const newMember = {
                 clave,
                 nombre,
                 correo,
@@ -483,34 +456,39 @@
                 estado
             };
 
-            // Enviar datos a la API para actualizar el miembro
-            fetch('https://hugoc.pythonanywhere.com/api/edit_member_institution', {
+            // Enviar datos a la API para registrar el nuevo miembro
+            fetch('https://hugoc.pythonanywhere.com/api/register_members_institution', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(updatedMember)
+                body: JSON.stringify(newMember)
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        alert('Miembro actualizado exitosamente');
-                        // Actualizar el miembro en la lista local y renderizar la tabla
-                        const index = membersData.findIndex(member => member.clave === updatedMember.clave);
-                        if (index !== -1) {
-                            membersData[index] = updatedMember;
-                            filteredData = [...membersData];
-                            renderTable();
-                        }
+                        alert('Miembro registrado exitosamente');
+                        // Agregar el nuevo miembro a la lista local y renderizar la tabla
+                        membersData.push(newMember);
+                        filteredData = [...membersData];
+                        renderTable();
                         closeModal();  // Cerrar el modal
                     } else {
                         alert(`Error: ${data.message}`);
                     }
                 })
                 .catch(error => {
-                    console.error('Error al actualizar el miembro:', error);
-                    alert('Hubo un error al actualizar el miembro.');
+                    console.error('Error al registrar el miembro:', error);
+                    alert('Hubo un error al registrar el miembro.');
                 });
+        }
+
+        // Función para abrir el modal en modo nuevo miembro
+        function openNewMemberModal() {
+            editModeInput.value = 'false';
+            modalTitle.textContent = 'Registrar Nuevo Miembro';
+            memberForm.reset();
+            memberModal.classList.add('active');
         }
 
         // Función para cerrar el modal
@@ -550,8 +528,8 @@
                 // Llamar a la función de registro de nuevo miembro
                 registerNewMember();
             } else {
-                // Llamar a la función para editar el miembro
-                saveMember();
+                // Aquí puedes agregar lógica para editar miembros (si es necesario)
+                alert("Modo de edición no implementado");
             }
         });
 
@@ -570,7 +548,6 @@
             currentPage = 1;
             renderTable();
         }
-
     </script>
 
 </body>
