@@ -54,9 +54,8 @@
                 <input type="password" id="password" name="password" required>
 
                 <button type="submit">Registrar</button>
-            </form>
-
-            <div id="responseMessage"></div>
+            </form>            
+            <button class="back-button" onclick="window.location.href='https://hugocerrillo.github.io/SaresTL/html/Modulo-TipoUsuario.html'">Regresar</button>
         </div>
     </div>
 
@@ -97,12 +96,49 @@
 
                 // Manejar la respuesta del servidor
                 if (response.ok) {
-                    responseMessage.innerHTML = `<p class="success">¡Usuario registrado exitosamente!</p>`;
+                    Swal.fire({
+                        title: "¡Éxito!",
+                        text: "Te has registrado correctamente al sistema SaresTL",
+                        icon: "success",
+                        background: "#1C1766",  // Fondo personalizado
+                        color: "#ffffff",       // Texto en color blanco
+                        confirmButtonColor: "#3085d6",
+                        confirmButtonText: "Aceptar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-InicioSesion.html";                            
+                        }
+                    });
                 } else {
-                    responseMessage.innerHTML = `<p class="error">${data.message || 'Hubo un error al registrar al usuario.'}</p>`;
+                    Swal.fire({
+                        title: "¡Error!",
+                        text: "Ha ocurrido un error al registrar al usuario: " + data.message,
+                        icon: "error",
+                        background: "#1C1766",  // Fondo personalizado
+                        color: "#ffffff",       // Texto en color blanco
+                        confirmButtonColor: "#3085d6",  
+                        confirmButtonText: "Aceptar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-RegistroGuardia.html";                        
+                        }
+                    });
                 }
             } catch (error) {
-                responseMessage.innerHTML = `<p class="error">Error al conectar con el servidor.</p>`;
+                console.error('Error en la solicitud:', error);
+                Swal.fire({
+                        title: "¡Error!",
+                        text: "Error al conectar con el servidor: " + error.message,
+                        icon: "error",
+                        background: "#1C1766",  // Fondo personalizado
+                        color: "#ffffff",       // Texto en color blanco
+                        confirmButtonColor: "#3085d6",  
+                        confirmButtonText: "Aceptar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "https://hugocerrillo.github.io/SaresTL/html/Modulo-RegistroGuardia.html";                            
+                        }
+                    });
             }
         });
     </script>
