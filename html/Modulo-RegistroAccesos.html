@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <!-- Agregar librería Luxon -->
     <script src="https://cdn.jsdelivr.net/npm/luxon@2.3.0/build/global/luxon.min.js"></script>
 </head>
+
 <body>
     <div class="header">
         <div class="logos">
@@ -71,7 +73,8 @@
             <div class="tab-content" id="scanner-tab">
                 <div class="scanner-section">
                     <div class="scanner-title">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
                             <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
                             <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
@@ -96,7 +99,8 @@
                         </select>
                     </div>
                     <div class="input-container">
-                        <input type="text" class="input-field" placeholder="Código escaneado..." id="scanner-result" readonly>
+                        <input type="text" class="input-field" placeholder="Código escaneado..." id="scanner-result"
+                            readonly>
                     </div>
                     <button class="btn btn-primary" id="register-scan-btn">Registrar</button>
                 </div>
@@ -128,11 +132,156 @@
     <!-- Script para implementar el escáner con QuaggaJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
     <script>
-        // Alternar el menú desplegable
+        // Función para alternar el menú desplegable
         function toggleMenu() {
             const menu = document.getElementById('menuDropdown');
             menu.classList.toggle('open');
         }
+
+        // Función para obtener datos del usuario y generar contenido dinámico
+        async function obtenerDatosUsuario() {
+            const user = sessionStorage.getItem('user'); // Obtener el ID del usuario
+
+            // Verifica si el usuario no está autenticado
+            if (!user) {
+                alert('No has iniciado sesión. Redirigiendo al login...');
+                window.location.href = "../html/Modulo-InicioSesion.html"; // Redirección al login
+                return;
+            }
+
+            // URL del API para obtener tipo de usuario
+            const apiUrl = 'https://hugoc.pythonanywhere.com/api/usertype';
+
+            try {
+                // Realiza la solicitud POST para obtener el tipo de usuario
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user }),
+                });
+
+                const data = await response.json();
+                if (response.ok && data.status === "success") {
+                    const userRoleNumber = data.userRole ?? '';
+                    const userName = data.userName ?? '';
+                    const userTypeInst = data.userTypeInst ?? '';
+
+                    try {
+                        // Realiza la solicitud para obtener la imagen del usuario
+                        const apiUrlPicture = 'https://hugoc.pythonanywhere.com/api/userPicture';
+                        const responsePicture = await fetch(apiUrlPicture, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ user }),
+                        });
+                        const dataPicture = await responsePicture.json();
+
+                        if (responsePicture.ok && dataPicture.status === "success") {
+                            const userPicture = dataPicture.userPicture ?? '';
+
+                            // Verifica que profileImage exista en el DOM
+                            const profileImage = document.querySelector('.user-profile img');
+                            if (profileImage) {
+                                profileImage.src = userPicture; // Actualiza la imagen de perfil
+                            } else {
+                                console.error('No se encontró el elemento de la imagen de perfil');
+                            }
+                        } else {
+                            console.error('Error al obtener la imagen de perfil:', dataPicture.message);
+                        }
+
+                    } catch (errorP) {
+                        console.error('Error en la solicitud de la imagen de perfil:', errorP);
+                        alert('Hubo un problema al conectar con el servidor para obtener la imagen de perfil. Intenta nuevamente.');
+                    }
+                    switch (userRoleNumber) {
+                        case 1:
+                            generarMenu('Estudiante');
+                            break;
+                        case 2:
+                            generarMenu('Docente');
+                            break;
+                        case 3:
+                            generarMenu('Administrador');
+                            break;
+                        case 4:
+                            generarMenu('Administrativo');
+                            break;
+                        case 5:
+                            generarMenu('Intendente');
+                            break;
+                        case 6:
+                            generarMenu('Guardia');
+                            break;
+                        default:
+                            console.error('Rol de usuario desconocido');
+                            alert('No se pudo determinar el rol del usuario.');
+                            window.location.href = "../html/Modulo-InicioSesion.html"; // Redirige si hay error
+                            break;
+                    }
+
+                } else {
+                    console.error('Error al obtener tipo de usuario:', data.message);
+                    alert('Hubo un problema al obtener el tipo de usuario. Intenta nuevamente.');
+                    window.location.href = "../html/Modulo-InicioSesion.html"; // Redirige si la respuesta no es correcta
+                }
+
+            } catch (error) {
+                console.error('Error en la solicitud principal:', error);
+                alert('Hubo un problema al conectar con el servidor. Intenta nuevamente.');
+                window.location.href = "../html/Modulo-InicioSesion.html"; // Redirige en caso de error
+            }
+
+        }
+
+        // Función para generar el menú dinámico según el rol del usuario
+        function generarMenu(userRole) {
+            const menuDropdown = document.getElementById('menuDropdown');
+            //const menuList = menuDropdown.querySelector('ul');
+
+            // Generar contenido según el rol del usuario
+            if (userRole === 'Administrador') {
+                menuList.innerHTML = `
+                    <li><a href="../html/Modulo-Bienvenida.html">Panel Principal</a></li>
+                    <li><a href="../html/Modulo-VisualizacionGeneral.html">Visualización Entradas y Salidas</a></li>
+                    <li><a href="../html/Modulo-RevisarHistorial.html">Revisar Historial Personal</a></li>
+                    <li><a href="../html/Modulo-RegistrarNuevoMiembro.html">Registrar Miembro Institución</a></li>
+                    <li><a href="../html/Modulo-Perfil.html">Perfil</a></li>                    
+                    <li><a href="../html/Modulo-ManualUsuario.html">Manual de Usuario</a></li>
+                    <li><a href="../html/Modulo-InicioSesion.html" onclick="logOut()">Cerrar Sesión</a></li>
+                `;
+            } else if (userRole == 'Guardia') {
+                menuList.innerHTML = `
+                    <li><a href="../html/Modulo-Bienvenida.html">Panel Principal</a></li>
+                    <li><a href="../html/Modulo-RegistroAccesos.html">Registro Accesos</a></li>   
+                    <li><a href="../html/Modulo-VisualizacionGeneral.html">Visualización Entradas y Salidas</a></li>
+                    <li><a href="../html/Modulo-RevisarHistorial.html">Revisar Historial Personal</a></li>
+                    <li><a href="../html/Modulo-Perfil.html">Perfil</a></li>                    
+                    <li><a href="../html/Modulo-ManualUsuario.html">Manual de Usuario</a></li>
+                    <li><a href="../html/Modulo-InicioSesion.html" onclick="logOut()">Cerrar Sesión</a></li>
+                `;
+
+            } else {
+                menuList.innerHTML = `
+                    <li><a href="../html/Modulo-Bienvenida.html">Panel Principal</a></li>                                          
+                    <li><a href="../html/Modulo-RevisarHistorial.html">Revisar Historial Personal</a></li>
+                    <li><a href="../html/Modulo-Perfil.html">Perfil</a></li>                    
+                    <li><a href="../html/Modulo-ManualUsuario.html">Manual de Usuario</a></li>
+                    <li><a href="../html/Modulo-InicioSesion.html" onclick="logOut()">Cerrar Sesión</a></li>
+                `;
+            }
+        }
+        function logOut() {
+            // Limpiar el sessionStorage y redirigir al inicio de sesión
+            sessionStorage.clear();
+        }
+
+        // Llamar a la función al cargar la página
+        obtenerDatosUsuario();
 
         // Función para actualizar la fecha y hora (utilizando Luxon para la zona horaria de CDMX)
         function updateDateTime() {
@@ -143,10 +292,10 @@
 
             // Formateo de la fecha en formato YYYY-MM-DD
             const dateStr = now.toFormat('yyyy-MM-dd');
-            
+
             // Formateo de la hora en formato HH:mm:ss
             const timeStr = now.toFormat('HH:mm:ss');
-            
+
             document.getElementById('current-date').textContent = dateStr;
             document.getElementById('current-time').textContent = timeStr;
         }
@@ -255,4 +404,5 @@
         }
     </script>
 </body>
+
 </html>
