@@ -428,46 +428,8 @@
             });
         }
 
-        function filterData() {
-            const searchTerm = searchInput.value.toLowerCase();
-            filteredData = membersData.filter(member => {
-                return (
-                    member.clave.toLowerCase().includes(searchTerm) ||
-                    member.nombre.toLowerCase().includes(searchTerm) ||
-                    member.correo.toLowerCase().includes(searchTerm) ||
-                    member.tipo.toLowerCase().includes(searchTerm) ||
-                    member.area.toLowerCase().includes(searchTerm)
-                );
-            });
-            currentPage = 1;
-            renderTable();
-        }
-
-        function openNewMemberModal() {
-            editModeInput.value = 'false';
-            modalTitle.textContent = 'Registrar Nuevo Miembro';
-            memberForm.reset();
-            memberModal.classList.add('active');
-        }
-
-        function openEditModal(clave) {
-            const member = membersData.find(m => m.clave === clave);
-            if (member) {
-                editModeInput.value = 'true';
-                modalTitle.textContent = 'Editar Miembro';
-                document.getElementById('member-clave').value = member.clave;
-                document.getElementById('member-nombre').value = member.nombre;
-                document.getElementById('member-correo').value = member.correo;
-                document.querySelector(`input[name="member-genero"][value="${member.genero}"]`).checked = true;
-                document.getElementById('member-tipo').value = member.tipo;
-                document.getElementById('member-edad').value = member.edad;
-                document.getElementById('member-area').value = member.area;
-                document.getElementById('member-estado').value = member.estado;
-                memberModal.classList.add('active');
-            }
-        }
-
-        function saveMember() {
+        // Función para registrar un nuevo miembro
+        function registerNewMember() {
             const clave = document.getElementById('member-clave').value;
             const nombre = document.getElementById('member-nombre').value;
             const correo = document.getElementById('member-correo').value;
@@ -477,38 +439,65 @@
             const area = document.getElementById('member-area').value;
             const estado = document.getElementById('member-estado').value;
 
-            const member = { clave, nombre, correo, genero, tipo, edad, area, estado };
-            const isEditMode = editModeInput.value === 'true';
-
-            if (isEditMode) {
-                const index = membersData.findIndex(m => m.clave === clave);
-                if (index !== -1) {
-                    membersData[index] = member;
-                }
-            } else {
-                const exists = membersData.some(m => m.clave === clave);
-                if (exists) {
-                    alert('¡Error! Ya existe un miembro con esa clave.');
-                    return;
-                }
-                membersData.push(member);
+            // Validar campos antes de enviar
+            if (!clave || !nombre || !correo || !genero || !tipo || !edad || !area || !estado) {
+                alert("Por favor, complete todos los campos.");
+                return;
             }
 
-            filteredData = [...membersData];
-            if (searchInput.value) {
-                filterData();
-            } else {
-                renderTable();
-            }
+            const newMember = {
+                clave,
+                nombre,
+                correo,
+                genero,
+                tipo,
+                edad,
+                area,
+                estado
+            };
 
-            closeModal();
+            // Enviar datos a la API para registrar el nuevo miembro
+            fetch('https://hugoc.pythonanywhere.com/api/register_members_institution', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newMember)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Miembro registrado exitosamente');
+                        // Agregar el nuevo miembro a la lista local y renderizar la tabla
+                        membersData.push(newMember);
+                        filteredData = [...membersData];
+                        renderTable();
+                        closeModal();  // Cerrar el modal
+                    } else {
+                        alert(`Error: ${data.message}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al registrar el miembro:', error);
+                    alert('Hubo un error al registrar el miembro.');
+                });
         }
 
+        // Función para abrir el modal en modo nuevo miembro
+        function openNewMemberModal() {
+            editModeInput.value = 'false';
+            modalTitle.textContent = 'Registrar Nuevo Miembro';
+            memberForm.reset();
+            memberModal.classList.add('active');
+        }
+
+        // Función para cerrar el modal
         function closeModal() {
             memberModal.classList.remove('active');
             memberForm.reset();
         }
 
+        // Event listeners
         searchInput.addEventListener('input', filterData);
         entriesDropdown.addEventListener('change', () => {
             entriesPerPage = parseInt(entriesDropdown.value);
@@ -532,38 +521,33 @@
         document.querySelector('.close-modal').addEventListener('click', closeModal);
         document.querySelector('.close-modal-btn').addEventListener('click', closeModal);
 
+        // Guardar miembro (nuevo o editado)
         document.getElementById('save-member').addEventListener('click', (e) => {
             e.preventDefault();
-            if (memberForm.checkValidity()) {
-                saveMember();
+            if (editModeInput.value === 'false') {
+                // Llamar a la función de registro de nuevo miembro
+                registerNewMember();
             } else {
-                alert('Por favor complete todos los campos obligatorios');
-                const submitButton = document.createElement('button');
-                submitButton.style.display = 'none';
-                memberForm.appendChild(submitButton);
-                submitButton.click();
-                memberForm.removeChild(submitButton);
+                // Aquí puedes agregar lógica para editar miembros (si es necesario)
+                alert("Modo de edición no implementado");
             }
         });
 
-        document.querySelectorAll('.data-table th.sortable').forEach(header => {
-            header.addEventListener('click', () => {
-                const columnIndex = Array.from(header.parentNode.children).indexOf(header);
-                const key = getKeyByColumnIndex(columnIndex);
-                filteredData.sort((a, b) => {
-                    if (a[key] < b[key]) return -1;
-                    if (a[key] > b[key]) return 1;
-                    return 0;
-                });
-                renderTable();
+        // Función para filtrar los datos
+        function filterData() {
+            const searchTerm = searchInput.value.toLowerCase();
+            filteredData = membersData.filter(member => {
+                return (
+                    member.clave.toLowerCase().includes(searchTerm) ||
+                    member.nombre.toLowerCase().includes(searchTerm) ||
+                    member.correo.toLowerCase().includes(searchTerm) ||
+                    member.tipo.toLowerCase().includes(searchTerm) ||
+                    member.area.toLowerCase().includes(searchTerm)
+                );
             });
-        });
-
-        function getKeyByColumnIndex(index) {
-            const keys = ['clave', 'nombre', 'correo', 'genero', 'tipo', 'edad', 'area', 'estado'];
-            return keys[index];
+            currentPage = 1;
+            renderTable();
         }
-
     </script>
 
 </body>
