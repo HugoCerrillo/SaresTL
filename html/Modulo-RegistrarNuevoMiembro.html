@@ -245,7 +245,7 @@
                     } catch (errorP) {
                         console.error('Error en la solicitud de la imagen de perfil:', errorP);
                         alert('Hubo un problema al conectar con el servidor para obtener la imagen de perfil. Intenta nuevamente.');
-                    }                   
+                    }
                     switch (userRoleNumber) {
                         case 1:
                             generarMenu('Estudiante');
@@ -330,19 +330,8 @@
 
         // Llamar a la función al cargar la página
         obtenerDatosUsuario();
-        // Datos de ejemplo para la tabla
-        let membersData = [
-            { clave: '047', nombre: 'Patricia Castillo', correo: 'patriciamaría.castillo@leon.tecnm.mx', genero: 'Femenino', tipo: 'Docente', edad: 20, area: 'Área de sistemas', estado: 'No Activo' },
-            { clave: '21240200', nombre: 'Navarro Basurto Gabriela del Goretti', correo: '21240200@leon.tecnm.mx', genero: 'Femenino', tipo: 'Guardia', edad: 20, area: 'Entrada principal', estado: 'Activo' },
-            { clave: '21240236', nombre: 'Cerrillo Cano Hugo Emmanuel', correo: 'hugocano85@gmail.com', genero: 'Masculino', tipo: 'Administrador', edad: 20, area: 'Área de Servidor', estado: 'Activo' },
-            { clave: '21240551', nombre: 'Morales Escudero Johari', correo: '21240551@leon.tecnm.mx', genero: 'Femenino', tipo: 'Estudiante', edad: 20, area: 'Ingeniería en Sistemas Computacionales', estado: 'No Activo' },
-            { clave: 'G-1', nombre: 'Guardia', correo: 'g@gmail.com', genero: 'Masculino', tipo: 'Guardia', edad: 40, area: 'Entrada principal', estado: 'Activo' }
-        ];
 
-        // Configuración de la paginación
-        let currentPage = 1;
-        let entriesPerPage = 10;
-        let filteredData = [...membersData];
+        // Datos de ejemplo eliminados, vamos a obtenerlos desde la API
 
         // Referencias a elementos DOM
         const membersTable = document.getElementById('members-table');
@@ -357,43 +346,64 @@
         const editModeInput = document.getElementById('edit-mode');
         const newMemberBtn = document.getElementById('new-member-btn');
 
+        // Datos iniciales
+        let membersData = [];
+
+        // Función para obtener miembros de la API
+        async function fetchMembers() {
+            try {
+                const response = await fetch('https://hugoc.pythonanywhere.com/api/obtain_institution_members', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+                if (response.ok && data.status === 'success') {
+                    membersData = data.members; // Asignamos los miembros a la variable global
+                    filteredData = [...membersData]; // Asignamos a los datos filtrados
+                    renderTable(); // Renderizamos la tabla con los nuevos datos
+                } else {
+                    alert('Error al obtener los miembros: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error al obtener los miembros:', error);
+                alert('Hubo un problema al obtener los datos.');
+            }
+        }
+
         // Función para renderizar la tabla
         function renderTable() {
-            // Calcular índices para la paginación
             const startIndex = (currentPage - 1) * entriesPerPage;
             const endIndex = startIndex + entriesPerPage;
             const paginatedData = filteredData.slice(startIndex, endIndex);
 
-            // Limpiar el cuerpo de la tabla
             const tableBody = membersTable.querySelector('tbody');
             tableBody.innerHTML = '';
 
-            // Generar filas de la tabla
             paginatedData.forEach(member => {
                 const row = document.createElement('tr');
-
                 row.innerHTML = `
-                    <td>${member.clave}</td>
-                    <td>${member.nombre}</td>
-                    <td>${member.correo}</td>
-                    <td>${member.genero}</td>
-                    <td>${member.tipo}</td>
-                    <td>${member.edad}</td>
-                    <td>${member.area}</td>
-                    <td>
-                        <span class="badge ${member.estado === 'Activo' ? 'badge-success' : 'badge-danger'}">
-                            ${member.estado}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="btn btn-edit" data-clave="${member.clave}">Editar</button>
-                    </td>
-                `;
-
+            <td>${member.clave}</td>
+            <td>${member.nombre}</td>
+            <td>${member.correo}</td>
+            <td>${member.genero}</td>
+            <td>${member.tipo}</td>
+            <td>${member.edad}</td>
+            <td>${member.area}</td>
+            <td>
+                <span class="badge ${member.estado === 'Activo' ? 'badge-success' : 'badge-danger'}">
+                    ${member.estado}
+                </span>
+            </td>
+            <td>
+                <button class="btn btn-edit" data-clave="${member.clave}">Editar</button>
+            </td>
+        `;
                 tableBody.appendChild(row);
             });
 
-            // Actualizar información de paginación
             const totalEntries = filteredData.length;
             const firstEntryIndex = totalEntries === 0 ? 0 : startIndex + 1;
             const lastEntryIndex = Math.min(startIndex + entriesPerPage, totalEntries);
@@ -407,32 +417,6 @@
                     openEditModal(clave);
                 });
             });
-        }
-
-        // Función para filtrar datos
-        function filterData() {
-            const searchTerm = searchInput.value.toLowerCase();
-
-            filteredData = membersData.filter(member => {
-                return (
-                    member.clave.toLowerCase().includes(searchTerm) ||
-                    member.nombre.toLowerCase().includes(searchTerm) ||
-                    member.correo.toLowerCase().includes(searchTerm) ||
-                    member.tipo.toLowerCase().includes(searchTerm) ||
-                    member.area.toLowerCase().includes(searchTerm)
-                );
-            });
-
-            currentPage = 1; // Reset a la primera página cuando se filtra
-            renderTable();
-        }
-
-        // Función para abrir el modal en modo nuevo miembro
-        function openNewMemberModal() {
-            editModeInput.value = 'false';
-            modalTitle.textContent = 'Registrar Nuevo Miembro';
-            memberForm.reset();
-            memberModal.classList.add('active');
         }
 
         // Función para abrir el modal en modo edición
@@ -459,7 +443,6 @@
 
         // Función para guardar un miembro (nuevo o editado)
         function saveMember() {
-            // Obtener los valores del formulario
             const clave = document.getElementById('member-clave').value;
             const nombre = document.getElementById('member-nombre').value;
             const correo = document.getElementById('member-correo').value;
@@ -469,7 +452,6 @@
             const area = document.getElementById('member-area').value;
             const estado = document.getElementById('member-estado').value;
 
-            // Crear el objeto miembro
             const member = {
                 clave,
                 nombre,
@@ -481,30 +463,23 @@
                 estado
             };
 
-            // Verificar si es modo edición o nuevo registro
             const isEditMode = editModeInput.value === 'true';
 
             if (isEditMode) {
                 // Actualizar miembro existente
                 const index = membersData.findIndex(m => m.clave === clave);
-
                 if (index !== -1) {
                     membersData[index] = member;
                 }
             } else {
-                // Verificar si la clave ya existe
                 const exists = membersData.some(m => m.clave === clave);
-
                 if (exists) {
                     alert('¡Error! Ya existe un miembro con esa clave.');
                     return;
                 }
-
-                // Agregar nuevo miembro
                 membersData.push(member);
             }
 
-            // Actualizar datos filtrados y tabla
             filteredData = [...membersData];
             if (searchInput.value) {
                 filterData();
@@ -512,7 +487,6 @@
                 renderTable();
             }
 
-            // Cerrar el modal
             closeModal();
         }
 
@@ -523,25 +497,18 @@
         }
 
         // Event listeners
-        // Buscar al escribir
         searchInput.addEventListener('input', filterData);
-
-        // Cambiar entradas por página
         entriesDropdown.addEventListener('change', () => {
             entriesPerPage = parseInt(entriesDropdown.value);
             currentPage = 1;
             renderTable();
         });
-
-        // Botón de página anterior
         prevPageBtn.addEventListener('click', () => {
             if (currentPage > 1) {
                 currentPage--;
                 renderTable();
             }
         });
-
-        // Botón de página siguiente
         nextPageBtn.addEventListener('click', () => {
             const totalPages = Math.ceil(filteredData.length / entriesPerPage);
             if (currentPage < totalPages) {
@@ -549,24 +516,15 @@
                 renderTable();
             }
         });
-
-        // Botón para abrir modal de nuevo miembro
         newMemberBtn.addEventListener('click', openNewMemberModal);
-
-        // Botones para cerrar modal
         document.querySelector('.close-modal').addEventListener('click', closeModal);
         document.querySelector('.close-modal-btn').addEventListener('click', closeModal);
-
-        // Guardar miembro
         document.getElementById('save-member').addEventListener('click', (e) => {
             e.preventDefault();
-
-            // Validar formulario
             if (memberForm.checkValidity()) {
                 saveMember();
             } else {
                 alert('Por favor complete todos los campos obligatorios');
-                // Trigger HTML5 validation
                 const submitButton = document.createElement('button');
                 submitButton.style.display = 'none';
                 memberForm.appendChild(submitButton);
@@ -575,31 +533,26 @@
             }
         });
 
-        // Ordenar por columna
-        document.querySelectorAll('.data-table th.sortable').forEach(header => {
-            header.addEventListener('click', () => {
-                const columnIndex = Array.from(header.parentNode.children).indexOf(header);
-                const key = getKeyByColumnIndex(columnIndex);
+        // Llamar a la función para obtener los datos al cargar la página
+        fetchMembers();
 
-                // Ordenar datos
-                filteredData.sort((a, b) => {
-                    if (a[key] < b[key]) return -1;
-                    if (a[key] > b[key]) return 1;
-                    return 0;
-                });
-
-                renderTable();
+        // Función para filtrar los datos
+        function filterData() {
+            const searchTerm = searchInput.value.toLowerCase();
+            filteredData = membersData.filter(member => {
+                return (
+                    member.clave.toLowerCase().includes(searchTerm) ||
+                    member.nombre.toLowerCase().includes(searchTerm) ||
+                    member.correo.toLowerCase().includes(searchTerm) ||
+                    member.tipo.toLowerCase().includes(searchTerm) ||
+                    member.area.toLowerCase().includes(searchTerm)
+                );
             });
-        });
 
-        // Función auxiliar para obtener la clave de propiedad según el índice de columna
-        function getKeyByColumnIndex(index) {
-            const keys = ['clave', 'nombre', 'correo', 'genero', 'tipo', 'edad', 'area', 'estado'];
-            return keys[index];
+            currentPage = 1;
+            renderTable();
         }
 
-        // Inicializar la tabla
-        renderTable();
     </script>
 
 </body>
