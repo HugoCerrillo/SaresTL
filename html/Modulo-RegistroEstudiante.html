@@ -139,7 +139,7 @@
                     });
                 }
             } catch (error) {
-                console.error('Error en la solicitud:', error);
+                console.error('Error en la solicitud:', error.message);
                 Swal.fire({
                     title: "¡Error!",
                     text: "Error al conectar con el servidor: " + error.message,
