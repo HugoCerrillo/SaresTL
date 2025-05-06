@@ -4,6 +4,11 @@ import mysql.connector
 import bcrypt
 import os
 from flask import Flask
+import datetime
+from datetime import datetime, timedelta
+import re
+
+
 
 app = Flask(__name__)
 CORS(app)  # Permite peticiones desde cualquier origen
@@ -32,7 +37,7 @@ def login():
         cursor = conn.cursor(dictionary=True)
 
         # Buscar usuario en la base de datos
-        cursor.execute("SELECT * FROM UsuarioR WHERE idUsuarioR = %s", (username,))
+        cursor.execute("SELECT idUsuarioR, contraseñaR FROM UsuarioR WHERE idUsuarioR = %s", (username,))
         user = cursor.fetchone()
 
         cursor.close()
@@ -47,40 +52,51 @@ def login():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
+def validar_contraseña(password):
+    if not (8 <= len(password) <= 12):
+        return False, "La contraseña debe tener entre 8 y 12 caracteres"
+    if not re.search(r'[A-Z]', password):
+        return False, "La contraseña debe contener al menos una letra mayúscula"
+    if not re.search(r'[^A-Za-z0-9]$', password):  # carácter especial al final
+        return False, "La contraseña debe terminar en un carácter especial"
+    return True, ""
+
+
 @app.route("/api/register", methods=["POST"])
 def register():
     # Obtener los datos enviados en la solicitud
     data = request.get_json()
 
-    # Extraer los parámetros necesarios
-    name = data.get("name")
-    email = data.get("email")
-    department = data.get("department")
-    semester = data.get("semester")
-    phoneNumber = data.get("phoneNumber")
-    gender = data.get("gender")
-    dateOfBirth = data.get("dateOfBirth")
-    user = data.get("user")
-    password = data.get("password")
-    userType = data.get("userType")
+    # Verificar que todos los campos necesarios estén presentes y no vacíos
+    required_fields = ["name", "email", "department", "semester", "phoneNumber", "gender",
+                       "dateOfBirth", "user", "password", "userType"]
 
-    # Validación básica: asegurar que no falten parámetros
-    if not all([name, email, department, semester, phoneNumber, gender, dateOfBirth, user, password, userType]):
-        return jsonify({"status": "error", "message": "Faltan parámetros"}), 400
+    if not all(data.get(field) and str(data.get(field)).strip() for field in required_fields):
+        return jsonify({"status": "error", "message": "Faltan parámetros válidos"}), 400
 
-    # Mapear los tipos de usuario a roles
-    user_roles = {
-        'Estudiante': 1,
-        'Docente': 2,
-        'Administrador': 3,
-        'Administrativo': 4,
-        'Intendente': 5,
-        'Guardia': 6
+    # Asignar variables
+    name = data["name"].strip()
+    email = data["email"].strip()
+    department = data["department"].strip()
+    semester = data["semester"]
+    phoneNumber = data["phoneNumber"].strip()
+    gender = data["gender"].strip()
+    dateOfBirth = data["dateOfBirth"]
+    user = data["user"].strip()
+    password = data["password"].strip()
+    userType = data["userType"].strip()
+
+    # Asignar rol según tipo de usuario
+    roles = {
+        "Estudiante": 1,
+        "Docente": 2,
+        "Administrador": 3,
+        "Administrativo": 4,
+        "Intendente": 5,
+        "Guardia": 6
     }
-
-    # Obtener el rol basado en el tipo de usuario
-    rol = user_roles.get(userType)
-    if rol is None:
+    rol = roles.get(userType, 0)
+    if rol == 0:
         return jsonify({"status": "error", "message": "Tipo de usuario inválido"}), 400
 
     try:
@@ -90,11 +106,35 @@ def register():
 
         # Verificar si el usuario ya existe
         cursor.execute("SELECT idUsuarioR FROM UsuarioR WHERE idUsuarioR = %s", (user,))
-        existing_user = cursor.fetchone()
-        if existing_user:
-            return jsonify({"status": "error", "message": "El usuario ya existe"}), 409
+        if cursor.fetchone():
+            return jsonify({"status": "error", "message": "El usuario ya está registrado en el sistema SaresTL"}), 409
 
-        # Insertar el nuevo usuario
+        # Verificar si el correo o contraseña ya están en uso
+        cursor.execute("SELECT correoR, contraseñaR FROM UsuarioR")
+        for u in cursor.fetchall():
+            if u["correoR"] == email:
+                return jsonify({"status": "error", "message": "El correo ya está en uso, verifícalo e intenta nuevamente."}), 409
+            if u["contraseñaR"] == password:
+                return jsonify({"status": "error", "message": "La contraseña ya está en uso, intenta con una nueva contraseña."}), 409
+
+        # Verificar si el usuario es miembro de la institución
+        cursor.execute("SELECT clave, estado, nombre, area FROM MiembroInstitucion WHERE clave = %s", (user,))
+        member = cursor.fetchone()
+
+        if not member:
+            return jsonify({"status": "error", "message": "El usuario ingresado no es miembro de la institución"}), 409
+
+        if member.get("estado") != "Activo":
+            return jsonify({"status": "error", "message": "El usuario ingresado no es miembro activo de la institución"}), 409
+
+        # Validar coincidencia de nombre y área
+        #if name.lower() != member["nombre"].strip().lower():
+        #    return jsonify({"status": "error", "message": "El nombre ingresado no coincide con ningún miembro de la institución"}), 409
+
+        #if department.strip().lower() != member["area"].strip().lower():
+        #    return jsonify({"status": "error", "message": "El área o carrera ingresada no coincide con ningún miembro de la institución"}), 409
+
+        # Insertar el nuevo usuario en UsuarioR
         cursor.execute(
             """
             INSERT INTO UsuarioR (idUsuarioR, contraseñaR, nombreR, correoR, telefonoR, generoR, fechaNacimientoR, idRol)
@@ -103,11 +143,11 @@ def register():
             (user, password, name, email, phoneNumber, gender, dateOfBirth, rol),
         )
 
-        # Obtener el ID del usuario insertado
+        # Obtener el ID del nuevo usuario insertado
         idUsuarioR = cursor.lastrowid
 
-        # Insertar datos adicionales según el tipo de usuario
-        if userType == 'Estudiante':
+        # Insertar en la tabla correspondiente dependiendo del tipo de usuario
+        if userType == "Estudiante":
             cursor.execute(
                 "INSERT INTO Alumno (carrera, semestre, idUsD) VALUES (%s, %s, %s)",
                 (department, semester, idUsuarioR),
@@ -118,17 +158,30 @@ def register():
                 (department, idUsuarioR),
             )
 
-        # Insertar datos en la tabla 'es' para la relación de usuario y clave
+        # Relación en la tabla 'es'
         cursor.execute(
             "INSERT INTO es (idUsuario, clave) VALUES (%s, %s)",
             (user, user),
         )
 
-        # Insertar la foto de perfil predeterminada
+        # Insertar foto de perfil predeterminada
         route = "../profile_pics/perfil.png"
         cursor.execute(
             "INSERT INTO Perfil (fotoPerfil, idUsuario) VALUES (%s, %s)",
             (route, user),
+        )
+
+        # Generar credencial con fecha de expiración (365 días a partir de hoy)
+        expiration_date = (datetime.now() + timedelta(days=365)).strftime('%Y-%m-%d')
+        cursor.execute(
+            "INSERT INTO Credencial (codigoBarra, fechaVencimiento) VALUES (%s, %s)",
+            (user, expiration_date),
+        )
+
+        # Relación con la tabla 'tiene'
+        cursor.execute(
+            "INSERT INTO tiene (clave) VALUES (%s)",
+            (user,),
         )
 
         # Confirmar los cambios en la base de datos
@@ -137,17 +190,14 @@ def register():
         return jsonify({"status": "success", "message": "Usuario registrado exitosamente"}), 201
 
     except mysql.connector.Error as e:
-        # Log del error en la base de datos
         app.logger.error(f"Error en MySQL: {e}")
         return jsonify({"status": "error", "message": "Error en la base de datos"}), 500
 
     except Exception as e:
-        # Log de errores generales
         app.logger.error(f"Error inesperado: {e}")
         return jsonify({"status": "error", "message": "Error interno del servidor"}), 500
 
     finally:
-        # Cerrar conexión y cursor (asegurarse de que siempre se cierren)
         try:
             cursor.close()
             conn.close()
@@ -416,7 +466,18 @@ def register_members_institution():
         # Manejar la conexión y el cursor usando "with"
         with get_db_connection() as conn:
             with conn.cursor() as cursor:
-                # Consulta SQL para insertar el miembro en la tabla MiembroInstitucion
+                #verificamos si el usuario existe o no para que no mande excepcion MySQL
+                cursor.execute(
+                """
+                SELECT clave FROM MiembroInstitucion where clave = %s
+                """,
+                (clave,),
+                )
+                existing_member = cursor.fetchone()
+                if existing_member:
+                    return jsonify({"status": "error", "message": "La clave ingresada ya esta registrada en el sistema SaresTL"}), 409
+
+                # Consulta SQL para insertar el miembro en la tabla MiembroInstitucion si es que no existe en el sistema
                 query = """
                     INSERT INTO MiembroInstitucion (clave, nombre, correo, genero, tipo, edad, area, estado)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
@@ -425,6 +486,8 @@ def register_members_institution():
 
                 # Ejecutar la consulta
                 cursor.execute(query, values)
+
+
 
                 # Confirmar los cambios en la base de datos
                 conn.commit()
@@ -642,6 +705,64 @@ def register_entries():
             "message": f"Error inesperado: {str(e)}"
         }), 500
 
+
+
+
+
+# Función para convertir posibles objetos no serializables
+def convert_to_serializable(record):
+    # Convertir campos 'horaR' y 'fechaR' si son objetos datetime o timedelta
+    for key, value in record.items():
+        if isinstance(value, (datetime.date, datetime.datetime)):
+            record[key] = value.isoformat()  # Convertir a string ISO
+        elif isinstance(value, datetime.timedelta):
+            # Si es un timedelta, lo convertimos a segundos o minutos
+            record[key] = value.total_seconds()
+    return record
+
+# Endpoint para obtener los registros
+@app.route("/api/get_general_registration", methods=["GET"])
+def get_general_registration():
+    try:
+        # Manejar la conexión y el cursor usando "with"
+        with get_db_connection() as conn:
+            with conn.cursor(dictionary=True) as cursor:
+                # Consulta para obtener todos los registros de la tabla Registro, UsuarioR y Rol
+                cursor.execute("""
+                    SELECT idRegistro, claveUsuario, nombreUsuario, fechaR, horaR, tipoR, tipoUsuario
+                    FROM Registro
+                    JOIN UsuarioR ON idUsuarioR = claveUsuario
+                    JOIN Rol ON Rol.idRol = UsuarioR.idRol;
+                """)
+
+                # Obtener todos los registros
+                records = cursor.fetchall()
+
+                # Verificar si existen registros
+                if records:
+                    # Convertir todos los registros a un formato serializable
+                    records = [convert_to_serializable(record) for record in records]
+
+                    # Retornar la lista de registros en la respuesta
+                    return jsonify({
+                        "status": "success",
+                        "message": "Registros encontrados",
+                        "records": records
+                    }), 200
+                else:
+                    return jsonify({"status": "error", "message": "No se encontraron registros"}), 404
+
+    except mysql.connector.Error as e:
+        return jsonify({
+            "status": "error",
+            "message": f"Error en la base de datos: {str(e)}"
+        }), 500
+
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": f"Error inesperado: {str(e)}"
+        }), 500
 
 
 if __name__ == '__main__':
