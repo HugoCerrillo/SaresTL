@@ -76,7 +76,7 @@
                         <th class="sortable">Nombre</th>
                         <th class="sortable">Correo</th>
                         <th class="sortable">Género</th>
-                        <th class="sortable">Tipo</th>
+                        <th class="sortable">TipoUsuario</th>
                         <th class="sortable">Edad</th>
                         <th class="sortable">Área</th>
                         <th class="sortable">Estado</th>
@@ -369,7 +369,7 @@
                         nombre: member.nombre,
                         correo: member.correo,
                         genero: member.genero,
-                        tipo: member.tipoUsuario,
+                        tipoUsuario: member.tipoUsuario,
                         edad: member.edad,
                         area: member.area,
                         estado: member.estado
@@ -434,13 +434,13 @@
             const nombre = document.getElementById('member-nombre').value;
             const correo = document.getElementById('member-correo').value;
             const genero = document.querySelector('input[name="member-genero"]:checked').value;
-            const tipo = document.getElementById('member-tipo').value;
+            const tipoUsuario = document.getElementById('member-tipoUsuario').value;
             const edad = parseInt(document.getElementById('member-edad').value);
             const area = document.getElementById('member-area').value;
             const estado = document.getElementById('member-estado').value;
 
             // Validar campos antes de enviar
-            if (!clave || !nombre || !correo || !genero || !tipo || !edad || !area || !estado) {
+            if (!clave || !nombre || !correo || !genero || !tipoUsuario || !edad || !area || !estado) {
                 alert("Por favor, complete todos los campos.");
                 return;
             }
@@ -450,7 +450,7 @@
                 nombre,
                 correo,
                 genero,
-                tipo,
+                tipoUsuario,
                 edad,
                 area,
                 estado
@@ -509,7 +509,7 @@
             document.getElementById('member-nombre').value = member.nombre;
             document.getElementById('member-correo').value = member.correo;
             document.querySelector(`input[name="member-genero"][value="${member.genero}"]`).checked = true;
-            document.getElementById('member-tipo').value = member.tipo;
+            document.getElementById('member-tipoUsuario').value = member.tipo;
             document.getElementById('member-edad').value = member.edad;
             document.getElementById('member-area').value = member.area;
             document.getElementById('member-estado').value = member.estado;
@@ -524,13 +524,13 @@
             const nombre = document.getElementById('member-nombre').value;
             const correo = document.getElementById('member-correo').value;
             const genero = document.querySelector('input[name="member-genero"]:checked').value;
-            const tipo = document.getElementById('member-tipo').value;
+            const tipoUsuario = document.getElementById('member-tipoUsuario').value;
             const edad = parseInt(document.getElementById('member-edad').value);
             const area = document.getElementById('member-area').value;
             const estado = document.getElementById('member-estado').value;
 
             // Validar campos antes de enviar
-            if (!clave || !nombre || !correo || !genero || !tipo || !edad || !area || !estado) {
+            if (!clave || !nombre || !correo || !genero || !tipoUsuario || !edad || !area || !estado) {
                 alert("Por favor, complete todos los campos.");
                 return;
             }
@@ -540,7 +540,7 @@
                 nombre,
                 correo,
                 genero,
-                tipo,
+                tipoUsuario,
                 edad,
                 area,
                 estado
@@ -624,7 +624,7 @@
                     member.clave.toLowerCase().includes(searchTerm) ||
                     member.nombre.toLowerCase().includes(searchTerm) ||
                     member.correo.toLowerCase().includes(searchTerm) ||
-                    member.tipo.toLowerCase().includes(searchTerm) ||
+                    member.tipoUsuario.toLowerCase().includes(searchTerm) ||
                     member.area.toLowerCase().includes(searchTerm)
                 );
             });
