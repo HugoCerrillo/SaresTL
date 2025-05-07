@@ -31,7 +31,7 @@
                 <label for="correo">Correo Institucional:</label>
                 <input type="email" id="email" name="email" required>
 
-                <label for="departamento">Departamento:</label>
+                <label for="departamento">Area:</label>
                 <input type="text" id="department" name="department" required>
 
                 <label for="telefono">Teléfono:</label>
@@ -80,7 +80,8 @@
                 dateOfBirth: document.getElementById('dateOfBirth').value,
                 user: document.getElementById('user').value,
                 password: document.getElementById('password').value,
-                userType: 'Administrativo'  // Tipo de usuario fijo como "Administrativo"
+                userType: 'Administrativo',  // Tipo de usuario fijo como "Administrativo"
+                empresa: "NULO", // Para personal administrativo no es necesario
             };
 
             try {
