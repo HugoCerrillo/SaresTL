@@ -57,7 +57,7 @@
 
                 if (response.ok && data.status === 'success') {
                     // Guardar información del usuario en sessionStorage
-                    sessionStorage.setItem('user', data.user.idUsuarioR);
+                    sessionStorage.setItem('user', data.clave);
                     Swal.fire({
                         title: "¡Éxito!",
                         text: "Bienvenido al sistema SaresTL",
