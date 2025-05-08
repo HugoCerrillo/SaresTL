@@ -29,7 +29,6 @@
         </div>
     </div>
 
-
     <!-- Contenido principal -->
     <div class="main-content">
         <div class="welcome-text">
@@ -70,6 +69,7 @@
         </div>
 
     </div>
+
     <!-- Modal para editar registro -->
     <div class="modal-overlay" id="editModal">
         <div class="modal">
@@ -85,31 +85,22 @@
                         <input type="text" id="editNombre" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="editDepartamento">Departamento:</label>
-                        <input type="text" id="editDepartamento" class="form-control" required>
+                        <label for="editTipoR">Tipo Registro:</label>
+                        <input type="text" id="editTipoR" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="editRol">Rol:</label>
-                        <select id="editRol" class="form-control" required>
-                            <option value="Administrador">Administrador</option>
-                            <option value="Usuario">Usuario</option>
-                            <option value="Supervisor">Supervisor</option>
-                            <option value="Técnico">Técnico</option>
-                        </select>
+                        <label for="editFechaR">Fecha Registro:</label>
+                        <input type="text" id="editFechaR" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="editEstatus">Estatus:</label>
-                        <select id="editEstatus" class="form-control" required>
-                            <option value="Activo">Activo</option>
-                            <option value="Inactivo">Inactivo</option>
-                        </select>
+                        <label for="editHoraR">Hora Registro:</label>
+                        <input type="text" id="editHoraR" class="form-control" required>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary close-modal">Cancelar</button>
-                <button class="btn btn-primary" id="saveEdit">Guardar
-                    Cambios</button>
+                <button class="btn btn-primary" id="saveEdit">Guardar Cambios</button>
             </div>
         </div>
     </div>
@@ -122,8 +113,7 @@
                 <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <p>¿Está seguro que desea eliminar este registro? Esta
-                    acción no se puede deshacer.</p>
+                <p>¿Está seguro que desea eliminar este registro? Esta acción no se puede deshacer.</p>
                 <input type="hidden" id="deleteId">
             </div>
             <div class="modal-footer">
@@ -136,189 +126,59 @@
     <div class="footer">© Sares TL, 2024</div>
 
     <script>
-                // Función para alternar el menú desplegable
-                function toggleMenu() {
+        // Función para alternar el menú desplegable
+        function toggleMenu() {
             const menu = document.getElementById('menuDropdown');
             menu.classList.toggle('open');
         }
 
-        // Función para obtener datos del usuario y generar contenido dinámico
-        async function obtenerDatosUsuario() {
-            const user = sessionStorage.getItem('user'); // Obtener el ID del usuario
-
-            // Verifica si el usuario no está autenticado
-            if (!user) {
-                alert('No has iniciado sesión. Redirigiendo al login...');
-                window.location.href = "../html/Modulo-InicioSesion.html"; // Redirección al login
-                return;
-            }
-
-            // URL del API para obtener tipo de usuario
-            const apiUrl = 'https://hugoc.pythonanywhere.com/api/usertype';
+        // Función para obtener los registros de la API
+        async function obtenerRegistros() {
+            const apiUrl = 'https://hugoc.pythonanywhere.com/api/get_general_registration';
 
             try {
-                // Realiza la solicitud POST para obtener el tipo de usuario
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ user }),
-                });
-
+                const response = await fetch(apiUrl);
                 const data = await response.json();
                 if (response.ok && data.status === "success") {
-                    const userRoleNumber = data.userRole ?? '';
-                    const userName = data.userName ?? '';
-                    const userTypeInst = data.userTypeInst ?? '';
-
-                    try {
-                        // Realiza la solicitud para obtener la imagen del usuario
-                        const apiUrlPicture = 'https://hugoc.pythonanywhere.com/api/userPicture';
-                        const responsePicture = await fetch(apiUrlPicture, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ user }),
-                        });
-                        const dataPicture = await responsePicture.json();
-
-                        if (responsePicture.ok && dataPicture.status === "success") {
-                            const userPicture = dataPicture.userPicture ?? '';
-
-                            // Verifica que profileImage exista en el DOM
-                            const profileImage = document.querySelector('.user-profile img');
-                            if (profileImage) {
-                                profileImage.src = userPicture; // Actualiza la imagen de perfil
-                            } else {
-                                console.error('No se encontró el elemento de la imagen de perfil');
-                            }
-                        } else {
-                            console.error('Error al obtener la imagen de perfil:', dataPicture.message);
-                        }
-
-                    } catch (errorP) {
-                        console.error('Error en la solicitud de la imagen de perfil:', errorP);
-                        alert('Hubo un problema al conectar con el servidor para obtener la imagen de perfil. Intenta nuevamente.');
-                    }
-                    switch (userRoleNumber) {
-                        case 1:
-                            generarMenu('Estudiante');
-                            break;
-                        case 2:
-                            generarMenu('Docente');
-                            break;
-                        case 3:
-                            generarMenu('Administrador');
-                            break;
-                        case 4:
-                            generarMenu('Administrativo');
-                            break;
-                        case 5:
-                            generarMenu('Intendente');
-                            break;
-                        case 6:
-                            generarMenu('Guardia');
-                            break;
-                        default:
-                            console.error('Rol de usuario desconocido');
-                            alert('No se pudo determinar el rol del usuario.');
-                            window.location.href = "../html/Modulo-InicioSesion.html"; // Redirige si hay error
-                            break;
-                    }
-
+                    loadTableData(data.records); // Cargar los datos en la tabla
                 } else {
-                    console.error('Error al obtener tipo de usuario:', data.message);
-                    alert('Hubo un problema al obtener el tipo de usuario. Intenta nuevamente.');
-                    window.location.href = "../html/Modulo-InicioSesion.html"; // Redirige si la respuesta no es correcta
+                    console.error('No se encontraron registros');
                 }
-
             } catch (error) {
-                console.error('Error en la solicitud principal:', error);
+                console.error('Error al obtener los registros:', error);
                 alert('Hubo un problema al conectar con el servidor. Intenta nuevamente.');
-                window.location.href = "../html/Modulo-InicioSesion.html"; // Redirige en caso de error
-            }
-
-        }
-
-        // Función para generar el menú dinámico según el rol del usuario
-        function generarMenu(userRole) {
-            const menuDropdown = document.getElementById('menuDropdown');
-            //const menuList = menuDropdown.querySelector('ul');
-
-            // Generar contenido según el rol del usuario
-            if (userRole === 'Administrador') {
-                menuList.innerHTML = `
-                    <li><a href="../html/Modulo-Bienvenida.html">Panel Principal</a></li>
-                    <li><a href="../html/Modulo-VisualizacionGeneral.html">Visualización Entradas y Salidas</a></li>
-                    <li><a href="../html/Modulo-RevisarHistorial.html">Revisar Historial Personal</a></li>
-                    <li><a href="../html/Modulo-RegistrarNuevoMiembro.html">Registrar Miembro Institución</a></li>
-                    <li><a href="../html/Modulo-Perfil.html">Perfil</a></li>                    
-                    <li><a href="../html/Modulo-ManualUsuario.html">Manual de Usuario</a></li>
-                    <li><a href="../html/Modulo-InicioSesion.html" onclick="logOut()">Cerrar Sesión</a></li>
-                `;
-            } else if (userRole == 'Guardia') {
-                menuList.innerHTML = `
-                    <li><a href="../html/Modulo-Bienvenida.html">Panel Principal</a></li>
-                    <li><a href="../html/Modulo-RegistroAccesos.html">Registro Accesos</a></li>   
-                    <li><a href="../html/Modulo-VisualizacionGeneral.html">Visualización Entradas y Salidas</a></li>
-                    <li><a href="../html/Modulo-RevisarHistorial.html">Revisar Historial Personal</a></li>
-                    <li><a href="../html/Modulo-Perfil.html">Perfil</a></li>                    
-                    <li><a href="../html/Modulo-ManualUsuario.html">Manual de Usuario</a></li>
-                    <li><a href="../html/Modulo-InicioSesion.html" onclick="logOut()">Cerrar Sesión</a></li>
-                `;
-
-            } else {
-                menuList.innerHTML = `
-                    <li><a href="../html/Modulo-Bienvenida.html">Panel Principal</a></li>                                          
-                    <li><a href="../html/Modulo-RevisarHistorial.html">Revisar Historial Personal</a></li>
-                    <li><a href="../html/Modulo-Perfil.html">Perfil</a></li>                    
-                    <li><a href="../html/Modulo-ManualUsuario.html">Manual de Usuario</a></li>
-                    <li><a href="../html/Modulo-InicioSesion.html" onclick="logOut()">Cerrar Sesión</a></li>
-                `;
             }
         }
-        function logOut() {
-            // Limpiar el sessionStorage y redirigir al inicio de sesión
-            sessionStorage.clear();
-        }
-
-        // Llamar a la función al cargar la página
-        obtenerDatosUsuario();
-
-        // Datos de ejemplo para la tabla
-        let sampleData = [
-            { id: 1, nombre: "Juan Pérez", departamento: "Sistemas", rol: "Administrador", estatus: "Activo" },
-            { id: 2, nombre: "María López", departamento: "Recursos Humanos", rol: "Usuario", estatus: "Activo" },
-            { id: 3, nombre: "Carlos Gómez", departamento: "Contabilidad", rol: "Usuario", estatus: "Inactivo" },
-            { id: 4, nombre: "Ana Martínez", departamento: "Dirección", rol: "Supervisor", estatus: "Activo" },
-            { id: 5, nombre: "Roberto Sánchez", departamento: "Sistemas", rol: "Técnico", estatus: "Activo" }
-        ];
 
         // Función para cargar los datos en la tabla
         function loadTableData(data) {
             const tableBody = document.querySelector('#dataTable tbody');
-            tableBody.innerHTML = '';
+            tableBody.innerHTML = ''; // Limpiar la tabla antes de agregar nuevos datos
 
             data.forEach(item => {
                 const row = document.createElement('tr');
 
                 // Crear celdas para cada propiedad
                 const idCell = document.createElement('td');
-                idCell.textContent = item.id;
+                idCell.textContent = item.idRegistroAcceso;
+
+                const claveCell = document.createElement('td');
+                claveCell.textContent = item.clave;
 
                 const nombreCell = document.createElement('td');
                 nombreCell.textContent = item.nombre;
 
-                const deptoCell = document.createElement('td');
-                deptoCell.textContent = item.departamento;
+                const fechaCell = document.createElement('td');
+                fechaCell.textContent = item.fechaR;
 
-                const rolCell = document.createElement('td');
-                rolCell.textContent = item.rol;
+                const horaCell = document.createElement('td');
+                horaCell.textContent = item.horaR;
 
-                const estatusCell = document.createElement('td');
-                estatusCell.textContent = item.estatus;
+                const tipoRegistroCell = document.createElement('td');
+                tipoRegistroCell.textContent = item.tipoR;
+
+                const usuarioCell = document.createElement('td');
+                usuarioCell.textContent = item.tipoUsuario;
 
                 const accionesCell = document.createElement('td');
 
@@ -332,17 +192,19 @@
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'action-btn delete-btn';
                 deleteBtn.textContent = 'Eliminar';
-                deleteBtn.addEventListener('click', () => openDeleteModal(item.id));
+                deleteBtn.addEventListener('click', () => openDeleteModal(item.idRegistroAcceso));
 
                 accionesCell.appendChild(editBtn);
                 accionesCell.appendChild(deleteBtn);
 
                 // Añadir celdas a la fila
                 row.appendChild(idCell);
+                row.appendChild(claveCell);
                 row.appendChild(nombreCell);
-                row.appendChild(deptoCell);
-                row.appendChild(rolCell);
-                row.appendChild(estatusCell);
+                row.appendChild(fechaCell);
+                row.appendChild(horaCell);
+                row.appendChild(tipoRegistroCell);
+                row.appendChild(usuarioCell);
                 row.appendChild(accionesCell);
 
                 // Añadir fila a la tabla
@@ -350,112 +212,34 @@
             });
         }
 
-        // Función para filtrar datos
-        function filterData() {
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('keyup', function () {
-                const searchTerm = this.value.toLowerCase();
-                const filteredData = sampleData.filter(item => {
-                    return (
-                        item.nombre.toLowerCase().includes(searchTerm) ||
-                        item.departamento.toLowerCase().includes(searchTerm) ||
-                        item.rol.toLowerCase().includes(searchTerm) ||
-                        item.estatus.toLowerCase().includes(searchTerm)
-                    );
-                });
-                loadTableData(filteredData);
-            });
-        }
-
         // Función para abrir el modal de edición
         function openEditModal(item) {
-            // Llenar el formulario con los datos del registro
-            document.getElementById('editId').value = item.id;
+            document.getElementById('editId').value = item.idRegistroAcceso;
             document.getElementById('editNombre').value = item.nombre;
-            document.getElementById('editDepartamento').value = item.departamento;
-            document.getElementById('editRol').value = item.rol;
-            document.getElementById('editEstatus').value = item.estatus;
+            document.getElementById('editTipoR').value = item.tipoR;
+            document.getElementById('editFechaR').value = item.fechaR;
+            document.getElementById('editHoraR').value = item.horaR;
 
-            // Mostrar el modal
-            document.getElementById('editModal').classList.add('active');
-        }
-
-        // Función para guardar los cambios de edición
-        function saveEdit() {
-            const id = parseInt(document.getElementById('editId').value);
-            const nombre = document.getElementById('editNombre').value;
-            const departamento = document.getElementById('editDepartamento').value;
-            const rol = document.getElementById('editRol').value;
-            const estatus = document.getElementById('editEstatus').value;
-
-            // Encontrar el índice del registro en el array
-            const index = sampleData.findIndex(item => item.id === id);
-
-            if (index !== -1) {
-                // Actualizar el registro
-                sampleData[index] = {
-                    id,
-                    nombre,
-                    departamento,
-                    rol,
-                    estatus
-                };
-
-                // Recargar la tabla
-                loadTableData(sampleData);
-
-                // Cerrar el modal
-                closeModals();
-
-                // Mostrar mensaje de éxito (opcional)
-                alert('Registro actualizado correctamente');
-            }
+            document.getElementById('editModal').style.display = 'block';
         }
 
         // Función para abrir el modal de eliminación
         function openDeleteModal(id) {
             document.getElementById('deleteId').value = id;
-            document.getElementById('deleteModal').classList.add('active');
+            document.getElementById('deleteModal').style.display = 'block';
         }
 
-        // Función para confirmar la eliminación
-        function confirmDelete() {
-            const id = parseInt(document.getElementById('deleteId').value);
-
-            // Filtrar el array para eliminar el registro
-            sampleData = sampleData.filter(item => item.id !== id);
-
-            // Recargar la tabla
-            loadTableData(sampleData);
-
-            // Cerrar el modal
-            closeModals();
-
-            // Mostrar mensaje de éxito (opcional)
-            alert('Registro eliminado correctamente');
-        }
-
-        // Función para cerrar todos los modales
-        function closeModals() {
-            document.querySelectorAll('.modal-overlay').forEach(modal => {
-                modal.classList.remove('active');
-            });
-        }
-
-        // Inicializar la tabla y el filtro
-        document.addEventListener('DOMContentLoaded', function () {
-            loadTableData(sampleData);
-            filterData();
-
-            // Event listeners para los botones de los modales
-            document.getElementById('saveEdit').addEventListener('click', saveEdit);
-            document.getElementById('confirmDelete').addEventListener('click', confirmDelete);
-
-            // Event listeners para cerrar modales
-            document.querySelectorAll('.close-modal').forEach(button => {
-                button.addEventListener('click', closeModals);
+        // Cerrar los modales
+        document.querySelectorAll('.close-modal').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.modal-overlay').forEach(modal => {
+                    modal.style.display = 'none';
+                });
             });
         });
+
+        // Llamar a la función para obtener registros al cargar la página
+        document.addEventListener('DOMContentLoaded', obtenerRegistros);
     </script>
 </body>
 
