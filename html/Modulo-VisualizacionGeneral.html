@@ -222,22 +222,25 @@
             document.getElementById('editHoraR').value = item.horaR;
 
             // Mostrar el modal
-            document.getElementById('editModal').style.display = 'flex';
+            const editModal = document.getElementById('editModal');
+            editModal.classList.add('active');
         }
 
         // Función para abrir el modal de eliminación
         function openDeleteModal(id) {
             document.getElementById('deleteId').value = id;
+
             // Mostrar el modal de eliminación
-            document.getElementById('deleteModal').style.display = 'flex';
+            const deleteModal = document.getElementById('deleteModal');
+            deleteModal.classList.add('active');
         }
 
-        // Cerrar los modales
+        // Cerrar los modales al hacer clic en el botón de cerrar o fuera del modal
         document.querySelectorAll('.close-modal').forEach(button => {
             button.addEventListener('click', () => {
                 // Ocultar todos los modales al hacer clic en el botón de cerrar
                 document.querySelectorAll('.modal-overlay').forEach(modal => {
-                    modal.style.display = 'none';
+                    modal.classList.remove('active');
                 });
             });
         });
