@@ -88,8 +88,8 @@
 
                 const data = await response.json();
                 if (response.ok && data.status === "success") {
-                    const userRoleNumber = data.userRole ?? ''; 
-                    const userName = data.userName ?? ''; 
+                    const userRoleNumber = data.userRole ?? '';
+                    const userName = data.userName ?? '';
                     const userTypeInst = data.userTypeInst ?? '';
 
                     try {
@@ -156,14 +156,14 @@
                         case 5:
                             bienvenida.innerHTML = `Bienvenido (a): ${userName}`;
                             typeP.innerHTML = `Eres un: ${userTypeInst} TECNM Campus León Campus 1`;
-                            rolP.innerHTML = 'Con rol en nuestro sistema de: Intendente';
-                            generarMenu('Intendente');
+                            rolP.innerHTML = 'Con rol en nuestro sistema de: Guardia';
+                            generarMenu('Guardia');
                             break;
                         case 6:
                             bienvenida.innerHTML = `Bienvenido (a): ${userName}`;
                             typeP.innerHTML = `Eres un: ${userTypeInst} TECNM Campus León Campus 1`;
-                            rolP.innerHTML = 'Con rol en nuestro sistema de: Guardia';
-                            generarMenu('Guardia');
+                            rolP.innerHTML = 'Con rol en nuestro sistema de: Intendente';
+                            generarMenu('Intendente');
                             break;
                         default:
                             console.error('Rol de usuario desconocido');
