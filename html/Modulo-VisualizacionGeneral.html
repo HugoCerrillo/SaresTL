@@ -142,6 +142,7 @@
                 if (response.ok && data.status === "success") {
                     loadTableData(data.records); // Cargar los datos en la tabla
                 } else {
+                    console.error('Error al obtener los registros:', data.message);
                     console.error('No se encontraron registros');
                 }
             } catch (error) {
