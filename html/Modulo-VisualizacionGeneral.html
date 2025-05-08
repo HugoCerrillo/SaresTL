@@ -221,21 +221,23 @@
             document.getElementById('editFechaR').value = item.fechaR;
             document.getElementById('editHoraR').value = item.horaR;
 
-            document.getElementById('editModal').style.display = 'flex'; // Cambiar a 'flex' para que sea visible
+            // Mostrar el modal
+            document.getElementById('editModal').style.display = 'flex';
         }
 
         // Función para abrir el modal de eliminación
         function openDeleteModal(id) {
             document.getElementById('deleteId').value = id;
-            document.getElementById('deleteModal').style.display = 'flex'; // Cambiar a 'flex' para que sea visible
+            // Mostrar el modal de eliminación
+            document.getElementById('deleteModal').style.display = 'flex';
         }
 
         // Cerrar los modales
         document.querySelectorAll('.close-modal').forEach(button => {
-            button.addEventListener('click', (event) => {
-                event.preventDefault(); // Prevenir comportamiento por defecto del botón
+            button.addEventListener('click', () => {
+                // Ocultar todos los modales al hacer clic en el botón de cerrar
                 document.querySelectorAll('.modal-overlay').forEach(modal => {
-                    modal.style.display = 'none'; // Cerrar los modales al hacer clic en el botón de cerrar
+                    modal.style.display = 'none';
                 });
             });
         });
