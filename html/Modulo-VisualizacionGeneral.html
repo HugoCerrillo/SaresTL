@@ -135,7 +135,7 @@
         // Función para obtener los registros de la API
         async function obtenerRegistros() {
             const apiUrl = 'https://hugoc.pythonanywhere.com/api/get_personal_registration';
-            const usernC= "21240238";
+            const usernC = "21240238";
 
             try {
                 const response = await fetch(apiUrl, {
@@ -145,7 +145,12 @@
                     },
                     body: JSON.stringify({ username: usernC }),
                 });
+
                 const data = await response.json();
+
+                // Verifica la respuesta completa
+                console.log(data);
+
                 if (response.ok && data.status === "success") {
                     loadTableData(data.records); // Cargar los datos en la tabla
                 } else {
