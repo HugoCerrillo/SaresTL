@@ -143,7 +143,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ usernC }),
+                    body: JSON.stringify({ username: usernC }),
                 });
                 const data = await response.json();
                 if (response.ok && data.status === "success") {
