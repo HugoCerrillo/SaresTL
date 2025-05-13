@@ -134,25 +134,25 @@
 
         // Función para obtener los registros de la API
         async function obtenerRegistros() {
-            const apiUrl = 'https://hugoc.pythonanywhere.com/api/get_personal_registration';
-            const usernC = "21240238";
+            const apiUrl = 'https://hugoc.pythonanywhere.com/api/get_general_registration';
+            const clave = "21240238";  // Este es el valor que enviarás como parámetro
 
             try {
+                // Realizar la solicitud POST con el cuerpo que contiene la clave
                 const response = await fetch(apiUrl, {
-                    method: 'POST',
+                    method: 'POST',  // Cambiar a POST
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json',  // Indicar que estamos enviando JSON
                     },
-                    body: JSON.stringify({ username: usernC }),
+                    body: JSON.stringify({ clave: clave })  // Enviar la clave en el cuerpo
                 });
 
+                // Procesar la respuesta
                 const data = await response.json();
 
-                // Verifica la respuesta completa
-                console.log(data);
-
+                // Verificar si la respuesta fue exitosa
                 if (response.ok && data.status === "success") {
-                    loadTableData(data.records); // Cargar los datos en la tabla
+                    loadTableData(data.records);  // Cargar los datos en la tabla
                 } else {
                     console.error('Error al obtener los registros:', data.message);
                     console.error('No se encontraron registros');
@@ -162,6 +162,7 @@
                 alert('Hubo un problema al conectar con el servidor. Intenta nuevamente.');
             }
         }
+
 
         // Función para cargar los datos en la tabla
         function loadTableData(data) {
