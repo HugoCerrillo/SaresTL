@@ -134,6 +134,20 @@
             menu.classList.toggle('open');
         }
 
+        function convertirAHora(segundos) {
+            // Calcular horas, minutos y segundos
+            const horas = Math.floor(segundos / 3600);
+            const minutos = Math.floor((segundos % 3600) / 60);
+            const segundosRestantes = segundos % 60;
+
+            // Formatear como HH:MM:SS, asegurando que todos los valores tengan 2 dígitos
+            const horaFormateada = String(horas).padStart(2, '0');
+            const minutoFormateado = String(minutos).padStart(2, '0');
+            const segundoFormateado = String(segundosRestantes).padStart(2, '0');
+
+            // Devolver el resultado en formato "HH:MM:SS"
+            return `${horaFormateada}:${minutoFormateado}:${segundoFormateado}`;
+        }
         // Función para obtener datos del usuario y generar contenido dinámico
         async function obtenerDatosUsuario() {
             const user = sessionStorage.getItem('user'); // Obtener el ID del usuario
@@ -338,7 +352,7 @@
                 fechaCell.textContent = item.fechaR;
 
                 const horaCell = document.createElement('td');
-                horaCell.textContent = item.horaR;
+                horaCell.textContent = convertirAHora(item.horaR);
 
                 const tipoRegistroCell = document.createElement('td');
                 tipoRegistroCell.textContent = item.tipoR;
@@ -412,6 +426,8 @@
 
         // Llamar a la función para obtener registros al cargar la página
         document.addEventListener('DOMContentLoaded', obtenerRegistros);
+
+
     </script>
 </body>
 
