@@ -281,22 +281,40 @@
 
         // Función para obtener los registros de la API
         async function obtenerRegistros() {
-            const apiUrl = 'https://hugoc.pythonanywhere.com/api/get_general_registration';
+            const user = sessionStorage.getItem('user'); // Obtener el ID del usuario
+            if (!user) {
+                alert('No has iniciado sesión. Redirigiendo al login...');
+                window.location.href = "../html/Modulo-InicioSesion.html"; // Redirige al login
+                return;
+            }
+
+            const clave = user;  // Aquí se asume que la clave es el ID de usuario almacenado en sessionStorage.
+            const apiUrl = 'https://hugoc.pythonanywhere.com/api/get_personal_registration';
 
             try {
-                const response = await fetch(apiUrl);
+                // Realizar la solicitud POST al servidor con la clave en el cuerpo de la solicitud
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json' // Especificamos que estamos enviando un JSON
+                    },
+                    body: JSON.stringify({ clave }) // Enviar la clave como JSON en el cuerpo de la solicitud
+                });
+
                 const data = await response.json();
+
                 if (response.ok && data.status === "success") {
-                    loadTableData(data.records); // Cargar los datos en la tabla
+                    loadTableData(data.records); // Cargar los datos en la tabla si la respuesta es exitosa
                 } else {
                     console.error('Error al obtener los registros:', data.message);
-                    console.error('No se encontraron registros');
+                    alert('No se encontraron registros');
                 }
             } catch (error) {
                 console.error('Error al obtener los registros:', error);
                 alert('Hubo un problema al conectar con el servidor. Intenta nuevamente.');
             }
         }
+
 
         // Función para cargar los datos en la tabla
         function loadTableData(data) {
